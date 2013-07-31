@@ -1,0 +1,38 @@
+#ifndef __UPLOAD_H__
+#define __UPLOAD_H__
+
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/select.h>
+#include <errno.h>
+#include <sys/inotify.h>
+#include <malloc.h>
+#include <time.h>
+
+typedef struct TaskNode//任务信息结构体
+{
+    char filename[20];//文件名
+    int state;//0为创建完，1为上传，2为上传完毕
+    struct TaskNode * next;
+}TaskNode;
+
+struct tm * gettime();
+char * getchartime();
+void write_log(TaskNode * p,char * a);
+void display();
+void insertl(TaskNode * p0);
+void search(char * name);
+int BTS_Time(struct tm * p);
+static void _inotify_event_handler(struct inotify_event *event, int eventNum);
+void analysisCenterMonitor();
+void hourtask(int w_4,int d,int hr);
+void hour6task(int w_4,int d,int hr);
+void daytask(int w_4,int d);
+void weektask(int w_4);
+void monthtask(int year,int month);
+void monthtask1(int year,int month);
+void check_task();
+
+#endif

@@ -4,5 +4,5 @@ ftp
 atuomatic upload and download
 
 
-2013.7.31 test push
-2013.7.31 test push 2
+dir "main" contains the actural project progammm file.
+

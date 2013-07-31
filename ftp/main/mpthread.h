@@ -1,0 +1,24 @@
+#include <pthread.h>  
+
+
+/*
+**************************************download thread*******************************************
+*	be uesd to lock the gloable variable log_data[1000][1000] in the file "download.h" declared.
+*   whenever log_data is used, we should lock it in case of resource competition.
+*/
+pthread_mutex_t downloadMutex = PTHREAD_MUTEX_INITIALIZER;	//initialise the mutex lock  
+pthread_cond_t downladCond = PTHREAD_COND_INITIALIZER;		//initialise the condition variable
+
+
+/*
+*******************************************upload thread****************************************
+*	be uesd to lock the gloable variable uploadList in the file "upload.h" declared.
+*   whenever uploadList is used, we should lock it in case of resource competition.
+*/
+pthread_mutex_t uploadMutex = PTHREAD_MUTEX_INITIALIZER;	//initialise the mutex lock  
+pthread_cond_t uploadCond = PTHREAD_COND_INITIALIZER;		//initialise the condition variable
+
+
+
+
+

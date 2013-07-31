@@ -1,0 +1,27 @@
+#ifndef __FTP_H__
+#define __FTP_H__
+
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <arpa/inet.h>
+#include <sys/stat.h>
+
+
+#define DEFAULT_PORT 21
+
+
+
+void plog(char * msg);
+int fill_host_addr(char *host_ip_addr,struct sockaddr_in *host,int port);
+int ftp_send_cmd(const char* s1, const char* s2, int sock_fd);
+int ftp_get_reply(int sock_fd);
+int ftp_login(int socket_control, char * user, char * password);
+int connectFtpServer(char * server_ip, int port, char * user, char * password);
+int rand_local_port();
+int xconnect(struct sockaddr_in *s_addr,int type);
+int get_port();
+int xconnect_ftpdata();
+int ftp_get(char* src_file, char * dst_file, int socket_control);
+int ftp_put(char* src_file, char * dst_file, int socket_control);
+
+#endif
