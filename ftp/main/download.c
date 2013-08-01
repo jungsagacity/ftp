@@ -1,44 +1,77 @@
-#include<unistd.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
+#include "global.h"
 
 #include "download.h"
 
+//#include <pthread.h>
+//#include "ftp.h"
+//extern int socket_control;
+//                             
+//#define   LOCAL_DATA_SRC  "/home/jung/tmp/FromDC/"          //The local root path  
+//#define   LOGDIRECT       "/home/jung/tmp/FromDC/logs/"    //Direct of the logs
+//#define   IGMAS           "download/iGMAS/"                //The ftp(Data_Centre) root path 
+//#define   ssss            "ssss"               //The code name of  theDC_station                  
 
-int itoa(int tempInt, char * str, int dec)
+
+ 
+char   hourly_type[13]= {'D','N','G','L','R','M','T','J','A','K','I','E'}; //Type of  hourly file
+char   highrate_type[7]=  {'D','N','G','L','R','M'}; //Type of highrate file
+int tmp=-1;
+
+
+DownloadList downloadList[MAX_DOWNLOAD_TASK_NUM]; //全局变量，返回每条数据的名及状态
+
+int     downloadList_numb; //记录当天记录的条数
+
+
+
+
+
+int itoa(int tempInt, char * str, int dec) //int to char*
 {
     sprintf(str,"%d",tempInt);
 }
 
-
 void str_copy(char A[],char B[],int i)//把B从第i个字符加到”igmas“后复制给A
 {
     int j=0;
-    char tmp[1000]= {'\0'};
+    char tmp[MAX]= {'\0'};
     while(B[i]!='\0')
     {
         tmp[j++]=B[i++];
     }
-    strcpy(A,IGMAS);
+    strcpy(A,DATA_CENTER_PATH_PREFIX);
     strcat(A,tmp);
 }
 
-
-void module_control()//时钟控制
+void module_control()
 {
-    int test=-1;
-    while(1)
-    {
+        
         MYtime mt;
-        get_currentime(mt);    //获取当前时间
+        MYtime *pmt = &mt;
+        get_currentime(pmt);    //get current time
+        int test=-1;
         if(mt.minute==10||mt.minute==25||mt.minute==40||mt.minute==55)//定时检查成立的时间条件
         {
-
             if(test!=mt.minute)
             {
-                test=mt.minute;
+			    test=mt.minute;
+                if(mt.minute==25&&mt.hour==0)//检查当天第一个文件 当天开始，记录清空;
+                {
+                    downloadList_numb=0;
+					int i;
+					for(i=0;i<MAX_DOWNLOAD_TASK_NUM;i++)
+					{
+					    strcpy(downloadList[i].remote_filename,"\0");
+						strcpy(downloadList[i].local_filename,"\0");
+						downloadList[i].state=0;
+					}
+                }
+                //mt中保存测试时间，下面转化为文件开始传输时间，
                 int year,day,hour,minute;
                 minute=mt.minute-10;
                 if(minute==0)
@@ -46,7 +79,7 @@ void module_control()//时钟控制
                     if(mt.hour==0&&mt.day==1)
                     {
                         year=mt.year-1;
-                        hour=24;      //在处理00:00时，转化成24:00
+                        hour=24;                   //在处理00:00时，转化成24:00
                         if(year%4==0&&year%100!=0)
                             day=R_year;
                         else
@@ -73,31 +106,26 @@ void module_control()//时钟控制
                 }
                 if(minute%15==0)
                 {
-                    char download_list[1000][1000]= {'\0'};
-                    char undownload_list[1000][1000]= {'\0'};
-                    int undownload_numb=0;
-                    log_data_numb=0;
-                    log_data_numb=creat_current_direct(year,day,hour,minute,download_list);//生成全部列表
-                    undownload_numb=creat_logfile(year,day,hour,minute,download_list,undownload_list);//生成下载列表
-                    int i;
-                    for(i=0; i<undownload_numb; i++)
-                    {
-                        //printf("%s\n",undownload_list[i]);
-                    }
-
+                    char download_list[20][MAX]= {'\0'};
+                    int  undownload_numb=0;
+                    int  tmp=creat_current_direct(year,day,hour,minute,download_list);//生成全部列表        
+                    undownload_numb=creat_logfile(year,day,hour,minute,download_list,tmp); //更新log_data   
+                    #ifdef DEBUG
+					printf("当前新增数据条数：%d  缺失数据条数： %d  \n\n",tmp,undownload_numb);
+				    #endif
                 }
             }
 
-        }
+        
     }
 }
 
-int creat_current_direct(int year,int day,int hour,int minute,char download_list[][1000])//创建当前时刻下载列表(00:00~~current)
+int creat_current_direct(int year,int day,int hour,int minute,char download_list[][MAX])//创建当前时刻下载列表(current)
 {
-    int k=0;//返回文件个数
+    int k=0;//返回当前文件个数
     //根据时间找到查询的根路径
-    char  current_root_direct[1000];
-    strcpy(current_root_direct,ROOTDIRECT);
+    char  current_root_direct[MAX];
+    strcpy(current_root_direct,DW_ANALYSIS_CENTER_PATH_PREFIX);
     char year_direct[5]= {'\0'};
     itoa(year,year_direct,10);
     strcat(current_root_direct,year_direct);
@@ -107,118 +135,102 @@ int creat_current_direct(int year,int day,int hour,int minute,char download_list
     strcat(current_root_direct,day_direct);
     //找到了每天的起始路径，然后分小时文件和十五分钟文件查找
     //hourly_file
-    char current_hourly_direct[1000]= {'\0'};
-    strcpy(current_hourly_direct,current_root_direct);
-    strcat(current_hourly_direct,Hourly);
-    int current_type_hourly;
-    for(current_type_hourly=0; current_type_hourly<numb1; current_type_hourly++)
+    if(minute==0)
     {
-        char current_type_direct1[1000]= {'\0'};            //小时目录下类型目录路径
-        char current_type_tmp1[2]= {'\0'};
-        current_type_tmp1[0]=t1[current_type_hourly];
-        strcpy(current_type_direct1,current_hourly_direct);
-        strcat(current_type_direct1,"/");
-        strcat(current_type_direct1,current_type_tmp1);
-        //版本二，检查当前时刻之前的当天内传输的数据是否成功
-        int hour1;
-        for(hour1=0; hour1<hour; hour1++)
+        hour=(hour+24-1)%24;
+        char current_hourly_direct[MAX]= {'\0'};
+        strcpy(current_hourly_direct,current_root_direct);
+        strcat(current_hourly_direct,Hourly);
+        int current_type_hourly;
+        for(current_type_hourly=0; current_type_hourly<strlen(hourly_type); current_type_hourly++)
         {
-            char current_type_hour_direct1[1000]= {'\0'};     //小时目录下类型目录下小时路径
+		    //小时目录下类型目录路径
+            char current_type_direct1[MAX]= {'\0'};            
+            char current_type_tmp1[2]= {'\0'};
+            current_type_tmp1[0]=hourly_type[current_type_hourly];
+			
+            strcpy(current_type_direct1,current_hourly_direct);
+            strcat(current_type_direct1,"/");
+            strcat(current_type_direct1,current_type_tmp1);
+			
+            //检查当前时刻传输的数据是否成功(hour_file) 
+			//小时目录下类型目录下小时路径
+            char current_type_hour_direct1[MAX]= {'\0'};    
             char current_type_hour_tmp1[3]= {'\0'};
-            two_hour(hour1,current_type_hour_tmp1);
+            two_hour(hour,current_type_hour_tmp1);
             strcpy(current_type_hour_direct1,current_type_direct1);
             strcat(current_type_hour_direct1,"/");
             strcat(current_type_hour_direct1,current_type_hour_tmp1);
+			
             //路径生成完毕，下面生成文件名
             char current_file_hourname[20]= {'\0'};
-            creat_hourly_filename(year,day,hour1,current_type_hourly,current_file_hourname);//生成filename
-            char current_file_hourdirect[1000]= {'\0'};
+            creat_hourly_filename(year,day,hour,current_type_hourly,current_file_hourname);//creaet hourly filename
+            char current_file_hourdirect[MAX]= {'\0'};
             strcpy(current_file_hourdirect,current_type_hour_direct1);
             strcat(current_file_hourdirect,"/");
             strcat(current_file_hourdirect,current_file_hourname);
             strcpy(download_list[k++],current_file_hourdirect);
+
         }
     }
     //highrate_file
-    char current_highrate_direct[1000]= {'\0'};
+    minute=(minute+60-15)%60;
+    char current_highrate_direct[MAX]= {'\0'};
     strcpy(current_highrate_direct,current_root_direct);
     strcat(current_highrate_direct,Highrate);
     int current_type_highrate;
-    for(current_type_highrate=0; current_type_highrate<numb2; current_type_highrate++)
+    for(current_type_highrate=0; current_type_highrate<strlen(highrate_type); current_type_highrate++)
     {
-        char current_type_direct2[1000]= {'\0'};            //十五分钟目录下类型目录路径
+	    //十五分钟目录下类型目录路径
+        char current_type_direct2[MAX]= {'\0'};            
         char current_type_tmp2[2]= {'\0'};
-        current_type_tmp2[0]=t2[current_type_highrate];
+        current_type_tmp2[0]=highrate_type[current_type_highrate];
         strcpy(current_type_direct2,current_highrate_direct);
         strcat(current_type_direct2,"/");
         strcat(current_type_direct2,current_type_tmp2);
-        //版本二，检查当前时刻之前的当天内传输的数据是否成功
-        int hour2;
-        for(hour2=0; hour2<=hour; hour2++)
-        {
-            //加入小时路径
-            char current_type_hour_direct2[1000]= {'\0'};
-            char current_type_hour_tmp2[3]= {'\0'};
-            two_hour(hour2,current_type_hour_tmp2);
-            strcpy(current_type_hour_direct2,current_type_direct2);
-            strcat(current_type_hour_direct2,"/");
-            strcat(current_type_hour_direct2,current_type_hour_tmp2);
-            if(hour2!=hour)
-            {
-                int minute1;
-                for(minute1=0; minute1<60; minute1+=15)
-                {
-                    char current_type_hour_highrate_direct[1000]= {'\0'};
-                    char current_type_hour_tmp3[3]= {'\0'};
-                    two_minute(minute1,current_type_hour_tmp3);
-                    strcpy(current_type_hour_highrate_direct,current_type_hour_direct2);
-                    strcat(current_type_hour_highrate_direct,"/");
-                    strcat(current_type_hour_highrate_direct,current_type_hour_tmp3);
-                    //路径生成完毕，下面生成文件名
-                    char current_file_highratename[20]= {'\0'};
-                    creat_highrate_filename(year,day,hour2,minute1,current_type_highrate,current_file_highratename);//生成filename
-                    char current_file_highratedirect[1000]= {'\0'};
-                    strcpy(current_file_highratedirect,current_type_hour_highrate_direct);
-                    strcat(current_file_highratedirect,"/");
-                    strcat(current_file_highratedirect,current_file_highratename);
-                    //printf("%s\n",current_file_highratedirect);
-                    strcpy(download_list[k++],current_file_highratedirect);
-                }
-            }
-            else
-            {
-                int minute2;
-                for(minute2=0; minute2<minute; minute2+=15)
-                {
-                    char current_type_hour_highrate_direct[1000]= {'\0'};
-                    char current_type_hour_tmp3[3]= {'\0'};
-                    two_minute(minute2,current_type_hour_tmp3);
-                    strcpy(current_type_hour_highrate_direct,current_type_hour_direct2);
-                    strcat(current_type_hour_highrate_direct,"/");
-                    strcat(current_type_hour_highrate_direct,current_type_hour_tmp3);
-                    //路径生成完毕，下面生成文件名
-                    char current_file_highratename[20]= {'\0'};
-                    creat_highrate_filename(year,day,hour2,minute2,current_type_highrate,current_file_highratename);//生成filename
-                    char current_file_highratedirect[1000]= {'\0'};
-                    strcpy(current_file_highratedirect,current_type_hour_highrate_direct);
-                    strcat(current_file_highratedirect,"/");
-                    strcat(current_file_highratedirect,current_file_highratename);
-                    //printf("%s\n",current_file_highratedirect);
-                    strcpy(download_list[k++],current_file_highratedirect);
-                }
-
-            }
-        }
+		
+        //检查当前时刻传输的数据是否成功(highrate_file)
+        //加入小时路径
+        char current_type_hour_direct2[MAX]= {'\0'};
+        char current_type_hour_tmp2[3]= {'\0'};
+        two_hour(hour,current_type_hour_tmp2);
+        strcpy(current_type_hour_direct2,current_type_direct2);
+        strcat(current_type_hour_direct2,"/");
+        strcat(current_type_hour_direct2,current_type_hour_tmp2);
+		
+        //加入分钟路径
+        char current_type_hour_highrate_direct[MAX]= {'\0'};
+        char current_type_hour_tmp3[3]= {'\0'};
+        two_minute(minute,current_type_hour_tmp3);
+        strcpy(current_type_hour_highrate_direct,current_type_hour_direct2);
+        strcat(current_type_hour_highrate_direct,"/");
+        strcat(current_type_hour_highrate_direct,current_type_hour_tmp3);
+		
+        //路径生成完毕，下面生成文件名
+        char current_file_highratename[20]= {'\0'};
+        creat_highrate_filename(year,day,hour,minute,current_type_highrate,current_file_highratename);//creat highrate filename
+        char current_file_highratedirect[MAX]= {'\0'};
+        strcpy(current_file_highratedirect,current_type_hour_highrate_direct);
+        strcat(current_file_highratedirect,"/");
+        strcat(current_file_highratedirect, current_file_highratename);
+        strcpy(download_list[k++],current_file_highratedirect);
     }
+	#ifdef DEBUG
+		printf("\n(minite=0，15m->transger，25m->check，minute=45，0m->transger(hourly and highrate files)\n");
+        printf("\n the time remark the filename：%d %d %d:%d\n",year,day,hour,minute);		
+    #endif
+
     return k;
 }
 
-int creat_logfile(int year,int day,int hour,int minute,char download_list[][1000],char undownload_list[][1000])//日志记录，修改日志记录数组，并写入txt文件保存
+
+int creat_logfile(int year,int day,int hour,int minute,char download_list[][MAX],int tmp)//日志记录，修改日志记录数组，并写入txt文件保存
 {
     int i,k=0;//k返回需要下载的文件个数
     int flag=0;
+    /*
     //创建下载日志路径名称
-    char log_name[1000]= {'\0'};
+    char log_name[MAX]= {'\0'};
     char file_year[10]= {'\0'};
     char file_day[5]= {'\0'};
     three_day(day ,file_day);
@@ -228,71 +240,89 @@ int creat_logfile(int year,int day,int hour,int minute,char download_list[][1000
     strcat(log_name,file_day);
     strcat(log_name,".txt");
     //printf("logfilename：%s\n",log_name);
-    //printf("log_data_numb=%d\n",log_data_numb);
-
-    FILE *fp=fopen(log_name,"w+");//读写删除模式
-    for(i=0; i<log_data_numb; i++)
+    //printf("downloadList_numb=%d\n",downloadList_numb);
+    */
+	#ifdef DEBUG
+	    FILE *fp=fopen("/home/jung/tmp/FromDC/logs/212.txt","a+");
+		fprintf(fp,"the transfer time of current files：%d %d %d:%d\n",year,day,hour%24,minute);		
+    #endif
+    
+    
+    for(i=0; i<tmp; i++)
     {
         flag=Search_undownload_file(download_list[i]);//判断是否存在
-        strcpy(log_data[i].local_filename,download_list[i]);
-        str_copy(log_data[i].remote_filename,log_data[i].local_filename,14);
-        log_data[i].state=flag;
-        fprintf(fp,"%s %d\n",log_data[i].local_filename,log_data[i].state);  //写入日志
-        if(log_data[i].state==-1)
+        strcpy(downloadList[downloadList_numb+i].local_filename,download_list[i]);
+        str_copy(downloadList[i].remote_filename,downloadList[i].local_filename,strlen(DW_ANALYSIS_CENTER_PATH_PREFIX));
+        downloadList[downloadList_numb+i].state=flag;
+
+        if(downloadList[i+downloadList_numb].state==-1)
         {
-            strcpy(undownload_list[k++],download_list[i]);
+            k++;
         }
+		#ifdef DEBUG
+            fprintf(fp,"%s %d\n",downloadList[i].local_filename,downloadList[i].state);  //写入日志
+        #endif
     }
-    fclose(fp);
+	#ifdef DEBUG	
+	    fclose(fp);
+    #endif
+    downloadList_numb+=tmp;
     return k;
 }
 
-void get_currentime(MYtime mt)//获取当前时间，并转化成所需要的形式
+void get_currentime(MYtime *mt)//获取当前时间，并转化成所需要的形式
 {
     struct tm *currentime;
     time_t t;
     time(&t);
     currentime=localtime(&t);
-    mt.year=currentime->tm_year+1900;
-    mt.month=currentime->tm_mon+1;
-    mt.day=transfer(mt.year,mt.month,currentime->tm_mday);
-    mt.hour=currentime->tm_hour;
-    mt.minute=currentime->tm_min;
-    mt.second=currentime->tm_sec;
-    /*
-    if(tmp!=mt.minute)
+    mt->year=currentime->tm_year+1900;
+    mt->month=currentime->tm_mon+1;
+    mt->day=transfer(mt->year,mt->month,currentime->tm_mday);
+    mt->hour=currentime->tm_hour;
+    mt->minute=currentime->tm_min;
+    mt->second=currentime->tm_sec;
+	
+	#ifdef DEBUG
+    if(tmp!=mt->minute)
     {
-        printf ( "The current date/time is: %s", asctime (currentime));
-        tmp=mt.minute;
+        printf ( "Current date/time: %s", asctime (currentime));
+        if(mt->minute==10||mt->minute==25||mt->minute==40||mt->minute==55)
+        {
+            FILE *fp=fopen("/home/jung/tmp/FromDC/logs/212.txt","a+");
+            fprintf(fp,"The current data/time if:%s",asctime(currentime));
+            fclose(fp);
+        }
+        tmp=mt->minute;
     }
-    */
+     #endif
 }
 
 void creat_hourly_filename(int year,int day,int hour,int type,char hour_filename[])//创建小时文件名(不包含路径)
 {
-    strcpy(hour_filename,ssss);//加入观测站点
+    strcpy(hour_filename,DATA_SATION);//strcat the DC_station
     char tmp1[5]= {'\0'};
     three_day(day,tmp1);
-    strcat(hour_filename,tmp1);//加入年内天
+    strcat(hour_filename,tmp1);
     hour_filename[7]=hour+97;
     hour_filename[8]='.';
     char tmp2[5]= {'\0'};
     two_year(year,tmp2);
     hour_filename[9]=tmp2[0];
     hour_filename[10]=tmp2[1];
-    hour_filename[11]=t1[type];
+    hour_filename[11]=hourly_type[type];
     hour_filename[12]='.';
     hour_filename[13]='Z';
     hour_filename[14]='\0';
     //printf("%s\n",hour_filename);
 }
 
-void creat_highrate_filename(int year,int day,int hour,int minute,int type,char highrate_filename[])//创建十五分钟文件名(不包含路径)
+void creat_highrate_filename(int year,int day,int hour,int minute,int type,char highrate_filename[])//creat highrate_filename
 {
-    strcpy(highrate_filename,ssss);
+    strcpy(highrate_filename,DATA_SATION);//strcat the DC_station
     char tmp1[5]= {'\0'};
     three_day(day,tmp1);
-    strcat(highrate_filename,tmp1);//加入年内天
+    strcat(highrate_filename,tmp1); //strcat the day in the year
     highrate_filename[7]=hour+97;
     char tmp2[5]= {'\0'};
     two_minute(minute,tmp2);
@@ -303,30 +333,49 @@ void creat_highrate_filename(int year,int day,int hour,int minute,int type,char 
     two_year(year,tmp3);
     highrate_filename[11]=tmp3[0];
     highrate_filename[12]=tmp3[1];
-    highrate_filename[13]=t2[type];
+    highrate_filename[13]=highrate_type[type];
     highrate_filename[14]='.';
     highrate_filename[15]='Z';
     highrate_filename[16]='\0';
+	//printf("%s\n",highrate_filename);
 }
 
-void two_year(int year,char y[])//将年的后两位转化为字符
+/**
+*    function   :   log all information including error;
+*    para       :   {char * msg} actural message;
+*
+*    return     :   {void}
+*
+*    history    :   {2013.7.18 wujun} frist create;
+**/
+
+/**
+ *      function    :   fill host ip and port
+ *      para        :   {char *host_ip_addr}   like "127.0.0.1"
+                        {struct sockaddr_in *host} ftp server add info to being filled that used to connect to ftp server
+                        {int port} ftp server port,default 21;
+        return      :   {int} error code;
+        history     :   {2013.7.18 wujun} fristly be created
+**/
+
+//int fill_host_addr(char *host_ip_addr,struct sockaddr_in *host,int port)
+/*************************************************************************************
+*    function   :   get the last two char of the year
+*    para       :   {int year,char *y}; the two char store in y(like year=2013,y="13")
+*
+*    return     :   {void}
+*
+*    history    :   {2013.7.20 yangyang} frist create;
+**************************************************************************************/
+
+void two_year(int year,char y[])  //get the last two char of the year
 {
     int mode_year;
     mode_year=year%100;
-    char tmp[5]= {'\0'};
-    itoa(mode_year,tmp,10);
-    if(mode_year<10)
-    {
-        strcpy(y,"0");
-        strcat(y,tmp);
-    }
-    else
-    {
-        strcpy(y,tmp);
-    }
+    sprintf(y,"%02d",mode_year);
 }
 
-void three_day(int day,char d[])//将年内天转化为三字符形式
+void three_day(int day,char d[])//change the day to char*
 {
     char tmp[5]= {'\0'};
     itoa(day,tmp,10);
@@ -346,7 +395,7 @@ void three_day(int day,char d[])//将年内天转化为三字符形式
     }
 }
 
-void  two_hour(int hour, char h[])//将小时转化为两字符形式
+void  two_hour(int hour, char h[])//change the hour to char *
 {
     char tmp[5]= {'\0'};
     itoa(hour,tmp,10);
@@ -359,7 +408,7 @@ void  two_hour(int hour, char h[])//将小时转化为两字符形式
         strcpy(h,tmp);
 }
 
-void two_minute(int minute,char m[])//将分钟转化为两字符形式
+void two_minute(int minute,char m[])//change the minute to char *
 {
     if(minute==0)
         strcpy(m,"00");
@@ -367,10 +416,10 @@ void two_minute(int minute,char m[])//将分钟转化为两字符形式
         itoa(minute,m,10);
 }
 
-int transfer(int year,int month,int day)//日期转化为年内天
+int transfer(int year,int month,int day)    //change the data to the day in the year
 {
-    int a[12]= {31,28,31,30,31,30,31,31,30,31,30,31};
-    int i,sum=0;
+    int a[12]= {31,28,31,30,31,30,31,31,30,31,30,31};  //Days of every month
+    int i,sum=0;                                       //sum is the 
     for(i=0; i<month-1; i++)
     {
         sum+=a[i];
@@ -380,11 +429,74 @@ int transfer(int year,int month,int day)//日期转化为年内天
     return sum;
 }
 
-int Search_undownload_file(char filename[])//查找文件是否存在
+
+
+int Search_undownload_file(char filename[])         //check the file exist or  not
 {
     int k=0;
     k=access(filename,0);
-    //printf("k=%d  %s  exist  %s\n",k,filename,((access(filename,0)==0)?"yes":"no"));
-    //return   ((access(filename, 0)==0)?1:0);
-    return k;
+    if( k == 0)
+        return DOWNLOAD_FILE_EXIST	;
+    else
+        return DOWNLOAD_FILE_NONEXIST;
 }
+
+
+
+
+
+
+/*
+void download()
+{
+    int i =0;
+    int ftperror = 0;
+	char con[MAX]={'\0'};
+    while(1)
+    {
+        sleep(1);
+        for(; i < MAX; i++)
+        {	
+			//sprintf(con,"L:%s\tR:%s\t%d",log_data[i].local_filename, log_data[i].remote_filename, log_data[i].state);
+			//plog(con);
+			//memset(con,'\0',MAX);
+            if(log_data[i].state == -1)
+            {
+                if ( connectFtpServer("192.168.0.222", 21, "public", "123456") > 0 )
+                {
+                    if( (ftperror = ftp_get(log_data[i].remote_filename, log_data[i].local_filename, socket_control) ) == 0)
+                    {
+                        printf("\n%s----download success.\n",log_data[i].remote_filename);
+                        log_data[i].state = 2;
+                    }
+                    else
+                    {
+                        printf("\n%s----download fail.\n",log_data[i].remote_filename);
+                        log_data[i].state = 3;
+                    }
+
+                    close(socket_control);
+                }
+                else
+                {
+                    printf("connecting error...");
+                    log_data[i].state = 3;
+                }
+            }
+        }
+        i = 0;
+
+    }
+
+
+}
+int  main()
+{
+    pthread_t downloadTread;
+    pthread_t controlTread;
+    pthread_create(&downloadTread,NULL,download,(void *)NULL);
+    pthread_create(&controlTread,NULL,module_control,(void *)NULL);
+    while(1);
+    return 0;
+}
+*/

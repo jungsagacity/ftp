@@ -1,0 +1,12 @@
+Wed Jul 31 14:00:21 2013	Successfully connect to server:192.168.0.222,port:21
+Wed Jul 31 14:00:21 2013	220 Microsoft FTP Service
+Wed Jul 31 14:00:21 2013	331 Password required for public.
+Wed Jul 31 14:00:21 2013	230 User logged in.
+Wed Jul 31 14:00:21 2013	local file /home/juupload/ACI03953_14.irt.Z doesn't exist!
+Wed Jul 31 15:00:27 2013	Successfully connect to server:192.168.0.222,port:21
+Wed Jul 31 15:00:27 2013	220 Microsoft FTP Service
+Wed Jul 31 15:00:27 2013	331 Password required for public.
+Wed Jul 31 15:00:28 2013	230 User logged in.
+Wed Jul 31 15:00:28 2013	Successfully connect to server:192.168.0.222,port:8253
+Wed Jul 31 15:00:28 2013	125 Data connection already open; Transfer starting.
+Wed Jul 31 15:00:28 2013	 recv no message

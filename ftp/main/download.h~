@@ -28,16 +28,6 @@ typedef  struct
 } DownloadList;
 
 
-typedef struct        //自定义时间数据结构
-{
-    int year;
-    int month;
-    int day;
-    int hour;
-    int minute;
-    int second;
-} MYtime;
-
 void module_control();                                                //Ä£¿éµ÷¶È
 void get_currentime(MYtime *mt);                                    //»ñÈ¡µ±Ç°Ê±Œä
 int  Search_undownload_file(char filename[]);                      //²éÕÒÎÄŒþÊÇ·ñŽæÔÚ

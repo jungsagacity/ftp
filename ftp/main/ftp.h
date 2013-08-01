@@ -8,9 +8,10 @@
 
 
 #define DEFAULT_PORT 21
+#define FTP_OK        0  
+#define FTP_CONNECT_FAILED_FLAG 0  
 
-
-
+char *strReplace(char *dest, char *src, const char *oldstr, const char *newstr, size_t len);
 void plog(char * msg);
 int fill_host_addr(char *host_ip_addr,struct sockaddr_in *host,int port);
 int ftp_send_cmd(const char* s1, const char* s2, int sock_fd);

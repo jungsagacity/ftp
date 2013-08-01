@@ -1,0 +1,60 @@
+Wed Jul 31 20:40:00 2013	Successfully connect to server:192.168.0.222,port:21
+Wed Jul 31 20:40:00 2013	220 Microsoft FTP Service
+Wed Jul 31 20:40:01 2013	331 Password required for public.
+Wed Jul 31 20:40:01 2013	230 User logged in.
+Wed Jul 31 20:40:01 2013	Successfully connect to server:192.168.0.222,port:10837
+Wed Jul 31 20:40:01 2013	200 Type set to I.
+Wed Jul 31 20:40:01 2013	125 Data connection already open; Transfer starting.
+Wed Jul 31 20:40:17 2013	the file is null.
+Wed Jul 31 20:40:17 2013	 get over.
+Wed Jul 31 20:40:17 2013	Successfully connect to server:192.168.0.222,port:21
+Wed Jul 31 20:40:17 2013	220 Microsoft FTP Service
+Wed Jul 31 20:40:17 2013	331 Password required for public.
+Wed Jul 31 20:40:18 2013	230 User logged in.
+Wed Jul 31 20:40:18 2013	Successfully connect to server:192.168.0.222,port:10839
+Wed Jul 31 20:40:18 2013	200 Type set to I.
+Wed Jul 31 20:40:18 2013	226 Transfer complete.
+ady open; Transfer starting.
+Wed Jul 31 20:40:18 2013	226 Transfer complete.
+Wed Jul 31 20:40:18 2013	the file is null.
+Wed Jul 31 20:40:18 2013	 get over.
+Wed Jul 31 20:40:18 2013	Successfully connect to server:192.168.0.222,port:21
+Wed Jul 31 20:40:18 2013	220 Microsoft FTP Service
+Wed Jul 31 20:40:19 2013	331 Password required for public.
+Wed Jul 31 20:40:19 2013	230 User logged in.
+Wed Jul 31 20:40:19 2013	Successfully connect to server:192.168.0.222,port:21
+Wed Jul 31 20:40:20 2013	 recv no messageWed Jul 31 20:40:20 2013	 recv no messageWed Jul 31 20:40:25 2013	the file is null.
+Wed Jul 31 20:40:25 2013	 get over.
+Wed Jul 31 20:40:25 2013	Successfully connect to server:192.168.0.222,port:21
+Wed Jul 31 20:40:25 2013	220 Microsoft FTP Service
+Wed Jul 31 20:40:26 2013	331 Password required for public.
+Wed Jul 31 20:40:26 2013	230 User logged in.
+Wed Jul 31 20:40:26 2013	Successfully connect to server:192.168.0.222,port:10842
+Wed Jul 31 20:40:26 2013	200 Type set to I.
+Wed Jul 31 20:40:26 2013	226 Transfer complete.
+ady open; Transfer starting.
+Wed Jul 31 20:40:27 2013	226 Transfer complete.
+Wed Jul 31 20:40:27 2013	the file is null.
+Wed Jul 31 20:40:27 2013	 get over.
+Wed Jul 31 20:40:27 2013	Successfully connect to server:192.168.0.222,port:21
+Wed Jul 31 20:40:27 2013	220 Microsoft FTP Service
+Wed Jul 31 20:40:27 2013	331 Password required for public.
+Wed Jul 31 20:40:28 2013	230 User logged in.
+Wed Jul 31 20:40:28 2013	Successfully connect to server:192.168.0.222,port:10843
+Wed Jul 31 20:40:28 2013	200 Type set to I.
+Wed Jul 31 20:40:28 2013	226 Transfer complete.
+ady open; Transfer starting.
+Wed Jul 31 20:40:28 2013	226 Transfer complete.
+Wed Jul 31 20:40:28 2013	the file is null.
+Wed Jul 31 20:40:28 2013	 get over.
+Wed Jul 31 20:40:28 2013	Successfully connect to server:192.168.0.222,port:21
+Wed Jul 31 20:40:28 2013	220 Microsoft FTP Service
+Wed Jul 31 20:40:29 2013	331 Password required for public.
+Wed Jul 31 20:40:29 2013	230 User logged in.
+Wed Jul 31 20:40:29 2013	Successfully connect to server:192.168.0.222,port:10844
+Wed Jul 31 20:40:29 2013	200 Type set to I.
+Wed Jul 31 20:40:29 2013	226 Transfer complete.
+ady open; Transfer starting.
+Wed Jul 31 20:40:30 2013	226 Transfer complete.
+Wed Jul 31 20:40:30 2013	the file is null.
+Wed Jul 31 20:40:30 2013	 get over.

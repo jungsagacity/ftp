@@ -18,10 +18,32 @@ struct sockaddr_in ftp_server,local_host;
 struct hostent * server_hostent;
 int socket_control;
 int mode=1;//1--PASV 0--PORT
-int ftpServerPort;//ftp server port
-char ftpServerIP[50];//ftp server ip4 or ip6
-char ftpUserName[200];//fpt server user name 
-char ftpPassword[50];//ftp password belong to user
+
+/*
+1、FTP服务器路径问题，若是windows，则需要进行转换；默认是linux环境；
+2、FTP链接问题，如果没有链接成功，则继续链接三次，每次间隔5秒钟，如果依然连接不成功，则返回网络异常；
+3、下载过程中，本地文件以可读可写的形式存在；上传过程中，本地文件以只读的形式存在；
+4、如果发出了命令但是没有接受到来自FTP服务器的相应消息，则连续读取三次，如果依然没有消息，则认为是网络异常；
+*/
+
+
+/**
+*
+* @author: cnscn@163.com
+* @reference: lovesnow1314@http://community.csdn.net/Expert/TopicView3.asp?id=5198221
+*
+* 用新子串newstr替换源字符串src中的前len个字符内所包含的oldstr子串
+*
+* @param char* dest 目标串，也就是替换后的新串
+* @param const char* src 源字符串，被替换的字符串
+* @param const char* oldstr 旧的子串，将被替换的子串
+* @param const char* newstr 新的子串
+* @param int len 将要被替换的前len个字符
+*
+* @return char* dest 返回新串的地址
+*
+*/
+
 
 
 //***********************************************************************
@@ -43,7 +65,7 @@ void plog(char * msg)
     msgTemp[strlen(msgTemp)-1] = 0;
 
 
-    char filename[] = "/home/lu/log.txt";
+    char filename[] = "mlog.txt";
     FILE *fp;
 
     if( (fp=fopen( filename ,"at") ) == NULL )
@@ -54,6 +76,29 @@ void plog(char * msg)
     fputs(msgTemp, fp);
     fclose(fp);
 }
+
+void debuglog(char * msg)
+{
+    time_t timer =time(NULL);
+    char msgTemp[200] = {0};
+
+    sprintf(msgTemp, "%s",ctime(&timer));
+    msgTemp[strlen(msgTemp)-1] = 0;
+
+
+    char filename[] = "debuglog.txt";
+    FILE *fp;
+
+    if( (fp=fopen( filename ,"at") ) == NULL )
+    {
+        fp = fopen( filename ,"wt");
+    }
+    sprintf(msgTemp, "%s\t%s", msgTemp, msg);
+    fputs(msgTemp, fp);
+    fclose(fp);
+}
+
+
 
 
 /**
@@ -281,8 +326,9 @@ int connectFtpServer(char * server_ip, int port, char * user, char * password)
         plog(log);
 
     }
-
-    if((error=ftp_get_reply(socket_control))!=220)
+	
+	error=ftp_get_reply(socket_control);
+    if( error!=220 && error!=0)
     {
         plog("Connect error!");
         return -1;
@@ -474,7 +520,7 @@ int xconnect_ftpdata()
             ip_4 = strchr(ip_3, '.');
             *ip_4 = '\0';
             ip_4++;
-            snprintf(cmd_buf, sizeof(cmd_buf), "PORT %s,%s,%s,%s,%d,%d", 
+            snprintf(cmd_buf, sizeof(cmd_buf), "PORT %s,%s,%s,%s,%d,%d",
 					 ip_1, ip_2, ip_3, ip_4, client_port >> 8, client_port&0xff);
 
             ftp_send_cmd(cmd_buf, NULL, socket_control);
@@ -498,6 +544,7 @@ int xconnect_ftpdata()
  *                      {int socket_control} socket file description
  *
  *      return      :   {int}
+				0:ok;
 				-1:create local file error;
 				-2:command socket file description error;
 				-3:transfer mode set error;
@@ -506,13 +553,18 @@ int xconnect_ftpdata()
 **/
 int ftp_get(char* src_file, char * dst_file, int socket_control)
 {
-    int get_sock, set, new_sock, i = 0;
-
+    int get_sock, set, new_sock, i = 0;	
     char rcv_buf[512];
     char cover_flag[3];
     struct stat file_info;
     int local_file;
     int count = 0;
+	if(strlen(src_file) == 0 || strlen(dst_file) == 0)	
+	{
+		plog("remote or local file path is invalid.\n");		
+		return -1;
+	}
+	
 /*
     if(!stat(dst_file, &file_info))
     {
@@ -527,7 +579,7 @@ int ftp_get(char* src_file, char * dst_file, int socket_control)
         }
     }
 */
-    local_file = open(dst_file, O_CREAT|O_TRUNC|O_WRONLY);
+    local_file = open(dst_file, O_RDWR|O_CREAT|);
     if(local_file < 0)
     {	int i=0;
 	plog("creat local file  error!\n");
@@ -546,6 +598,7 @@ int ftp_get(char* src_file, char * dst_file, int socket_control)
     ftp_get_reply(socket_control);
 
     ftp_send_cmd("RETR ", src_file, socket_control);
+	
     if(!mode)
     {
         while(i < 3)
@@ -565,13 +618,18 @@ int ftp_get(char* src_file, char * dst_file, int socket_control)
             plog("Sorry, you can't use PORT mode. \n");
             return -3;
         }
-        ftp_get_reply(socket_control);
+
+		ftp_get_reply(socket_control);
+
         while(1)
         {
 
             count = read(new_sock, rcv_buf, sizeof(rcv_buf));
             if(count <= 0)
-                break;
+			{
+				
+				break;
+			}                
             else
             {
                 write(local_file, rcv_buf, count);
@@ -584,24 +642,31 @@ int ftp_get(char* src_file, char * dst_file, int socket_control)
     }
     else
     {
-        ftp_get_reply(socket_control);
-        
+		ftp_get_reply(socket_control);     
+		
+
         while(1)
         {
             memset(rcv_buf,0,512);
             count = read(get_sock, rcv_buf, 512);
 
             if(count <= 0)
-                break;
+			{
+				
+				break;
+			}                
             else
             {
                 write(local_file, rcv_buf, count);
             }
         }
+		plog(" get over.\n");
 
         close(local_file);
         close(get_sock);
     }
+
+	return 0;
 }
 
 
@@ -670,7 +735,7 @@ int ftp_put(char* src_file, char * dst_file, int socket_control)
         {
             plog("The PORT mode won't work");
             return -4;
-        } 
+        }
         while(1)
         {
             count=read(local_file,send_buff,sizeof(send_buff));
@@ -697,9 +762,9 @@ int ftp_put(char* src_file, char * dst_file, int socket_control)
                 write(file_put_sock,send_buff,count);
             }
         }
-	
+
         close(local_file);
-        close(file_put_sock);	
+        close(file_put_sock);
     }
 	usleep(100);
 return 0;

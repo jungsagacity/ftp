@@ -8,17 +8,10 @@
 
 
 #define DEFAULT_PORT 21
+#define FTP_OK        0  
+#define FTP_CONNECT_FAILED 0  
 
-extern struct sockaddr_in ftp_server,local_host;
-extern struct hostent * server_hostent;
-extern int socket_control;
-extern int mode;//1--PASV 0--PORT
-extern int ftpServerPort;//ftp server port
-extern char ftpServerIP[50];//ftp server ip4 or ip6
-extern char ftpUserName[200];//fpt server user name 
-extern char ftpPassword[50];//ftp password belong to user
-
-
+char *strReplace(char *dest, char *src, const char *oldstr, const char *newstr, size_t len);
 void plog(char * msg);
 int fill_host_addr(char *host_ip_addr,struct sockaddr_in *host,int port);
 int ftp_send_cmd(const char* s1, const char* s2, int sock_fd);
