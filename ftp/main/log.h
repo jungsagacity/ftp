@@ -6,15 +6,31 @@
 *   log node'sinformatino should be read and sent to a management software center.
 *----------------------------------------------------------------------------------------------*/
 
-#define 	UPLOAD_CONNNET_FAILED		1
-#define 	DOWNLOAD_CONNNET_FAILED		2
-#define		UPLOAD_FAILED				3
-#define	 	DOWNLOAD_FAILED				4
-#define		UPLOAD_SUCCESS				5
-#define	 	DOWNLOAD_SUCCESS			6
-#define	 	UPLOAD_INTIME	            7
-#define	 	UPLOAD_LATE		            8
-#define	 	FILE_NOEXIST	            9
+#define     L_DOWNLOAD_CONNNET_FAILED           1
+/*
+#define     L_DOWNLOAD_LOCAL_FILENAME_NULL      2
+#define     L_DOWNLOAD_REMOTE_FILENAME_NULL     3
+#define     L_DOWNLOAD_CREAET_LOCALFILE_ERROR   4
+#define     L_DOWNLOAD_CONNECT_SOCKET_ERROR     5
+#define     L_DOWNLOAD_PORT_MODE_ERROR          6
+#define     L_DOWNLOAD_REMOTE_FILE_NOEXIST      7
+*/
+#define     L_DOWNLOAD_FAILED                   8
+#define	 	L_DOWNLOAD_SUCCESS			        9
+
+#define     L_UPLOAD_CONNNET_FAILED             10
+/*
+#define     L_UPLOAD_LOCAL_FILENAME_NULL        11
+#define     L_UPLOAD_LOCAL_OPEN_ERROR           12
+#define     L_UPLOAD_DATA_SOCKET_ERROR          13
+#define     L_UPLOAD_PORT_MODE_ERROR            14
+*/
+#define     L_UPLOAD_FAILED                     15
+#define     L_UPLOAD_SUCCESS                    16
+#define     L_UPLOAD_FILE_NOEXIST               17
+#define	 	L_UPLOAD_INTIME	                    18
+#define	 	L_UPLOAD_LATE                       19
+
 
 
 

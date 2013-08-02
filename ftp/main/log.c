@@ -99,47 +99,47 @@ int writeEventLog(char *uploadLog, char *downloadLog)
 	{
 		switch(newlog->eventTpye)
 		{
-			case UPLOAD_CONNNET_FAILED:
+			case L_UPLOAD_CONNNET_FAILED:
 			{
 				fprintf(upLogFp,"%s\tUPLOAD CONNNET FAILED\t%s\t%s\n",newlog->startTime,newlog->fileName,newlog->endTime);
 				break;
 			}
-			case DOWNLOAD_CONNNET_FAILED:
+			case L_DOWNLOAD_CONNNET_FAILED:
 			{
 				fprintf(dwLogFp,"%s\tDOWNLOAD CONNNET FAILED\t%s\t%s\n",newlog->startTime,newlog->fileName,newlog->endTime);
 				break;
 			}
-			case UPLOAD_FAILED:
+			case L_UPLOAD_FAILED:
 			{
 				fprintf(upLogFp,"%s\tUPLOAD FAILED\t\t\t\t%s\t%s\n",newlog->startTime,newlog->fileName,newlog->endTime);
 				break;
 			}
-			case UPLOAD_INTIME:
+			case L_UPLOAD_INTIME:
 			{
 				fprintf(upLogFp,"%s\tUPLOAD INTIME\t\t%s\t%s\n",newlog->startTime,newlog->fileName,newlog->endTime);
 				break;
 			}
-			case UPLOAD_LATE:
+			case L_UPLOAD_LATE:
 			{
 				fprintf(upLogFp,"%s\tUPLOAD LATE\t\t%s\t%s\n",newlog->startTime,newlog->fileName,newlog->endTime);
 				break;
 			}
-			case FILE_NOEXIST:
+			case L_UPLOAD_FILE_NOEXIST:
 			{
 				fprintf(upLogFp,"%s\tFILE NOEXIST\t\t%s\t%s\n",newlog->startTime,newlog->fileName,newlog->endTime);
 				break;
 			}
-			case DOWNLOAD_FAILED:
+			case L_DOWNLOAD_FAILED:
 			{
 				fprintf(dwLogFp,"%s\tDOWNLOAD FAILED\t\t\t\t%s\t%s\n",newlog->startTime,newlog->fileName,newlog->endTime);
 				break;
 			}
-			case UPLOAD_SUCCESS:
+			case L_UPLOAD_SUCCESS:
 			{
 				fprintf(upLogFp,"%s\tUPLOAD SUCCESS\t\t\t\t%s\t%s\n",newlog->startTime,newlog->fileName,newlog->endTime);
 				break;
 			}
-			case DOWNLOAD_SUCCESS:
+			case L_DOWNLOAD_SUCCESS:
 			{
 				fprintf(dwLogFp,"%s\tDOWNLOAD SUCCESS\t\t\t%s\t%s\n",newlog->startTime,newlog->fileName,newlog->endTime);
 				break;

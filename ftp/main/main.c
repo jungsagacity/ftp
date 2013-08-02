@@ -19,6 +19,7 @@
 *
 *--------------------------------------------------------------------------------------------*/
 extern struct UploadNode * uploadList;//upload.c, file list periodically created by product center.
+extern struct UploadNode * tail;//upload.c, file list periodically created by product center.
 extern DownloadList downloadList[MAX_DOWNLOAD_TASK_NUM];
 extern void analysisCenterMonitor();//upload.c, monitor the temporary dir in product center
 void analysisCenterCheckTask();//upload.c, check the prodcut files whether they have been uploaded
@@ -122,7 +123,7 @@ void timingTask()
 		{// every second excute the main process
 			t=time(NULL);
 			st = localtime(&t);//get current datetime
-			tempMin = st->tm_min;//catch the current minute
+			tempMin = st->tm_sec;//catch the current minute
 			sleep(1);
 		}
 
@@ -142,7 +143,10 @@ void timingTask()
 					#ifdef DEBUG
 						printf("data center checking task.\n");
 					#endif
+
+                    pthread_mutex_lock(&downloadMutex);//lock
 					module_control();
+					pthread_mutex_unlock(&downloadMutex);//unlock
 				}
 
 				taskMins[i].traverseState = 1;
@@ -151,7 +155,8 @@ void timingTask()
 		}
 
 		//initialise the traverse state when minute equals to 56,that is to say,when the last minute point is traversed.
-		if( (taskMins[4].traverseState == 1) && (tempMin == (taskMins[4].min + 1) ) )
+		//
+        if( (taskMins[4].traverseState == 1) && (tempMin == (taskMins[4].min + 1) ) )
 		{
 			//initialise the struct array;
 			for( i=0;i<5;i++)
@@ -197,7 +202,7 @@ void upload()
 
 	while(1)
 	{
-		UploadNode * p;
+		UploadNode * p,*p1;
 		p = uploadList;//temporary variable always points to uploadList head pointer.
 
 		//to traverse the upload task list, check whether there are some upload task or not.
@@ -210,7 +215,6 @@ void upload()
 
             if( (uploadState == UPLOAD_FILE_EXIST) || (uploadState == UPLOAD_FILE_UNKNOWN) )
 			{
-                  printf("up......\n");
                 pthread_mutex_unlock(&uploadMutex);//unlock
 
 				//we have three times to try to connect to ftp server ,if failed. Otherwise send network error.
@@ -231,16 +235,17 @@ void upload()
 
 						break;
 					}
-					sleep(1);
+					/*
+					*  delay some moment ,then connect to ftp server again.
+					*  Addtionally,we are not suer to be able to  use "sleep(1)" to delay.
+					*/
+					int b = 0, e = 0;
+                    for(b=0;b<2000;b++)
+                    for(e=0;e<2000;e++);
 				}
 
 				if( sockfd > FTP_CONNECT_FAILED_FLAG )
                 {
-					// record starting-upload time
-					timer =time(NULL);
-					memset(startTime, 0, 100);
-					strftime( startTime, sizeof(startTime), "%Y-%m-%d %T",localtime(&timer) );
-
                     pthread_mutex_lock(&uploadMutex);//lock
 					p->state = UPLOAD_FILE_UPLOADING;//uploading state
                     pthread_mutex_unlock(&uploadMutex);//unlock
@@ -259,83 +264,128 @@ void upload()
 					memset(productCenterFullPath, 0, len);
 					sprintf(productCenterFullPath,"%s%s",productCenterFullPath,filename);
 
+                    // record starting-upload time
+					timer =time(NULL);
+					memset(startTime, 0, 100);
+					strftime( startTime, sizeof(startTime), "%Y-%m-%d %T",localtime(&timer) );
 
-                    if( (ftperror = ftp_put(analysisCenterFullPath, productCenterFullPath, sockfd) ) == FTP_OK)
+                    ftperror = ftp_put(analysisCenterFullPath, productCenterFullPath, sockfd);
+
+                    // record end-upload time
+                    timer =time(NULL);
+                    memset(endTime, 0, 100);
+                    strftime( endTime, sizeof(endTime), "%Y-%m-%d %T",localtime(&timer) );
+
+                    //add log
+                    pthread_mutex_lock(&logMutex);//lock
+                    switch(ftperror)
                     {
-						// record end-upload time
-						timer =time(NULL);
-						memset(endTime, 0, 100);
-						strftime( endTime, sizeof(endTime), "%Y-%m-%d %T",localtime(&timer) );
+                        case UPLOAD_CONNNET_FAILED:
+                        {
+                            addEventLog(L_UPLOAD_CONNNET_FAILED, filename, startTime,endTime);
 
-                        pthread_mutex_lock(&uploadMutex);//lock
-                        p->state = UPLOAD_FILE_UPLOAD_SUCCESS;
-                        pthread_mutex_unlock(&uploadMutex);//unlock
+                            pthread_mutex_lock(&uploadMutex);//lock
+                            p->state = UPLOAD_FILE_UPLOAD_FAILED;
+                            pthread_mutex_unlock(&uploadMutex);//unlock
 
-						//add log
-						pthread_mutex_lock(&logMutex);//lock
-						addEventLog(UPLOAD_SUCCESS, filename, startTime,endTime);
-						pthread_mutex_unlock(&logMutex);//unlock
+                            break;
+                        }
+                        case UPLOAD_LOCAL_FILENAME_NULL:
+                        case UPLOAD_LOCAL_OPEN_ERROR:
+                        case UPLOAD_DATA_SOCKET_ERROR:
+                        case UPLOAD_PORT_MODE_ERROR:
+                        {
+                            addEventLog(L_UPLOAD_FAILED, filename, startTime,endTime);
+
+                            pthread_mutex_lock(&uploadMutex);//lock
+                            p->state = UPLOAD_FILE_UPLOAD_FAILED;
+                            pthread_mutex_unlock(&uploadMutex);//unlock
+
+                            break;
+                        }
+                        case UPLOAD_SUCCESS:
+                        {
+                            addEventLog(L_UPLOAD_SUCCESS, filename, startTime,endTime);
+
+                            pthread_mutex_lock(&uploadMutex);//lock
+                            p->state = UPLOAD_FILE_UPLOAD_SUCCESS;
+                            pthread_mutex_unlock(&uploadMutex);//unlock
+
+                            break;
+                        }
+                        default:break;
                     }
-                    else
-                    {
-						// record end-upload time
-						timer =time(NULL);
-						memset(endTime, 0, 100);
-						strftime( endTime, sizeof(endTime), "%Y-%m-%d %T",localtime(&timer) );
 
-                        pthread_mutex_lock(&uploadMutex);//lock
-                        p->state = UPLOAD_FILE_UPLOAD_FAILED;
-                        pthread_mutex_unlock(&uploadMutex);//unlock
-
-						//add log
-						pthread_mutex_lock(&logMutex);//lock
-						addEventLog(UPLOAD_FAILED, filename, startTime,endTime);
-                        pthread_mutex_unlock(&logMutex);//unlock
-                    }
+                    pthread_mutex_unlock(&logMutex);//unlock
 
                     close(sockfd);
 				}
 
             }else
             {
+                pthread_mutex_unlock(&uploadMutex);//unlock
                 timer =time(NULL);
                 memset(endTime, 0, 100);
                 strftime( endTime, sizeof(endTime), "%Y-%m-%d %T",localtime(&timer) );
-                printf("123\n");
-                pthread_mutex_lock(&uploadMutex);//lock
-                printf("dfd\n");
-                p->state = UPLOAD_FILE_DELETABLE;
-                pthread_mutex_unlock(&uploadMutex);//unlock
 
                 //add log
                 pthread_mutex_lock(&logMutex);//lock
-                printf("log mutex.\n");
                 switch(uploadState)
                 {
                     case UPLOAD_FILE_NONEXIST:
                     {
-                        addEventLog(FILE_NOEXIST, filename, endTime,endTime);
-                        printf("add no file event.\n");
+                        addEventLog(L_UPLOAD_FILE_NOEXIST, filename, endTime,endTime);
                         break;
                     }
                     case UPLOAD_FILE_UPLOAD_INTIME:
                     {
-                        addEventLog(UPLOAD_INTIME, filename, endTime,endTime);
+                        addEventLog(L_UPLOAD_INTIME, filename, endTime,endTime);
                         break;
                     }
                     case UPLOAD_FILE_UPLOAD_LATE:
                     {
-                        addEventLog(UPLOAD_LATE, filename, endTime,endTime);
+                        addEventLog(L_UPLOAD_LATE, filename, endTime,endTime);
                         break;
                     }
                     default:break;
 
                 }
                 pthread_mutex_unlock(&logMutex);//unlock
+
+                pthread_mutex_lock(&uploadMutex);//lock
+                //if the target node is the first
+                if(p==uploadList)
+                {
+                    //at the same time the target node is the last
+                    if(p==tail)
+                    {
+                        uploadList=NULL;
+                        tail=NULL;
+                    }
+                    else
+                        uploadList=p->next;
+                }
+                else
+                {
+                    //if the target node is at the last
+                    if(p==tail)
+                    {
+                        tail=p1;
+                        p1->next=NULL;
+
+                    }
+                    else
+                        p1->next=p->next;
+                }
+                free(p);
+
+                pthread_mutex_unlock(&uploadMutex);//unlock
             }
 
-			p=p->next;
             pthread_mutex_lock(&uploadMutex);//lock
+            p1=p;
+            p=p->next;
+            pthread_mutex_unlock(&uploadMutex);//lock
 
 		}
 	}
@@ -423,7 +473,16 @@ void download()
 
 						break;
 					}
-					sleep(1);
+
+					/*
+					*  delay some moment ,then connect to ftp server again.
+					*  Addtionally,we are not suer to be able to  use "sleep(1)" to delay.
+					*/
+					int b = 0, e = 0;
+                    for(b=0;b<2000;b++)
+                    for(e=0;e<2000;e++);
+
+
 				}
 
 				if( sockfd > FTP_CONNECT_FAILED_FLAG )
@@ -433,41 +492,59 @@ void download()
 					memset(startTime, 0, 100);
 					strftime( startTime, sizeof(startTime), "%Y-%m-%d %T",localtime(&timer) );
 
-					if( (ftperror = ftp_get(remoteFile, localFile, sockfd) ) == FTP_OK)
-				    {
-						//recod end-download time
-						timer =time(NULL);
-						memset(endTime, 0, 100);
-						strftime( endTime, sizeof(endTime), "%Y-%m-%d %T",localtime(&timer) );
+                    ftperror = ftp_get(remoteFile, localFile, sockfd) ;
 
-						//add event log;
-						pthread_mutex_lock(&logMutex);//lock
-						addEventLog(DOWNLOAD_SUCCESS, remoteFile, startTime,endTime);
-						pthread_mutex_unlock(&logMutex);//unlock
+                    //recod end-download time
+                    timer =time(NULL);
+                    memset(endTime, 0, 100);
+                    strftime( endTime, sizeof(endTime), "%Y-%m-%d %T",localtime(&timer) );
 
-						//download mutex
-						pthread_mutex_lock(&downloadMutex);
-				        downloadList[i].state = DOWNLOAD_FILE_EXIST;
-						pthread_mutex_unlock(&downloadMutex);
-				    }
-				    else
-				    {
-						//recod end-download time
-						timer =time(NULL);
-						memset(endTime, 0, 100);
-						strftime( endTime, sizeof(endTime), "%Y-%m-%d %T",localtime(&timer) );
+                    //add event log;
+                    pthread_mutex_lock(&logMutex);//lock
+					switch(ftperror)
+					{
+                        case DOWNLOAD_CONNNET_FAILED:
+                        {
+                            addEventLog(L_DOWNLOAD_CONNNET_FAILED, remoteFile, startTime,endTime);
 
-						//add event log;
-						pthread_mutex_lock(&logMutex);//lock
-						addEventLog(DOWNLOAD_FAILED, downloadList[i].remote_filename, startTime,endTime);
-						pthread_mutex_unlock(&logMutex);//unlock
+                            //download mutex
+                            pthread_mutex_lock(&downloadMutex);
+                            downloadList[i].state = DOWNLOAD_FAILED;
+                            pthread_mutex_unlock(&downloadMutex);
 
+                            break;
+                        }
+                        case DOWNLOAD_LOCAL_FILENAME_NULL:
+                        case DOWNLOAD_REMOTE_FILENAME_NULL:
+                        case DOWNLOAD_CREAET_LOCALFILE_ERROR:
+                        case DOWNLOAD_CONNECT_SOCKET_ERROR:
+                        case DOWNLOAD_PORT_MODE_ERROR:
+                        case DOWNLOAD_REMOTE_FILE_NOEXIST:
+                        {
+                            addEventLog(L_DOWNLOAD_FAILED, remoteFile, startTime,endTime);
 
-						//download mutex
-						pthread_mutex_lock(&downloadMutex);
-				        downloadList[i].state = DOWNLOAD_FILE_DOWNLOAD_FAILED;
-						pthread_mutex_unlock(&downloadMutex);
-				    }
+                            //download mutex
+                            pthread_mutex_lock(&downloadMutex);
+                            downloadList[i].state = DOWNLOAD_FAILED;
+                            pthread_mutex_unlock(&downloadMutex);
+
+                            break;
+                        }
+                        case DOWNLOAD_SUCCESS:
+                        {
+                            addEventLog(L_DOWNLOAD_SUCCESS, remoteFile, startTime,endTime);
+
+                            //download mutex
+                            pthread_mutex_lock(&downloadMutex);
+                            downloadList[i].state = DOWNLOAD_FILE_EXIST;
+                            pthread_mutex_unlock(&downloadMutex);
+
+                            break;
+                        }
+                        default:break;
+
+					}
+					pthread_mutex_unlock(&logMutex);//unlock
 
 					//close ftp connect
 				    close(sockfd);

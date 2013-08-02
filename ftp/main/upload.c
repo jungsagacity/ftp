@@ -127,7 +127,7 @@ void insertlist(UploadNode * p0)
     }
 
     #ifdef DEBUG
-    display();
+    //display();
     #endif
     pthread_mutex_unlock(&uploadMutex);//unlock
 }
@@ -154,6 +154,7 @@ void search(char * name)
         #ifdef DEBUG
         printf("文件未创建\n");
         log_checktask(name,"文件未创建");
+
         #endif
         //create a new node ,the insert into list
         UploadNode *p0;
@@ -262,7 +263,7 @@ void search(char * name)
         then delete it
     */
 
-    p3=uploadList;
+ /*   p3=uploadList;
     //go through the list until at the end
     while(p3!=NULL)
     {
@@ -306,6 +307,7 @@ void search(char * name)
         p3=p3->next;
 
     }
+*/
     pthread_mutex_unlock(&uploadMutex);//unlock
 }
 
@@ -685,6 +687,6 @@ void analysisCenterCheckTask()
     hour task,happened every hour
     find out the file producted 1 hour ago has been uploadde
     */
-    //sleep(10);
+    sleep(10);
     hourtask(wwww,wday,hour-1);
 }

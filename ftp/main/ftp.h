@@ -8,8 +8,29 @@
 
 
 #define DEFAULT_PORT 21
-#define FTP_OK        0  
-#define FTP_CONNECT_FAILED_FLAG 0  
+#define FTP_OK        0
+#define FTP_CONNECT_FAILED_FLAG 0
+
+
+#define     DOWNLOAD_CONNNET_FAILED             1
+#define     DOWNLOAD_LOCAL_FILENAME_NULL        2
+#define     DOWNLOAD_REMOTE_FILENAME_NULL       3
+#define     DOWNLOAD_CREAET_LOCALFILE_ERROR     4
+#define     DOWNLOAD_CONNECT_SOCKET_ERROR       5
+#define     DOWNLOAD_PORT_MODE_ERROR            6
+#define     DOWNLOAD_REMOTE_FILE_NOEXIST        7
+#define	 	DOWNLOAD_SUCCESS			        8
+
+#define     UPLOAD_CONNNET_FAILED               9
+#define     UPLOAD_LOCAL_FILENAME_NULL          10
+#define     UPLOAD_LOCAL_OPEN_ERROR             11
+#define     UPLOAD_DATA_SOCKET_ERROR            12
+#define     UPLOAD_PORT_MODE_ERROR              13
+#define     UPLOAD_SUCCESS                      14
+
+
+
+
 
 char *strReplace(char *dest, char *src, const char *oldstr, const char *newstr, size_t len);
 void plog(char * msg);

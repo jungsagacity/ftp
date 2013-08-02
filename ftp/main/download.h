@@ -4,13 +4,13 @@
 
 /************************************downlad*************************************************
 *
-********************************************************************************************/	
-#define	DOWNLOAD_FILE_DEFAULT			0	
+********************************************************************************************/
+#define	DOWNLOAD_FILE_DEFAULT			0
 #define	DOWNLOAD_FILE_NONEXIST			-1
 #define DOWNLOAD_FILE_EXIST				1
-#define	DOWNLOAD_FILE_DOWNLOAD_FAILED	    2
+#define	DOWNLOAD_FAILED	                2
 
-#define   MAX_DOWNLOAD_TASK_NUM	1000    //daily task number's max size 
+#define   MAX_DOWNLOAD_TASK_NUM	1000    //daily task number's max size
 #define	  MAX_FTP_FILE_PATH_LEN	1000	//remote or local file name's max size
 #define   MAX                   1000    //The max size of locale array
 #define   R_year                366        //Days of leap year
