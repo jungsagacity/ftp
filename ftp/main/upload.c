@@ -7,20 +7,21 @@
 #include <sys/inotify.h>
 #include <malloc.h>
 #include <time.h>
+#include <pthread.h>
 
+#include "global.h"
 #include "upload.h"
 
-//报错错误以下
-//!!!!static void _inotify_event_handler函数减少一个参数，main.c修改
-//!!!!PRODUCT_PATH  未声明
-//#define PRODUCT_PATH "/src"
+
 
 /********  GLOBAL VARIBALES  ********/
-struct TaskNode * uploadList;
+struct UploadNode * uploadList;
 //head of the uploadlist
-struct TaskNode * tail;
+struct UploadNode * tail;
 //tail of the uploadlist for insert
 
+
+pthread_mutex_t uploadMutex = PTHREAD_MUTEX_INITIALIZER;
 
 #ifdef DEBUG
 
@@ -43,7 +44,7 @@ char * getchartime()
 
 void display()
 {
-    TaskNode *p;
+    UploadNode *p;
     p=uploadList;
     while(p!=NULL)
     {
@@ -105,12 +106,13 @@ struct tm * gettime()
 
 /**
  *      function    :   insert node into the tail of the uploadlist
- *      para        :   {TaskNode *}
+ *      para        :   {UploadNode *}
         return      :   void
 **/
 
-void insertlist(TaskNode * p0)
+void insertlist(UploadNode * p0)
 {
+    pthread_mutex_lock(&uploadMutex);//lock
     p0->next=NULL;
     //insert into the end of the list
     if(uploadList==NULL)
@@ -123,9 +125,11 @@ void insertlist(TaskNode * p0)
         tail->next=p0;
         tail=p0;
     }
+
     #ifdef DEBUG
     display();
     #endif
+    pthread_mutex_unlock(&uploadMutex);//unlock
 }
 
 
@@ -137,8 +141,8 @@ void insertlist(TaskNode * p0)
 
 void search(char * name)
 {
-
-	TaskNode *p1,*p2,*p3,*p4;
+    pthread_mutex_lock(&uploadMutex);//lock
+	UploadNode *p1,*p2,*p3,*p4;
 
 	/*
 	the list is empty which obvious means the file is not upload
@@ -152,15 +156,16 @@ void search(char * name)
         log_checktask(name,"文件未创建");
         #endif
         //create a new node ,the insert into list
-        TaskNode *p0;
-		p0=(TaskNode *)malloc(sizeof(TaskNode));
+        UploadNode *p0;
+		p0=(UploadNode *)malloc(sizeof(UploadNode));
 		strcpy(p0->filename,name);
-		//state=UPLOAD_FILE_UPLOAD_LATE ,  not upload in time
- 		p0->state=UPLOAD_FILE_UPLOAD_LATE;
+		//state=UPLOAD_FILE_NONEXIST ,  not upload in time
+ 		p0->state=UPLOAD_FILE_NONEXIST;
+ 		pthread_mutex_unlock(&uploadMutex);//unlock
         insertlist(p0);
+        pthread_mutex_lock(&uploadMutex);//lock
 
 	}
-
 	/*
 	the list is not empty
 	go through the list to find the file accord to the name
@@ -212,18 +217,10 @@ void search(char * name)
             */
             else if(p1->state==UPLOAD_FILE_EXIST)
             {
-                p1->state=UPLOAD_FILE_UPLOAD_LATE;
+                p1->state=UPLOAD_FILE_UNKNOWN;
                 #ifdef DEBUG
                 printf("%s:state=0文件为上传\n",name);//可以继续调用ftp
                 log_checktask(name,"文件未上传");
-                #endif
-            }
-            else if(p1->state==UPLOAD_FILE_UPLOAD_FAILED)
-            {
-                p1->state=UPLOAD_FILE_UPLOAD_LATE;
-                #ifdef DEBUG
-                printf("%s:state=3文件上传失败\n",name);//可以继续调用ftp
-                log_checktask(name,"文件上传失败");
                 #endif
             }
             else
@@ -245,15 +242,17 @@ void search(char * name)
         else
         {
             //create a new node ,insert into list
-            TaskNode *p0;
-            p0=(TaskNode *)malloc(sizeof(TaskNode));
-            strcpy(p0->filename,name);
-            p0->state=UPLOAD_FILE_UPLOAD_LATE;//未及时上传 state=4
-            insertlist(p0);
 
+            UploadNode *p0;
+            p0=(UploadNode *)malloc(sizeof(UploadNode));
+            strcpy(p0->filename,name);
+            p0->state=UPLOAD_FILE_NONEXIST;//未生成 state=4
+            pthread_mutex_unlock(&uploadMutex);//unlock
+            insertlist(p0);
+            pthread_mutex_lock(&uploadMutex);//lock
             #ifdef DEBUG
             printf("%s:文件未生成\n",name);//待定
-            display();
+            //display();
             #endif
         }
     }
@@ -262,6 +261,7 @@ void search(char * name)
         which means the notify center has checked it
         then delete it
     */
+
     p3=uploadList;
     //go through the list until at the end
     while(p3!=NULL)
@@ -298,7 +298,7 @@ void search(char * name)
             #ifdef DEBUG
             log_checktask(name,"文件上传成功");
             printf("%s:文件上传成功\n",name);
-            pritnf("%s:节点删除成功\n",name);
+            printf("%s:节点删除成功\n",name);
             #endif
         }
         //get the next node
@@ -306,7 +306,7 @@ void search(char * name)
         p3=p3->next;
 
     }
-
+    pthread_mutex_unlock(&uploadMutex);//unlock
 }
 
 /**
@@ -416,8 +416,8 @@ static void _inotify_event_handler(struct inotify_event *event)
 		printf("IN_DELETE\n");
 		printf("event->name: %s\n", event->name);
 		#endif
-		TaskNode *p0;
-		p0=(TaskNode *)malloc(sizeof(TaskNode));
+		UploadNode *p0;
+		p0=(UploadNode *)malloc(sizeof(UploadNode));
 		//the event name is without suffix ".Z"
 		sprintf(p0->filename,"%s%s",event->name,UNIX_Z);
 		//set the state=0,the file is producted,waiting upload
@@ -639,12 +639,6 @@ void analysisCenterCheckTask()
     int wwww = BTS_Time(year,month,day);
 
     /*
-    hour task,happened every hour
-    find out the file producted 1 hour ago has been uploadde
-    */
-    hourtask(wwww,wday,hour-1);
-
-    /*
     6 hour task,happened at 2:00,8:00,14:00,20:00
     find out the file producted 2 hour ago has been uploadde
     */
@@ -686,4 +680,11 @@ void analysisCenterCheckTask()
         if(month==1) monthtask1(year-1,12);
         else monthtask1(year,month-1);
     }
+
+    /*
+    hour task,happened every hour
+    find out the file producted 1 hour ago has been uploadde
+    */
+    //sleep(10);
+    hourtask(wwww,wday,hour-1);
 }

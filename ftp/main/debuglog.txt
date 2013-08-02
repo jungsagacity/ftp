@@ -58,3 +58,9 @@ Fri Aug  2 05:23:13 2013	L:/home/jung/tmp/FromDC/2013/214/highrate/R/01/15/ssss2
 Fri Aug  2 05:29:36 2013	L:/home/jung/tmp/FromDC/2013/214/highrate/M/01/15/ssss214b15.13M.Z	R:	-1
 Fri Aug  2 05:36:00 2013	L:/home/jung/tmp/FromDC/2013/214/highrate/D/01/30/ssss214b30.13D.Z	R:	-1
 Fri Aug  2 05:42:24 2013	L:/home/jung/tmp/FromDC/2013/214/highrate/N/01/30/ssss214b30.13N.Z	R:	-1
+Fri Aug  2 11:55:55 2013	L:/home/jung/tmp/FromDC/2013/214/highrate/D/11/30/ssss214l30.13D.Z	R:download/iGMAS/2013/214/highrate/D/11/30/ssss214l30.13D.Z	-1
+Fri Aug  2 11:55:58 2013	L:/home/jung/tmp/FromDC/2013/214/highrate/N/11/30/ssss214l30.13N.Z	R:download/iGMAS/2013/214/highrate/N/11/30/ssss214l30.13N.Z	-1
+Fri Aug  2 11:56:00 2013	L:/home/jung/tmp/FromDC/2013/214/highrate/G/11/30/ssss214l30.13G.Z	R:download/iGMAS/2013/214/highrate/G/11/30/ssss214l30.13G.Z	-1
+Fri Aug  2 11:56:01 2013	L:/home/jung/tmp/FromDC/2013/214/highrate/L/11/30/ssss214l30.13L.Z	R:download/iGMAS/2013/214/highrate/L/11/30/ssss214l30.13L.Z	-1
+Fri Aug  2 11:56:03 2013	L:/home/jung/tmp/FromDC/2013/214/highrate/R/11/30/ssss214l30.13R.Z	R:download/iGMAS/2013/214/highrate/R/11/30/ssss214l30.13R.Z	-1
+Fri Aug  2 11:56:05 2013	L:/home/jung/tmp/FromDC/2013/214/highrate/M/11/30/ssss214l30.13M.Z	R:download/iGMAS/2013/214/highrate/M/11/30/ssss214l30.13M.Z	-1

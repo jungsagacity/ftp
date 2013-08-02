@@ -116,7 +116,7 @@ void timingTask()
 		{// every second excute the main process
 			t=time(NULL);
 			st = localtime(&t);//get current datetime
-			tempMin = st->tm_sec;//catch the current minute
+			tempMin = st->tm_min;//catch the current minute
 			sleep(1);
 		}		
 
@@ -208,8 +208,10 @@ void upload()
 						memset(startTime, 0, 100);			    
 						strftime( startTime, sizeof(startTime), "%Y-%m-%d %T",localtime(&timer) ); 
 						
-						//add event log;
+						//add event log;						
+						pthread_mutex_lock(&logMutex);//lock
 						addEventLog(UPLOAD_CONNNET_FAILED, p->filename, startTime,"");
+						pthread_mutex_unlock(&logMutex);//unlock
 												
 						break;
 					}
@@ -249,7 +251,9 @@ void upload()
 	
                         p->state = UPLOAD_FILE_UPLOAD_SUCCESS;			
 						//add log
+						pthread_mutex_lock(&logMutex);//lock
 						addEventLog(UPLOAD_SUCCESS, p->filename, startTime,endTime);
+						pthread_mutex_unlock(&logMutex);//unlock
                     }
                     else
                     {                       
@@ -261,8 +265,9 @@ void upload()
                         p->state = UPLOAD_FILE_UPLOAD_FAILED;
 						
 						//add log
+						pthread_mutex_lock(&logMutex);//lock
 						addEventLog(UPLOAD_FAILED, p->filename, startTime,endTime);
-                        
+                        pthread_mutex_unlock(&logMutex);//unlock
                     }
 
                     close(sockfd);
@@ -294,6 +299,10 @@ void download()
     int 	i = 0;    
 	char 	*src_temp;
 	
+	char	remoteFile[MAX_FTP_FILE_PATH_LEN] = {0};
+	char	localFile[MAX_FTP_FILE_PATH_LEN] = {0};
+	int 	downloadState = 0;
+	
 	//downlaod starting time and end time
 	char startTime[100] = {0};
 	char endTime[100] = {0};
@@ -309,19 +318,29 @@ void download()
     {
 		// sleep 1 second, and then check out whether there are some excutable task.        
 		sleep(1); 
+
 		
 		//travers daily task arry which max size is smaller than 1000; 
         for(; i < MAX_DOWNLOAD_TASK_NUM; i++)
         {			
-
-            if(downloadList[i].state == DOWNLOAD_FILE_NONEXIST)
+			//download mutex			
+			pthread_mutex_lock(&downloadMutex);//lock
+			downloadState = downloadList[i].state;
+            if( downloadState == DOWNLOAD_FILE_NONEXIST)
             {
+				memset(remoteFile,0,MAX_FTP_FILE_PATH_LEN);		
+				memset(localFile,0,MAX_FTP_FILE_PATH_LEN);
+				strcpy(remoteFile,downloadList[i].remote_filename);	
+				strcpy(localFile,downloadList[i].local_filename);								
+				pthread_mutex_unlock(&mutex);//unlock		
+
+	
 				//debug the segment progarmm code, print the first 50 task information				
 				#ifdef DEBUG
 					if(i< DOWNLOAD_TASK_PRINT_NUM )
 					{
 						memset(info,0,1000);		
-						sprintf(info,"L:%s\tR:%s\t%d\n",downloadList[i].local_filename, downloadList[i].remote_filename, downloadList[i].state);
+						sprintf(info,"L:%s\tR:%s\t%d\n",localFile, remoteFile, downloadState);
 						debuglog(info);						
 					}
 				#endif	
@@ -339,7 +358,9 @@ void download()
 						strftime( startTime, sizeof(startTime), "%Y-%m-%d %T",localtime(&timer) ); 
 						
 						//add event log;
-						addEventLog(DOWNLOAD_CONNNET_FAILED, downloadList[i].local_filename, startTime,"");
+						pthread_mutex_lock(&logMutex);//lock
+						addEventLog(DOWNLOAD_CONNNET_FAILED, localFile, startTime,"");
+						pthread_mutex_unlock(&logMutex);//unlock
 												
 						break;
 					}
@@ -353,7 +374,7 @@ void download()
 					memset(startTime, 0, 100);			    
 					strftime( startTime, sizeof(startTime), "%Y-%m-%d %T",localtime(&timer) );	
 				
-					if( (ftperror = ftp_get(downloadList[i].remote_filename, downloadList[i].local_filename, sockfd) ) == FTP_OK)
+					if( (ftperror = ftp_get(remoteFile, localFile, sockfd) ) == FTP_OK)
 				    {		            
 						//recod end-download time				
 						timer =time(NULL);
@@ -361,8 +382,14 @@ void download()
 						strftime( endTime, sizeof(endTime), "%Y-%m-%d %T",localtime(&timer) );
 					
 						//add event log;
-						addEventLog(DOWNLOAD_SUCCESS, downloadList[i].remote_filename, startTime,endTime);
+						pthread_mutex_lock(&logMutex);//lock
+						addEventLog(DOWNLOAD_SUCCESS, remoteFile, startTime,endTime);
+						pthread_mutex_unlock(&logMutex);//unlock
+
+						//download mutex
+						pthread_mutex_lock(&downloadMutex);
 				        downloadList[i].state = DOWNLOAD_FILE_EXIST;
+						pthread_mutex_unlock(&downloadMutex);
 				    }
 				    else
 				    {
@@ -372,14 +399,22 @@ void download()
 						strftime( endTime, sizeof(endTime), "%Y-%m-%d %T",localtime(&timer) );
 					
 						//add event log;
-						addEventLog(DOWNLOAD_FAILED, downloadList[i].remote_filename, startTime,endTime);				        
+						pthread_mutex_lock(&logMutex);//lock
+						addEventLog(DOWNLOAD_FAILED, downloadList[i].remote_filename, startTime,endTime);
+						pthread_mutex_unlock(&logMutex);//unlock
+
+							
+						//download mutex
+						pthread_mutex_lock(&downloadMutex);				        
 				        downloadList[i].state = DOWNLOAD_FILE_DOWNLOAD_FAILED;
+						pthread_mutex_unlock(&downloadMutex);
 				    }
 				
 					//close ftp connect
 				    close(sockfd);
 				}                 
             }
+			pthread_mutex_unlock(&mutex);/*解锁互斥量*/ 
         }
 
         i = 0;
@@ -402,7 +437,11 @@ void log()
 	while(1)
 	{
 		sleep(1);
-		writeEventLog(UPLOAD_LOG_FILE, DOWNLOAD_LOG_FILE);		
+		pthread_mutex_lock(&logMutex);//lock
+		writeEventLog(UPLOAD_LOG_FILE, DOWNLOAD_LOG_FILE);
+		pthread_mutex_unlock(&logMutex);//unlock
+	
+			
 	}
 }
 

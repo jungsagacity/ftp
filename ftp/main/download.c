@@ -7,28 +7,14 @@
 
 #include "download.h"
 
-//#include <pthread.h>
-//#include "ftp.h"
-//extern int socket_control;
-//                             
-//#define   LOCAL_DATA_SRC  "/home/jung/tmp/FromDC/"          //The local root path  
-//#define   LOGDIRECT       "/home/jung/tmp/FromDC/logs/"    //Direct of the logs
-//#define   IGMAS           "download/iGMAS/"                //The ftp(Data_Centre) root path 
-//#define   ssss            "ssss"               //The code name of  theDC_station                  
-
-
- 
-char   hourly_type[13]= {'D','N','G','L','R','M','T','J','A','K','I','E'}; //Type of  hourly file
-char   highrate_type[7]=  {'D','N','G','L','R','M'}; //Type of highrate file
-int tmp=-1;
+char    hourly_type[13]= {'D','N','G','L','R','M','T','J','A','K','I','E'}; //Type of  hourly file
+char    highrate_type[7]=  {'D','N','G','L','R','M'}; //Type of highrate file
+int     tmp=-1;
 
 
 DownloadList downloadList[MAX_DOWNLOAD_TASK_NUM]; //全局变量，返回每条数据的名及状态
 
 int     downloadList_numb; //记录当天记录的条数
-
-
-
 
 
 int itoa(int tempInt, char * str, int dec) //int to char*
@@ -50,7 +36,7 @@ void str_copy(char A[],char B[],int i)//把B从第i个字符加到”igmas“后复制给A
 
 void module_control()
 {
-        
+
         MYtime mt;
         MYtime *pmt = &mt;
         get_currentime(pmt);    //get current time
@@ -68,7 +54,7 @@ void module_control()
 					{
 					    strcpy(downloadList[i].remote_filename,"\0");
 						strcpy(downloadList[i].local_filename,"\0");
-						downloadList[i].state=0;
+						downloadList[i].state=DOWNLOAD_FILE_DEFAULT;
 					}
                 }
                 //mt中保存测试时间，下面转化为文件开始传输时间，
@@ -108,15 +94,15 @@ void module_control()
                 {
                     char download_list[20][MAX]= {'\0'};
                     int  undownload_numb=0;
-                    int  tmp=creat_current_direct(year,day,hour,minute,download_list);//生成全部列表        
-                    undownload_numb=creat_logfile(year,day,hour,minute,download_list,tmp); //更新log_data   
+                    int  tmp=creat_current_direct(year,day,hour,minute,download_list);//生成全部列表
+                    undownload_numb=creat_logfile(year,day,hour,minute,download_list,tmp); //更新log_data
                     #ifdef DEBUG
 					printf("当前新增数据条数：%d  缺失数据条数： %d  \n\n",tmp,undownload_numb);
 				    #endif
                 }
             }
 
-        
+
     }
 }
 
@@ -145,23 +131,23 @@ int creat_current_direct(int year,int day,int hour,int minute,char download_list
         for(current_type_hourly=0; current_type_hourly<strlen(hourly_type); current_type_hourly++)
         {
 		    //小时目录下类型目录路径
-            char current_type_direct1[MAX]= {'\0'};            
+            char current_type_direct1[MAX]= {'\0'};
             char current_type_tmp1[2]= {'\0'};
             current_type_tmp1[0]=hourly_type[current_type_hourly];
-			
+
             strcpy(current_type_direct1,current_hourly_direct);
             strcat(current_type_direct1,"/");
             strcat(current_type_direct1,current_type_tmp1);
-			
-            //检查当前时刻传输的数据是否成功(hour_file) 
+
+            //检查当前时刻传输的数据是否成功(hour_file)
 			//小时目录下类型目录下小时路径
-            char current_type_hour_direct1[MAX]= {'\0'};    
+            char current_type_hour_direct1[MAX]= {'\0'};
             char current_type_hour_tmp1[3]= {'\0'};
             two_hour(hour,current_type_hour_tmp1);
             strcpy(current_type_hour_direct1,current_type_direct1);
             strcat(current_type_hour_direct1,"/");
             strcat(current_type_hour_direct1,current_type_hour_tmp1);
-			
+
             //路径生成完毕，下面生成文件名
             char current_file_hourname[20]= {'\0'};
             creat_hourly_filename(year,day,hour,current_type_hourly,current_file_hourname);//creaet hourly filename
@@ -182,13 +168,13 @@ int creat_current_direct(int year,int day,int hour,int minute,char download_list
     for(current_type_highrate=0; current_type_highrate<strlen(highrate_type); current_type_highrate++)
     {
 	    //十五分钟目录下类型目录路径
-        char current_type_direct2[MAX]= {'\0'};            
+        char current_type_direct2[MAX]= {'\0'};
         char current_type_tmp2[2]= {'\0'};
         current_type_tmp2[0]=highrate_type[current_type_highrate];
         strcpy(current_type_direct2,current_highrate_direct);
         strcat(current_type_direct2,"/");
         strcat(current_type_direct2,current_type_tmp2);
-		
+
         //检查当前时刻传输的数据是否成功(highrate_file)
         //加入小时路径
         char current_type_hour_direct2[MAX]= {'\0'};
@@ -197,7 +183,7 @@ int creat_current_direct(int year,int day,int hour,int minute,char download_list
         strcpy(current_type_hour_direct2,current_type_direct2);
         strcat(current_type_hour_direct2,"/");
         strcat(current_type_hour_direct2,current_type_hour_tmp2);
-		
+
         //加入分钟路径
         char current_type_hour_highrate_direct[MAX]= {'\0'};
         char current_type_hour_tmp3[3]= {'\0'};
@@ -205,7 +191,7 @@ int creat_current_direct(int year,int day,int hour,int minute,char download_list
         strcpy(current_type_hour_highrate_direct,current_type_hour_direct2);
         strcat(current_type_hour_highrate_direct,"/");
         strcat(current_type_hour_highrate_direct,current_type_hour_tmp3);
-		
+
         //路径生成完毕，下面生成文件名
         char current_file_highratename[20]= {'\0'};
         creat_highrate_filename(year,day,hour,minute,current_type_highrate,current_file_highratename);//creat highrate filename
@@ -217,7 +203,7 @@ int creat_current_direct(int year,int day,int hour,int minute,char download_list
     }
 	#ifdef DEBUG
 		printf("\n(minite=0，15m->transger，25m->check，minute=45，0m->transger(hourly and highrate files)\n");
-        printf("\n the time remark the filename：%d %d %d:%d\n",year,day,hour,minute);		
+        printf("\n the time remark the filename：%d %d %d:%d\n",year,day,hour,minute);
     #endif
 
     return k;
@@ -244,10 +230,10 @@ int creat_logfile(int year,int day,int hour,int minute,char download_list[][MAX]
     */
 	#ifdef DEBUG
 	    FILE *fp=fopen("/home/jung/tmp/FromDC/logs/212.txt","a+");
-		fprintf(fp,"the transfer time of current files：%d %d %d:%d\n",year,day,hour%24,minute);		
+		fprintf(fp,"the transfer time of current files :%d %d %d:%d\n",year,day,hour%24,minute);
     #endif
-    
-    
+
+
     for(i=0; i<tmp; i++)
     {
         flag=Search_undownload_file(download_list[i]);//判断是否存在
@@ -255,7 +241,7 @@ int creat_logfile(int year,int day,int hour,int minute,char download_list[][MAX]
         str_copy(downloadList[i].remote_filename,downloadList[i].local_filename,strlen(DW_ANALYSIS_CENTER_PATH_PREFIX));
         downloadList[downloadList_numb+i].state=flag;
 
-        if(downloadList[i+downloadList_numb].state==-1)
+        if(downloadList[i+downloadList_numb].state== DOWNLOAD_FILE_NONEXIST )
         {
             k++;
         }
@@ -263,7 +249,7 @@ int creat_logfile(int year,int day,int hour,int minute,char download_list[][MAX]
             fprintf(fp,"%s %d\n",downloadList[i].local_filename,downloadList[i].state);  //写入日志
         #endif
     }
-	#ifdef DEBUG	
+	#ifdef DEBUG
 	    fclose(fp);
     #endif
     downloadList_numb+=tmp;
@@ -282,7 +268,7 @@ void get_currentime(MYtime *mt)//获取当前时间，并转化成所需要的形式
     mt->hour=currentime->tm_hour;
     mt->minute=currentime->tm_min;
     mt->second=currentime->tm_sec;
-	
+
 	#ifdef DEBUG
     if(tmp!=mt->minute)
     {
@@ -340,25 +326,7 @@ void creat_highrate_filename(int year,int day,int hour,int minute,int type,char 
 	//printf("%s\n",highrate_filename);
 }
 
-/**
-*    function   :   log all information including error;
-*    para       :   {char * msg} actural message;
-*
-*    return     :   {void}
-*
-*    history    :   {2013.7.18 wujun} frist create;
-**/
 
-/**
- *      function    :   fill host ip and port
- *      para        :   {char *host_ip_addr}   like "127.0.0.1"
-                        {struct sockaddr_in *host} ftp server add info to being filled that used to connect to ftp server
-                        {int port} ftp server port,default 21;
-        return      :   {int} error code;
-        history     :   {2013.7.18 wujun} fristly be created
-**/
-
-//int fill_host_addr(char *host_ip_addr,struct sockaddr_in *host,int port)
 /*************************************************************************************
 *    function   :   get the last two char of the year
 *    para       :   {int year,char *y}; the two char store in y(like year=2013,y="13")
@@ -419,7 +387,7 @@ void two_minute(int minute,char m[])//change the minute to char *
 int transfer(int year,int month,int day)    //change the data to the day in the year
 {
     int a[12]= {31,28,31,30,31,30,31,31,30,31,30,31};  //Days of every month
-    int i,sum=0;                                       //sum is the 
+    int i,sum=0;                                       //sum is the
     for(i=0; i<month-1; i++)
     {
         sum+=a[i];
@@ -441,62 +409,3 @@ int Search_undownload_file(char filename[])         //check the file exist or  n
         return DOWNLOAD_FILE_NONEXIST;
 }
 
-
-
-
-
-
-/*
-void download()
-{
-    int i =0;
-    int ftperror = 0;
-	char con[MAX]={'\0'};
-    while(1)
-    {
-        sleep(1);
-        for(; i < MAX; i++)
-        {	
-			//sprintf(con,"L:%s\tR:%s\t%d",log_data[i].local_filename, log_data[i].remote_filename, log_data[i].state);
-			//plog(con);
-			//memset(con,'\0',MAX);
-            if(log_data[i].state == -1)
-            {
-                if ( connectFtpServer("192.168.0.222", 21, "public", "123456") > 0 )
-                {
-                    if( (ftperror = ftp_get(log_data[i].remote_filename, log_data[i].local_filename, socket_control) ) == 0)
-                    {
-                        printf("\n%s----download success.\n",log_data[i].remote_filename);
-                        log_data[i].state = 2;
-                    }
-                    else
-                    {
-                        printf("\n%s----download fail.\n",log_data[i].remote_filename);
-                        log_data[i].state = 3;
-                    }
-
-                    close(socket_control);
-                }
-                else
-                {
-                    printf("connecting error...");
-                    log_data[i].state = 3;
-                }
-            }
-        }
-        i = 0;
-
-    }
-
-
-}
-int  main()
-{
-    pthread_t downloadTread;
-    pthread_t controlTread;
-    pthread_create(&downloadTread,NULL,download,(void *)NULL);
-    pthread_create(&controlTread,NULL,module_control,(void *)NULL);
-    while(1);
-    return 0;
-}
-*/

@@ -11,7 +11,7 @@
 #include <malloc.h>
 #include <time.h>
 
-//#include "global.h"
+#include "global.h"
 
 /********  MACRO DEFINITION  ********/
 #define PRODUCT_CENTER_PATH_PREFIX "upload/"
@@ -40,10 +40,13 @@
 #define        UPLOAD_FILE_UPLOAD_FAILED        3
 #define        UPLOAD_FILE_UPLOAD_INTIME        4
 #define        UPLOAD_FILE_UPLOAD_LATE          5
-#define        UPLOAD_FILE_DELETABLE            6
+#define        UPLOAD_FILE_NONEXIST             6
+#define        UPLOAD_FILE_DELETABLE            7
+#define        UPLOAD_FILE_UNKNOWN              8
 
-#ifdef _DEBUG_
-#define CHECKTASK_LOG_PATH "./checkfile/"
+
+#ifdef DEBUG
+#define CHECKTASK_LOG_PATH "./"
 // path of checking log file
 #define CHECKTASK_LOG_PATH_SIZE 30
 // max size of the path of checking log file
@@ -52,12 +55,12 @@
 #endif
 
 
-typedef struct TaskNode
+typedef struct UploadNode
 {
     char filename[STD_FILENAME_SIZE];
     int state;
-    struct TaskNode * next;
-}TaskNode;
+    struct UploadNode * next;
+}UploadNode;
 
 /*
 the strcucture of the upload list
@@ -73,11 +76,14 @@ UPLOAD_FILE_UPLOAD_LATE(5):     upload not in time
 UPLOAD_FILE_DELETABLE(6):       the node can de deleted
 */
 
-struct tm * gettime();
+#ifdef DEBUG
 char * getchartime();
 void log_checktask(char * name,char * a);
 void display();
-void insertlist(TaskNode * p0);
+#endif
+
+struct tm * gettime();
+void insertlist(UploadNode * p0);
 void search(char * name);
 int IsLeapYear(int year);
 int GetDaysOfMonth(int year,int month,int day);
