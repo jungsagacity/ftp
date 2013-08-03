@@ -789,12 +789,13 @@ int ftp_put(char* src_file, char * dst_file, int socket_control)
             {
                 write(new_sock,send_buff,sizeof(send_buff));
             }
-            close(local_file);
-            close(file_put_sock);
-            close(new_sock);
+
         }
-    }
-    if(mode==1)
+        close(local_file);
+        close(file_put_sock);
+        close(new_sock);
+        return UPLOAD_SUCCESS;
+    }else if(mode==1)
     {
         while(1)
         {
@@ -805,11 +806,15 @@ int ftp_put(char* src_file, char * dst_file, int socket_control)
             {
                 write(file_put_sock,send_buff,count);
             }
+
+            printf("uping.....\n");
         }
 
         close(local_file);
         close(file_put_sock);
+        return UPLOAD_SUCCESS;
+
     }
 	usleep(100);
-    return UPLOAD_SUCCESS;
+
 }

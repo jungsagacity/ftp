@@ -104,6 +104,14 @@ struct tm * gettime()
 	return localtime(&t);
 }
 
+void initUploadlist()
+{
+    uploadList = (UploadNode*)malloc(sizeof(UploadNode));
+    uploadList -> next = NULL;
+
+    tail = uploadList;
+}
+
 /**
  *      function    :   insert node into the tail of the uploadlist
  *      para        :   {UploadNode *}
@@ -113,21 +121,16 @@ struct tm * gettime()
 void insertlist(UploadNode * p0)
 {
     pthread_mutex_lock(&uploadMutex);//lock
+    #ifdef DEBUG
+    printf("insert list metux.\n");
+    #endif
     p0->next=NULL;
     //insert into the end of the list
-    if(uploadList==NULL)
-    {
-        uploadList=p0;
-        tail=p0;
-    }
-    else
-    {
-        tail->next=p0;
-        tail=p0;
-    }
+    tail->next = p0;
+    tail = p0;
 
     #ifdef DEBUG
-    //display();
+    display();
     #endif
     pthread_mutex_unlock(&uploadMutex);//unlock
 }
@@ -141,15 +144,16 @@ void insertlist(UploadNode * p0)
 
 void search(char * name)
 {
+
     pthread_mutex_lock(&uploadMutex);//lock
-	UploadNode *p1,*p2,*p3,*p4;
+	UploadNode *p1;
 
 	/*
 	the list is empty which obvious means the file is not upload
 	create a new node record the filename and state=4
 	to inform the notify center
 	*/
-	if(uploadList==NULL)
+	if(uploadList->next==NULL)
 	{
         #ifdef DEBUG
         printf("文件未创建\n");
@@ -174,73 +178,80 @@ void search(char * name)
 	*/
     else
     {
-        p1=uploadList;
+        //p2=uploadList;
+        p1=uploadList->next;
 
         //go through the list until find the node or at the end
-        while(strcmp(name,p1->filename)!=0 && p1->next!=NULL)
+        while( p1!=NULL )
         {
-            p2=p1;
-            p1=p1->next;
+
+            if( strcmp(name,p1->filename)!=0 )
+            {
+                p1=p1->next;
+            }else
+            {
+
+                //find the node you are searching for,change the state
+                /*
+                state=UPLOAD_FILE_UPLOAD_SUCCESS means uploaded success
+                change the state=UPLOAD_FILE_UPLOAD_INTIME,in time
+                */
+                if(p1->state==UPLOAD_FILE_UPLOAD_SUCCESS)
+                {
+                    p1->state=UPLOAD_FILE_UPLOAD_INTIME;
+                    #ifdef DEBUG
+                    log_checktask(name,"文件上传成功");
+                    printf("%s:文件上传成功\n",name);
+                    #endif
+                }
+
+                /*
+                state=1 means the file is uploading,not finish
+                change the state=UPLOAD_FILE_UPLOAD_LATE,not in time
+                */
+                else if(p1->state==UPLOAD_FILE_UPLOADING)
+                {
+                    p1->state=UPLOAD_FILE_UPLOAD_LATE;
+                    #ifdef DEBUG
+                    printf("%s:state=1文件正在上传\n",name);
+                    log_checktask(name,"文件正在上传");
+                    #endif
+                }
+
+                /*
+                others like state=UPLOAD_FILE_EXIST or UPLOAD_FILE_UPLOAD_FAILED,means the file is not uploaded,or upload fails
+                change the state=UPLOAD_FILE_UPLOAD_LATE,not in time
+                */
+                else if(p1->state==UPLOAD_FILE_EXIST)
+                {
+                    p1->state=UPLOAD_FILE_UNKNOWN;
+                    #ifdef DEBUG
+                    printf("%s:state=0文件为上传\n",name);//可以继续调用ftp
+                    log_checktask(name,"文件未上传");
+                    #endif
+                }
+                else
+                {
+                    p1->state=UPLOAD_FILE_UPLOAD_LATE;
+                    #ifdef DEBUG
+                    printf("%s:文件上传失败\n",name);//可以继续调用ftp
+                    log_checktask(name,"文件上传失败");
+                    #endif
+                }
+
+                break;
+            }
+
         }
 
-        //find the node you are searching for,change the state
-        if(strcmp(name,p1->filename)==0)
-        {
-            /*
-            state=UPLOAD_FILE_UPLOAD_SUCCESS means uploaded success
-            change the state=UPLOAD_FILE_UPLOAD_INTIME,in time
-            */
-            if(p1->state==UPLOAD_FILE_UPLOAD_SUCCESS)
-            {
-                p1->state=UPLOAD_FILE_UPLOAD_INTIME;
-                #ifdef DEBUG
-                log_checktask(name,"文件上传成功");
-                printf("%s:文件上传成功\n",name);
-                #endif
-            }
 
-            /*
-            state=1 means the file is uploading,not finish
-            change the state=UPLOAD_FILE_UPLOAD_LATE,not in time
-            */
-            else if(p1->state==UPLOAD_FILE_UPLOADING)
-            {
-                p1->state=UPLOAD_FILE_UPLOAD_LATE;
-                #ifdef DEBUG
-                printf("%s:state=1文件正在上传\n",name);
-                log_checktask(name,"文件正在上传");
-                #endif
-            }
-
-            /*
-            others like state=UPLOAD_FILE_EXIST or UPLOAD_FILE_UPLOAD_FAILED,means the file is not uploaded,or upload fails
-            change the state=UPLOAD_FILE_UPLOAD_LATE,not in time
-            */
-            else if(p1->state==UPLOAD_FILE_EXIST)
-            {
-                p1->state=UPLOAD_FILE_UNKNOWN;
-                #ifdef DEBUG
-                printf("%s:state=0文件为上传\n",name);//可以继续调用ftp
-                log_checktask(name,"文件未上传");
-                #endif
-            }
-            else
-            {
-                p1->state=UPLOAD_FILE_UPLOAD_LATE;
-                #ifdef DEBUG
-                printf("%s:文件上传失败\n",name);//可以继续调用ftp
-                log_checktask(name,"文件上传失败");
-                #endif
-            }
-
-        }
         /*
         go through the list can't find the node
         means file is not producted,not in time
         create a new node record the filename and state=4
         to inform the notify center
         */
-        else
+        if(p1 == NULL)
         {
             //create a new node ,insert into list
 
@@ -257,57 +268,8 @@ void search(char * name)
             #endif
         }
     }
-    /*
-        go through the list to find the node whose state=5
-        which means the notify center has checked it
-        then delete it
-    */
 
- /*   p3=uploadList;
-    //go through the list until at the end
-    while(p3!=NULL)
-    {
-        //state=UPLOAD_FILE_DELETABLE means the notify center has taken act,then delete the node
-        if(p3->state==UPLOAD_FILE_DELETABLE)
-        {
-            //if the target node is the first
-            if(p3==uploadList)
-            {
-                //at the same time the target node is the last
-                if(p3==tail)
-                {
-                    uploadList=NULL;
-                    tail=NULL;
-                }
-                else
-                    uploadList=p3->next;
-            }
-            else
-            {
-                //if the target node is at the last
-                if(p3==tail)
-                {
-                    tail=p4;
-                    p4->next=NULL;
 
-                }
-                else
-                    p4->next=p3->next;
-            }
-            //free the space of the target node
-            free(p3);
-            #ifdef DEBUG
-            log_checktask(name,"文件上传成功");
-            printf("%s:文件上传成功\n",name);
-            printf("%s:节点删除成功\n",name);
-            #endif
-        }
-        //get the next node
-        p4=p3;
-        p3=p3->next;
-
-    }
-*/
     pthread_mutex_unlock(&uploadMutex);//unlock
 }
 
@@ -385,7 +347,6 @@ int BTS_Time(int year,int month,int day)
 
 static void _inotify_event_handler(struct inotify_event *event)
 {
-
 	/* Perform event dependent handler routines */
 	/* The mask is the magic that tells us what file operation occurred */
 
@@ -399,7 +360,7 @@ static void _inotify_event_handler(struct inotify_event *event)
         char command[COMMAND_SIZE];
         FILE *pf;
         //get the command to compress the file with unix.z
-        sprintf(command,"compress -f %s%s",PRODUCT_CENTER_PATH_PREFIX,event->name);
+        sprintf(command,"compress -f %s%s",UP_ANALYSIS_CENTER_PATH_PREFIX,event->name);
         //execute the command of compression
         if((pf=popen(command,"r"))==NULL)
         {
@@ -418,6 +379,7 @@ static void _inotify_event_handler(struct inotify_event *event)
 		printf("IN_DELETE\n");
 		printf("event->name: %s\n", event->name);
 		#endif
+		pthread_mutex_lock(&uploadMutex);//lock
 		UploadNode *p0;
 		p0=(UploadNode *)malloc(sizeof(UploadNode));
 		//the event name is without suffix ".Z"
@@ -429,6 +391,7 @@ static void _inotify_event_handler(struct inotify_event *event)
 		log_checktask(p0->filename,"文件创建");
         #endif
         //create a new node
+        pthread_mutex_unlock(&uploadMutex);//unlock
 		insertlist(p0);
 	}
 }
@@ -442,15 +405,21 @@ static void _inotify_event_handler(struct inotify_event *event)
 
 void analysisCenterMonitor()
 {
+
+    #ifdef DEBUG
+    printf("analysisCenterMonitor\n");
+    #endif
+
     //strcut and variables to store the monitor events
+ //   initUploadlist();
 	unsigned char buf[BUF_MAX] = {0};
 	struct inotify_event *event = {0};
 	int fd = inotify_init();
 	/*
-	set monitor path with the PRODUCT_CENTER_PATH_PREFIX
+	set monitor path with the UP_ANALYSIS_CENTER_PATH_PREFIX
 	set the monitor condition with INOTIFY_EVENTS
 	*/
-	int wd = inotify_add_watch(fd,PRODUCT_CENTER_PATH_PREFIX ,INOTIFY_EVENTS);
+	int wd = inotify_add_watch(fd,UP_ANALYSIS_CENTER_PATH_PREFIX ,INOTIFY_EVENTS);
 	fd_set fds;
 	FD_ZERO(&fds);
 	FD_SET(fd, &fds);
@@ -685,8 +654,19 @@ void analysisCenterCheckTask()
 
     /*
     hour task,happened every hour
-    find out the file producted 1 hour ago has been uploadde
+    find out the file producted 1 hour ago has been uploaded
+    we will check the task after 10 seconds.As so far, we adopt double "for" circle,h
+    however, we do not make sure to delay 10 seconds.
     */
-    sleep(10);
-    hourtask(wwww,wday,hour-1);
+    //sleep(10);
+    int b = 0, e = 0;
+    for(b=0;b<20000;b++)
+    for(e=0;e<20000;e++);
+
+    if(hour==0)
+    {
+        if(wday==0) hourtask(wwww-1,6,23);
+        else hourtask(wwww,wday-1,hour-1);
+    }
+    else hourtask(wwww,wday,hour-1);
 }

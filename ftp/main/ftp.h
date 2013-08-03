@@ -7,9 +7,9 @@
 #include <sys/stat.h>
 
 
-#define DEFAULT_PORT 21
-#define FTP_OK        0
-#define FTP_CONNECT_FAILED_FLAG 0
+#define DEFAULT_PORT                            21
+#define FTP_OK                                  0
+#define FTP_CONNECT_FAILED_FLAG                 0
 
 
 #define     DOWNLOAD_CONNNET_FAILED             1

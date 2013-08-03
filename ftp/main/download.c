@@ -13,7 +13,6 @@ int     tmp=-1;
 
 
 DownloadList downloadList[MAX_DOWNLOAD_TASK_NUM]; //全局变量，返回每条数据的名及状态
-
 int     downloadList_numb; //记录当天记录的条数
 
 
@@ -238,21 +237,24 @@ int creat_logfile(int year,int day,int hour,int minute,char download_list[][MAX]
     {
         flag=Search_undownload_file(download_list[i]);//判断是否存在
         strcpy(downloadList[downloadList_numb+i].local_filename,download_list[i]);
-        str_copy(downloadList[i].remote_filename,downloadList[i].local_filename,strlen(DW_ANALYSIS_CENTER_PATH_PREFIX));
+        str_copy(downloadList[downloadList_numb+i].remote_filename,downloadList[downloadList_numb+i].local_filename,strlen(DW_ANALYSIS_CENTER_PATH_PREFIX));
         downloadList[downloadList_numb+i].state=flag;
 
+        #ifdef DEBUG
         if(downloadList[i+downloadList_numb].state== DOWNLOAD_FILE_NONEXIST )
         {
             k++;
         }
-		#ifdef DEBUG
-            fprintf(fp,"%s %d\n",downloadList[i].local_filename,downloadList[i].state);  //写入日志
+
+            fprintf(fp,"%s %d\n",download_list[i],flag);  //写入日志
         #endif
     }
+    downloadList_numb+=tmp;
 	#ifdef DEBUG
+        printf("downloadList_numb = %d\n", downloadList_numb);
 	    fclose(fp);
     #endif
-    downloadList_numb+=tmp;
+
     return k;
 }
 

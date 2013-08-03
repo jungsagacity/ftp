@@ -14,7 +14,7 @@
 #include "global.h"
 
 /********  MACRO DEFINITION  ********/
-#define PRODUCT_CENTER_PATH_PREFIX "upload/"
+
 #define INOTIFY_EVENTS IN_CLOSE_WRITE|IN_DELETE
 //events of monitor
 #define BUF_MAX 1024
@@ -27,22 +27,42 @@
 //the size of the suffix of filename ,like".irt.Z"
 #define STD_FILENAME_SIZE 20
 //the max size of the standard filename ,like"ACUwwwwd_HR.sp3.Z"
-#define COMMAND_SIZE 50
+#define COMMAND_SIZE 1000
 //to storre compression command,include full path and filename
 #define BEIDOU_YEAR 2006
 #define BEIDOU_MONTH 1
 #define BEIDOU_DAY 1
 //the first day of the BEIDOU week
 
+/********  UploadNode->state  MACRO DEFINITION ********/
 #define        UPLOAD_FILE_EXIST                0
+//the production of the file is over，waiting upload,the initial
 #define        UPLOAD_FILE_UPLOADING            1
+//when ftp server begin to upload,change state to 1
 #define        UPLOAD_FILE_UPLOAD_SUCCESS       2
+//when ftp server upload successful,change state to 2
 #define        UPLOAD_FILE_UPLOAD_FAILED        3
+//when ftp server failed to upload ,change state to 3
 #define        UPLOAD_FILE_UPLOAD_INTIME        4
+/*
+the file is uploadeded in time
+the state changed into 3 only when regular check find the pre-state is 2
+*/
 #define        UPLOAD_FILE_UPLOAD_LATE          5
+/*
+the file isn't uploadeded in time
+the state changed into 4 when regular check find the pre-state is 0 or 1 or 3
+*/
 #define        UPLOAD_FILE_NONEXIST             6
-#define        UPLOAD_FILE_DELETABLE            7
-#define        UPLOAD_FILE_UNKNOWN              8
+/*
+the file isn't exist
+the state changed into 6 when regular check find the node isn't in the list
+cteate one and set the state to 6
+*/
+#define        UPLOAD_FILE_UNKNOWN              7
+/*
+the file is exist,but didn't upload in time
+*/
 
 
 #ifdef DEBUG

@@ -83,6 +83,23 @@ int initFTP()
 
 
 /**
+*    function   :   delay some time
+*    para       :   {void}
+*
+*    return     :   {void}
+*
+*    history    :   {2013.7.25 wujun} frist create;
+**/
+
+void delay()
+{
+    int b=0,e=0;
+    for(b=0;b<2000;b++)
+    for(e=0;e<2000;e++);
+}
+
+
+/**
 *    function   :   periodically check if there is task needed to be excuted;
 *    para       :   {void}
 *
@@ -123,8 +140,10 @@ void timingTask()
 		{// every second excute the main process
 			t=time(NULL);
 			st = localtime(&t);//get current datetime
-			tempMin = st->tm_sec;//catch the current minute
-			sleep(1);
+			tempMin = st->tm_min;//catch the current minute
+
+            //delay some time and check task again.
+            delay();
 		}
 
 		//check whether there exist excutable task.
@@ -154,8 +173,9 @@ void timingTask()
 
 		}
 
-		//initialise the traverse state when minute equals to 56,that is to say,when the last minute point is traversed.
-		//
+		/* initialise the traverse state when minute equals to 56,that is to say,
+		* when the last minute point is traversed.
+		*/
         if( (taskMins[4].traverseState == 1) && (tempMin == (taskMins[4].min + 1) ) )
 		{
 			//initialise the struct array;
@@ -203,20 +223,26 @@ void upload()
 	while(1)
 	{
 		UploadNode * p,*p1;
-		p = uploadList;//temporary variable always points to uploadList head pointer.
+		p = uploadList->next;//temporary variable always points to uploadList head pointer.
+        p1=uploadList;
 
 		//to traverse the upload task list, check whether there are some upload task or not.
-		while( p != NULL )
+		while( p!= NULL )
 		{
             pthread_mutex_lock(&uploadMutex);//lock
             memset(filename,0,STD_FILENAME_SIZE);
             strcpy(filename, p->filename);
             uploadState = p->state;
-
+            #ifdef DEBUG
+                printf("upload 0 ..uploadState = %d\n",uploadState);
+            #endif
             if( (uploadState == UPLOAD_FILE_EXIST) || (uploadState == UPLOAD_FILE_UNKNOWN) )
 			{
-                pthread_mutex_unlock(&uploadMutex);//unlock
 
+                #ifdef DEBUG
+                printf("upload 1\n");
+                #endif
+                pthread_mutex_unlock(&uploadMutex);//unlock
 				//we have three times to try to connect to ftp server ,if failed. Otherwise send network error.
 				int conncectTimes = 0;
 				while((sockfd = connectFtpServer(productCenterFtpServerIP, productCenterFtpServerPort, productCenterFtpUserName, productCenterFtpPassword)) <= FTP_CONNECT_FAILED_FLAG)
@@ -235,39 +261,41 @@ void upload()
 
 						break;
 					}
-					/*
-					*  delay some moment ,then connect to ftp server again.
-					*  Addtionally,we are not suer to be able to  use "sleep(1)" to delay.
-					*/
-					int b = 0, e = 0;
-                    for(b=0;b<2000;b++)
-                    for(e=0;e<2000;e++);
-				}
 
-				if( sockfd > FTP_CONNECT_FAILED_FLAG )
+					//delay some time and connect ftp again.
+                    delay();
+                }
+
+                if( sockfd > FTP_CONNECT_FAILED_FLAG )
                 {
+                    #ifdef DEBUG
+                    printf("upload 2\n");
+                    #endif
                     pthread_mutex_lock(&uploadMutex);//lock
-					p->state = UPLOAD_FILE_UPLOADING;//uploading state
+                    p->state = UPLOAD_FILE_UPLOADING;//uploading state
                     pthread_mutex_unlock(&uploadMutex);//unlock
+                    #ifdef DEBUG
+                    printf("upload 2.5 filename = %s,\nprefix%s\n",filename,analysisCenterPathPrefix);
+                    #endif
+                    int len = 0;
 
-					int len = 0;
+                    //allocate memory to analysisCenterFullPath and set value
+                    len = strlen(analysisCenterPathPrefix) + strlen(filename) + 1;
+                    analysisCenterFullPath = (char *)malloc(sizeof(char)*len);
+                    memset(analysisCenterFullPath, 0, len);
+                    sprintf(analysisCenterFullPath,"%s%s",analysisCenterPathPrefix,filename);
 
-					//allocate memory to analysisCenterFullPath and set value
-					len = strlen(analysisCenterPathPrefix) + strlen(filename) + 1;
-					analysisCenterFullPath = (char *)malloc(sizeof(char)*len);
-					memset(analysisCenterFullPath, 0, len);
-					sprintf(analysisCenterFullPath,"%s%s",analysisCenterPathPrefix,filename);
-
-					//allocate memory to productCenterFullPath and set value
-					len = strlen(productCenterFullPath) + strlen(filename) + 1;
-					productCenterFullPath = (char *)malloc(sizeof(char)*len);
-					memset(productCenterFullPath, 0, len);
-					sprintf(productCenterFullPath,"%s%s",productCenterFullPath,filename);
+                    printf("#---%s\n",analysisCenterFullPath);
+                    //allocate memory to productCenterFullPath and set value
+                    len = strlen(productCenterPathPrefix) + strlen(filename) + 1;
+                    productCenterFullPath = (char *)malloc(sizeof(char)*len);
+                    memset(productCenterFullPath, 0, len);
+                    sprintf(productCenterFullPath,"%s%s",productCenterPathPrefix,filename);
 
                     // record starting-upload time
-					timer =time(NULL);
-					memset(startTime, 0, 100);
-					strftime( startTime, sizeof(startTime), "%Y-%m-%d %T",localtime(&timer) );
+                    timer =time(NULL);
+                    memset(startTime, 0, 100);
+                    strftime( startTime, sizeof(startTime), "%Y-%m-%d %T",localtime(&timer) );
 
                     ftperror = ftp_put(analysisCenterFullPath, productCenterFullPath, sockfd);
 
@@ -315,13 +343,15 @@ void upload()
                         }
                         default:break;
                     }
-
+                    #ifdef DEBUG
+                    printf("upload 3");
+                    #endif
                     pthread_mutex_unlock(&logMutex);//unlock
 
                     close(sockfd);
-				}
-
-            }else
+                }
+            }
+            else if((uploadState == UPLOAD_FILE_NONEXIST) || (uploadState == UPLOAD_FILE_UPLOAD_INTIME) || (uploadState == UPLOAD_FILE_UPLOAD_LATE))
             {
                 pthread_mutex_unlock(&uploadMutex);//unlock
                 timer =time(NULL);
@@ -353,43 +383,33 @@ void upload()
                 pthread_mutex_unlock(&logMutex);//unlock
 
                 pthread_mutex_lock(&uploadMutex);//lock
+                #ifdef DEBUG
+                printf("upload thread 4.\n");
                 //if the target node is the first
-                if(p==uploadList)
-                {
-                    //at the same time the target node is the last
-                    if(p==tail)
-                    {
-                        uploadList=NULL;
-                        tail=NULL;
-                    }
-                    else
-                        uploadList=p->next;
-                }
-                else
-                {
-                    //if the target node is at the last
-                    if(p==tail)
-                    {
-                        tail=p1;
-                        p1->next=NULL;
-
-                    }
-                    else
-                        p1->next=p->next;
-                }
+                #endif
+                if(p==tail)
+                    tail=p1;
+                p1->next=p->next;
                 free(p);
+                p=p1;
 
                 pthread_mutex_unlock(&uploadMutex);//unlock
             }
 
             pthread_mutex_lock(&uploadMutex);//lock
+            #ifdef DEBUG
+                printf("crash?\n");
+            #endif
             p1=p;
             p=p->next;
             pthread_mutex_unlock(&uploadMutex);//lock
 
-		}
-	}
-
+            /*
+            *   delay thread in case of always geting mutex.
+            */
+            delay();
+        }
+    }
 
 }
 
@@ -425,9 +445,9 @@ void download()
 	#endif
     while(1)
     {
-		// sleep 1 second, and then check out whether there are some excutable task.
-		sleep(1);
 
+        //delay thread in case of always geting mutex.
+        delay();
 
 		//travers daily task arry which max size is smaller than 1000;
         for(; i < MAX_DOWNLOAD_TASK_NUM; i++)
@@ -455,7 +475,7 @@ void download()
 				#endif
 
 				//we have three times to try to connect to ftp server ,if failed. Otherwise send network error.
-				int conncectTimes = 0;
+                int conncectTimes = 0;
 				while((sockfd = connectFtpServer(dataCenterFtpServerIP, dataCenterFtpServerPort, dataCenterFtpUserName, dataCenterFtpPassword) )<= FTP_CONNECT_FAILED_FLAG)
 				{
 					printf("sockfd = %d\n",sockfd);
@@ -474,19 +494,15 @@ void download()
 						break;
 					}
 
-					/*
-					*  delay some moment ,then connect to ftp server again.
-					*  Addtionally,we are not suer to be able to  use "sleep(1)" to delay.
-					*/
-					int b = 0, e = 0;
-                    for(b=0;b<2000;b++)
-                    for(e=0;e<2000;e++);
+					//delay some time and connect ftp again.
+                    delay();
 
 
 				}
 
 				if( sockfd > FTP_CONNECT_FAILED_FLAG )
 				{
+
 					//recod starting-download time
 					timer =time(NULL);
 					memset(startTime, 0, 100);
@@ -544,6 +560,7 @@ void download()
                         default:break;
 
 					}
+
 					pthread_mutex_unlock(&logMutex);//unlock
 
 					//close ftp connect
@@ -572,21 +589,18 @@ void log()
 	initEventLog();
 	while(1)
 	{
-		int i=0,j=0;
-		for(i=0;i<2000;i++)
-        for(j=0;j<2000;j++);
+		delay();
 
 		pthread_mutex_lock(&logMutex);//lock
 		writeEventLog(UPLOAD_LOG_FILE, DOWNLOAD_LOG_FILE);
 		pthread_mutex_unlock(&logMutex);//unlock
-
-
 	}
 }
 
 
 int main()
 {
+
 	// monitor analysis center,update the gloable variable uploadList, is always running
 	pthread_t analysisCenterMonitorTread;
 
@@ -605,7 +619,7 @@ int main()
 
 	//initilise relative FTP parameters,like server ip, port,user name,password and so on.
 	initFTP();
-
+    initUploadlist();
 
 	//create seven threads,but never destroy them.
 	{
