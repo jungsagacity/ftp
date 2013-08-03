@@ -233,16 +233,11 @@ void upload()
             memset(filename,0,STD_FILENAME_SIZE);
             strcpy(filename, p->filename);
             uploadState = p->state;
-            #ifdef DEBUG
-                printf("upload 0 ..uploadState = %d\n",uploadState);
-            #endif
+            pthread_mutex_unlock(&uploadMutex);//unlock
+
             if( (uploadState == UPLOAD_FILE_EXIST) || (uploadState == UPLOAD_FILE_UNKNOWN) )
 			{
-
-                #ifdef DEBUG
-                printf("upload 1\n");
-                #endif
-                pthread_mutex_unlock(&uploadMutex);//unlock
+                //pthread_mutex_unlock(&uploadMutex);//unlock
 				//we have three times to try to connect to ftp server ,if failed. Otherwise send network error.
 				int conncectTimes = 0;
 				while((sockfd = connectFtpServer(productCenterFtpServerIP, productCenterFtpServerPort, productCenterFtpUserName, productCenterFtpPassword)) <= FTP_CONNECT_FAILED_FLAG)
@@ -268,14 +263,11 @@ void upload()
 
                 if( sockfd > FTP_CONNECT_FAILED_FLAG )
                 {
-                    #ifdef DEBUG
-                    printf("upload 2\n");
-                    #endif
                     pthread_mutex_lock(&uploadMutex);//lock
                     p->state = UPLOAD_FILE_UPLOADING;//uploading state
                     pthread_mutex_unlock(&uploadMutex);//unlock
                     #ifdef DEBUG
-                    printf("upload 2.5 filename = %s,\nprefix%s\n",filename,analysisCenterPathPrefix);
+                    printf("filename = %s,\nprefix%s\n",filename,analysisCenterPathPrefix);
                     #endif
                     int len = 0;
 
@@ -343,9 +335,6 @@ void upload()
                         }
                         default:break;
                     }
-                    #ifdef DEBUG
-                    printf("upload 3");
-                    #endif
                     pthread_mutex_unlock(&logMutex);//unlock
 
                     close(sockfd);
@@ -353,7 +342,7 @@ void upload()
             }
             else if((uploadState == UPLOAD_FILE_NONEXIST) || (uploadState == UPLOAD_FILE_UPLOAD_INTIME) || (uploadState == UPLOAD_FILE_UPLOAD_LATE))
             {
-                pthread_mutex_unlock(&uploadMutex);//unlock
+
                 timer =time(NULL);
                 memset(endTime, 0, 100);
                 strftime( endTime, sizeof(endTime), "%Y-%m-%d %T",localtime(&timer) );
@@ -383,23 +372,13 @@ void upload()
                 pthread_mutex_unlock(&logMutex);//unlock
 
                 pthread_mutex_lock(&uploadMutex);//lock
-                #ifdef DEBUG
-                printf("upload thread 4.\n");
-                //if the target node is the first
-                #endif
-                if(p==tail)
-                    tail=p1;
                 p1->next=p->next;
                 free(p);
                 p=p1;
-
                 pthread_mutex_unlock(&uploadMutex);//unlock
             }
 
             pthread_mutex_lock(&uploadMutex);//lock
-            #ifdef DEBUG
-                printf("crash?\n");
-            #endif
             p1=p;
             p=p->next;
             pthread_mutex_unlock(&uploadMutex);//lock

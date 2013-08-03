@@ -120,15 +120,19 @@ void initUploadlist()
 
 void insertlist(UploadNode * p0)
 {
+    #ifdef DEBUG
+    printf("insert\n");
+    #endif
     pthread_mutex_lock(&uploadMutex);//lock
     #ifdef DEBUG
     printf("insert list metux.\n");
     #endif
     p0->next=NULL;
     //insert into the end of the list
-    tail->next = p0;
-    tail = p0;
-
+//    tail->next = p0;
+//   tail = p0;
+    p0->next=uploadList->next;
+    uploadList->next=p0;
     #ifdef DEBUG
     display();
     #endif
@@ -144,9 +148,7 @@ void insertlist(UploadNode * p0)
 
 void search(char * name)
 {
-
     pthread_mutex_lock(&uploadMutex);//lock
-	UploadNode *p1;
 
 	/*
 	the list is empty which obvious means the file is not upload
@@ -178,14 +180,19 @@ void search(char * name)
 	*/
     else
     {
+        //pthread_mutex_lock(&uploadMutex);//lock
+        UploadNode *p1;
+
         //p2=uploadList;
         p1=uploadList->next;
 
         //go through the list until find the node or at the end
         while( p1!=NULL )
         {
+            char * filename = p1->filename;
+            int state = p1->state;
 
-            if( strcmp(name,p1->filename)!=0 )
+            if( strcmp(name,filename)!=0 )
             {
                 p1=p1->next;
             }else
@@ -196,9 +203,9 @@ void search(char * name)
                 state=UPLOAD_FILE_UPLOAD_SUCCESS means uploaded success
                 change the state=UPLOAD_FILE_UPLOAD_INTIME,in time
                 */
-                if(p1->state==UPLOAD_FILE_UPLOAD_SUCCESS)
+                if(state==UPLOAD_FILE_UPLOAD_SUCCESS)
                 {
-                    p1->state=UPLOAD_FILE_UPLOAD_INTIME;
+                    state=UPLOAD_FILE_UPLOAD_INTIME;
                     #ifdef DEBUG
                     log_checktask(name,"文件上传成功");
                     printf("%s:文件上传成功\n",name);
@@ -353,23 +360,26 @@ static void _inotify_event_handler(struct inotify_event *event)
     /*File was closed */
     if(event->mask & IN_CLOSE_WRITE)
     {
-        #ifdef DEBUG
-		printf("IN_CLOSE_WRITE\n");
-		printf("event->name: %s\n", event->name);
-		#endif
-        char command[COMMAND_SIZE];
-        FILE *pf;
-        //get the command to compress the file with unix.z
-        sprintf(command,"compress -f %s%s",UP_ANALYSIS_CENTER_PATH_PREFIX,event->name);
-        //execute the command of compression
-        if((pf=popen(command,"r"))==NULL)
+        if(strstr(event->name,UNIX_Z)==0)
         {
-            //compression failed
-            #ifdef _DEBUG
-            perror("压缩失败");
+            #ifdef DEBUG
+            printf("IN_CLOSE_WRITE\n");
+            printf("event->name: %s\n", event->name);
             #endif
+            char command[COMMAND_SIZE];
+            FILE *pf;
+            //get the command to compress the file with unix.z
+            sprintf(command,"compress -f %s%s",UP_ANALYSIS_CENTER_PATH_PREFIX,event->name);
+            //execute the command of compression
+            if((pf=popen(command,"r"))==NULL)
+            {
+                //compression failed
+                #ifdef _DEBUG
+                perror("压缩失败");
+                #endif
+            }
+            pclose(pf);
         }
-        pclose(pf);
     }
 
     /* File was deleted */
@@ -379,7 +389,7 @@ static void _inotify_event_handler(struct inotify_event *event)
 		printf("IN_DELETE\n");
 		printf("event->name: %s\n", event->name);
 		#endif
-		pthread_mutex_lock(&uploadMutex);//lock
+//		pthread_mutex_lock(&uploadMutex);//lock
 		UploadNode *p0;
 		p0=(UploadNode *)malloc(sizeof(UploadNode));
 		//the event name is without suffix ".Z"
@@ -391,7 +401,7 @@ static void _inotify_event_handler(struct inotify_event *event)
 		log_checktask(p0->filename,"文件创建");
         #endif
         //create a new node
-        pthread_mutex_unlock(&uploadMutex);//unlock
+//        pthread_mutex_unlock(&uploadMutex);//unlock
 		insertlist(p0);
 	}
 }
