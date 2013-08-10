@@ -51,6 +51,8 @@
 #define DEBUG							1
 #define	DOWNLOAD_TASK_PRINT_NUM			50
 
+#define MAX_STATION_FILE_NAME_SIZE      50
+
 
 
 typedef struct ftpserver
@@ -67,7 +69,7 @@ typedef struct stationlist
     char *name;
     char (*station)[5];
     struct stationlist * next;
-}StationList;
+}StationNode, *StationList;
 
 typedef struct uploadPathInfo
 {

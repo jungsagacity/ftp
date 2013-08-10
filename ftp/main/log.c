@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
-
+#include <pthread.h>
 #include "log.h"
 
 /*-------------------------------------ftp info-------------------------------------------------
@@ -9,7 +9,7 @@
 *----------------------------------------------------------------------------------------------*/
 EventLog *elog; //global variable
 EventLog *elogTail;//global variable
-
+pthread_mutex_t logMutex = PTHREAD_MUTEX_INITIALIZER;
 
 /**
 *    function   :   initialise EventLog header

@@ -1,37 +1,30 @@
-#ifndef _DOWNLOAD_H_
-#define _DOWNLOAD_H_
+// read the infomation
+#define     BUF_SIZE            1024
+//#define     DOWN_INFO_PATH      "downloadInfo.txt"//the path of the download information file
+//#define     DEBUG_1               1                //readfile_printf
 
 
-/************************************downlad*************************************************
-*
-********************************************************************************************/
-#define	DOWNLOAD_FILE_DEFAULT			0
-#define	DOWNLOAD_FILE_NONEXIST			-1
-#define DOWNLOAD_FILE_EXIST				1
-#define	DOWNLOAD_FAILED	                2
-
-#define   MAX_DOWNLOAD_TASK_NUM	1000    //daily task number's max size
-#define	  MAX_FTP_FILE_PATH_LEN	1000	//remote or local file name's max size
-#define   MAX                   1000    //The max size of locale array
-#define   R_year                366        //Days of leap year
-#define   P_year                365        //Days of leap year
-#define   Daily                 "/daily"
-#define   Hourly                "/hourly"
-#define   Highrate              "/highrate"
+//return the file exist or not
+#define	DOWNLOAD_FILE_DEFAULT			1
+#define	DOWNLOAD_FILE_NONEXIST			2
+#define DOWNLOAD_FILE_EXIST				3
+#define	DOWNLOAD_FAILED	                4
 
 
-typedef  struct DNode
-{
-    char *filename;//download file name;
-    char *remotePath;//file address in remote ftp server
-    char *localPath;//where file needed to place
-    char *state ;//every char corresponds to one station in the next member variable char *stations
-    char (*stations)[5];//the name of a string array storing the staion names.
-    int   taskNum;//task number.
-    FtpServer *server;
-    struct DNode *next;
-} DownloadNode,*DownloadList;
-
+#define   MAX_size       1000
+#define   R_year         366           //Days of leap year
+#define   P_year         365           //Days of leap year
+#define   Daily          "daily"
+#define   Hourly         "hourly"
+#define   Highrate       "highrate"
+#define   stationame     "ssss"
+#define   yyyy           "/yyyy/"
+#define   ddd            "/ddd/"
+#define   hh             "/hh/"
+#define   mm             "/mm/"
+#define   yyf            "/yyf/"
+#define   extensioname   ".inmp"
+#define   success_extension ".Z"
 
 
 typedef struct        //自定义时间数据结构
@@ -44,18 +37,59 @@ typedef struct        //自定义时间数据结构
     int second;
 } MYtime;
 
-void module_control();                                                //Ä£¿éµ÷¶È
-void get_currentime(MYtime *mt);                                    //»ñÈ¡µ±Ç°Ê±Œä
-int  Search_undownload_file(char filename[]);                      //²éÕÒÎÄŒþÊÇ·ñŽæÔÚ
-int  transfer(int year,int month,int day);                        //ÈÕÆÚ×ª»¯ÎªÄêÄÚÌì
-void two_year(int year,char y[]);                                //œ«ÄêµÄºóÁœÎ»×ª»¯Îª×Ö·û
-void three_day(int day,char d[]);                               //œ«Ìì×ª»¯ÎªÈý×Ö·ûÐÎÊœ
-void two_hour(int hour, char h[]);                             //œ«Ð¡Ê±×ª»¯ÎªÁœ×Ö·ûÐÎÊœ
-void two_minute(int minute,char m[]);                         //œ«·ÖÖÓ×ª»¯ÎªÁœ×Ö·ûÐÎÊœ
-void creat_hourly_filename(int year,int day,int hour,int type, char hour_filename[]);//ŽŽœšÐ¡Ê±ÎÄŒþÃû
-void creat_highrate_filename(int year,int day,int hour,int minite,int type,char highrate_filename[]);//ŽŽœšÊ®Îå·ÖÖÓÎÄŒþÃû
-int  creat_current_direct(int year,int day,int hour,int minute,char download_list[][MAX]);//ŽŽœšµ±Ç°Ê±¿ÌÏÂÔØÁÐ±í(current)
-int  creat_logfile(int year,int day,int hour,int minute,char download_list[][MAX],int tmp);//ÈÕÖŸŒÇÂŒ
-void str_copy(char A[],char B[],int i);//°ÑBŽÓµÚižö×Ö·ûŒÓµœ¡±igmas¡°ºóžŽÖÆžøA;
-int itoa(int tempInt, char * str, int dec); //int to char*
-#endif
+
+/*
+  struct of the download information
+  序号，数据源，时间类型，文件类型，站点列表文件，
+  下载服务器，数据中心文件格式，分析中心存放根目录
+*/
+typedef  struct DNode
+{
+    char *filename;      //download file name;
+    char *remotePath;    //file address in remote ftp server
+    char *localPath;     //where file needed to place
+    char (*stations)[5]; //the name of a string array storing the staion names.
+    char *state ;        //every char corresponds to one station in the next member variable char *stations
+    int   taskNum;       //task number.
+    FtpSever *server;
+    struct DNode *next;
+} DownloadNode, *DownloadList;
+
+/*
+  struct of the download information
+  序号，数据源，时间类型，文件类型，站点列表文件，
+  下载服务器，数据中心文件格式，分析中心存放根目录
+*/
+typedef struct downInfo
+{
+    int  id;
+    char *source;
+    char *timeType;
+    char *fileType;
+    char *stateList;
+    char *downloadServer;
+    char *dataCenterPath;
+    char *localPath;
+    struct downInfo * next;
+} DownInfo;
+
+
+//creat download list
+void get_currentime(MYtime *mt);
+char *replace(char *str1,char *str2,char *str3);
+char *replace_path(char *path1,int year,int day,int hour,int minute,char *type);
+void creat_filename(int year,int day,int hour,int minute,char *type,char *time_type,char filename[]);
+char Search_undownload_file(char filename[]);
+int  transfer(int year,int month,int day);
+void creat_list(int year,int day,int hour,int minute,DownInfo *DI);
+void add_Info(DownloadNode *s,DownInfo *p,int year,int day,int hour,int minute);
+void time_module_control();
+
+//read the request file
+int readDownloadInfo(DownInfo * downInfoList);
+void removespace(char  * str);
+void  delDownInfo(DownInfo * downInfoList,DownInfo * down);
+DownInfo * addDownInfo(DownInfo * downInfoList,DownInfo * down);
+DownInfo * initDownInfolist();
+void displayDW(DownInfo * head);
+

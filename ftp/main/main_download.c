@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -20,13 +21,15 @@
 *--------------------------------------------------------------------------------------------*/
 extern  UploadList uploadList;//upload.c, file list periodically created by product center.
 extern  EventLog *elog;//record event,when an exception Occurs, like ftp connection,abnormal upload or download.
-extern  pthread_mutex_t uploadMutex;
+extern  pthread_mutex_t downloadMutex;
 extern  pthread_mutex_t logMutex;
 
-char *tempDownloadFileSuffix;
-char *tempUploadFileSuffix;
+char    *tempDownloadFileSuffix;
+char    *tempUploadFileSuffix;
+int     maxDownloadTaskNum;；
 FtpServer *fs;
 UploadPath *uploadPath;
+DownInfo *downInfoList;
 
 
 
@@ -175,249 +178,271 @@ void timingTask()
 
 
 /**************************************************************************************************
-*    function   :   upload product files to product&service center ;
+*    function   :   downlaod sigle file from ftp server
+*    para       :   {DownloadNode *dwNode} download task node;
+*                   {int nodeid} state id
+*    return     :   {void}
+*
+*    history    :   {2013.7.25 wujun} frist create;
+**************************************************************************************************/
+void sigleDownload(DownloadNode *dwNode, int nodeid)
+{
+	//downlaod starting time and end time
+	char    startTime[100] = {0};
+	char    endTime[100] = {0};
+	time_t  timer;
+
+	char    *realFilename,*tempFilename;
+	char    *tempLocalFullPath;
+	char    *remoteFullPath;
+	char    *localFullPath;
+	char    downloadState = 0;
+
+	char    *ftpServerIP;
+	int     port;
+	char    *username;
+	char    *passwd;
+    int     sockfd;
+
+    pthread_mutex_lock(&downloadMutex);
+
+	int len = strlen(dwNode->filename) + 1;
+	realFilename = (char *)malloc(len);
+	memset(realFilename, 0, len);
+	strcpy(realFilename,dwNode->filename);
+
+	int i = 0;
+	for(i=0;i<4;i++)
+	{
+        realFilename[i] = dwNode->stations[nodeid][i];//replace ssss
+	}
+
+    len += strlen(tempDownloadFileSuffix) + 1;
+	tempFilename = (char *)malloc(len);
+	memset(tempFilename, 0, len);
+	sprintf(tempFilename, "%s%s",realFilename, tempDownloadFileSuffix);
+
+	len = strlen(dwNode->localPath) + strlen(tempFilename) + 1;
+	tempLocalFullPath = (char *)malloc(len);
+	memset(tempLocalFullPath, 0, len);
+	sprintf(tempLocalFullPath, "%s%s",dwNode->localPath, tempFilename);
+
+	len = strlen(dwNode->localPath) + strlen(realFilename) + 1;
+	localFullPath = (char *)malloc(len);
+	memset(localFullPath, 0, len);
+	sprintf(localFullPath, "%s%s",dwNode->localPath, realFilename);
+
+	len = strlen(dwNode->remotePath) + strlen(realFilename) + 1;
+	remoteFullPath = (char *)malloc(len);
+	memset(remoteFullPath, 0, len);
+	sprintf(remoteFullPath, "%s%s",dwNode->remotePath, realFilename);
+
+	downloadState = dwNode->state[nodeid];
+
+    len = strlen(dwNode->server->ip) + 1;
+    ftpServerIP = (char *)malloc(len);
+    memset(ftpServerIP, 0, len);
+    strcpy(ftpServerIP, dwNode->server->ip);
+
+    len = strlen(dwNode->server->username) + 1;
+    username = (char *)malloc(len);
+    memset(username, 0, len);
+    strcpy(username, dwNode->server->username);
+
+    len = strlen(dwNode->server->passwd) + 1;
+    passwd = (char *)malloc(len);
+    memset(passwd, 0, len);
+    strcpy(passwd, dwNode->server->passwd);
+
+    port = dwNode->server->port;
+
+     pthread_mutex_unlock(&downloadMutex);
+
+    if( downloadState == DOWNLOAD_FILE_NONEXIST)
+    {
+        //we have three times to try to connect to ftp server ,if failed. Otherwise send network error.
+        int conncectTimes = 0;
+        while((sockfd = connectFtpServer(ftpServerIP, port, username, passwd) )<= FTP_CONNECT_FAILED_FLAG)
+        {
+            if( MAX_CONNECT_TIMES <= ++conncectTimes )
+            {
+                //to recod failed connnection time
+                timer =time(NULL);
+                memset(startTime, 0, 100);
+                strftime( startTime, sizeof(startTime), "%Y-%m-%d %T",localtime(&timer) );
+
+                //add event log;
+                pthread_mutex_lock(&logMutex);;//lock
+                addEventLog(DOWNLOAD_CONNNET_FAILED, remoteFullPath, startTime,"");
+                pthread_mutex_unlock(&logMutex);;//unlock
+
+                break;
+            }
+
+            //delay some time and connect ftp again.
+            delay();
+
+        }
+
+        if( sockfd > FTP_CONNECT_FAILED_FLAG )
+        {
+
+            //recod starting-download time
+            timer =time(NULL);
+            memset(startTime, 0, 100);
+            strftime( startTime, sizeof(startTime), "%Y-%m-%d %T",localtime(&timer) );
+
+            int ftperror = ftp_get(remoteFullPath, tempLocalFullPath, sockfd) ;
+            localRename(tempLocalFullPath, localFullPath);//..........................
+            //recod end-download time
+            timer =time(NULL);
+            memset(endTime, 0, 100);
+            strftime( endTime, sizeof(endTime), "%Y-%m-%d %T",localtime(&timer) );
+
+            //add event log;
+            switch(ftperror)
+            {
+                case DOWNLOAD_CONNNET_FAILED:
+                {
+                    pthread_mutex_lock(&logMutex);;//lock
+                    addEventLog(L_DOWNLOAD_CONNNET_FAILED, remoteFullPath, startTime,endTime);
+                    pthread_mutex_unlock(&logMutex);;//unlock
+
+                    //download mutex
+                    pthread_mutex_lock(&downloadMutex);//lock
+                    dwNode->state[nodeid] = DOWNLOAD_FAILED;
+                    pthread_mutex_unlock(&downloadMutex);//unlock
+
+                    break;
+                }
+                case DOWNLOAD_LOCAL_FILENAME_NULL:
+                case DOWNLOAD_REMOTE_FILENAME_NULL:
+                case DOWNLOAD_CREAET_LOCALFILE_ERROR:
+                case DOWNLOAD_CONNECT_SOCKET_ERROR:
+                case DOWNLOAD_PORT_MODE_ERROR:
+                case DOWNLOAD_REMOTE_FILE_NOEXIST:
+                {
+                    pthread_mutex_lock(&logMutex);//lock
+                    addEventLog(L_DOWNLOAD_FAILED, remoteFullPath, startTime,endTime);
+                    pthread_mutex_unlock(&logMutex);//unlock
+
+                    //download mutex
+                    pthread_mutex_lock(&downloadMutex);//lock
+                    dwNode->state[nodeid] = DOWNLOAD_FAILED;
+                    pthread_mutex_unlock(&downloadMutex);//unlock
+
+                    break;
+                }
+                case DOWNLOAD_SUCCESS:
+                {
+                    sem_p(giSemLog);//lock
+                    addEventLog(L_DOWNLOAD_SUCCESS, remoteFullPath, startTime,endTime);
+                    sem_v(giSemLog);//unlock
+
+                    //download semphore
+                    pthread_mutex_lock(&downloadMutex);//lock
+                    dwNode->state[nodeid] = DOWNLOAD_FILE_EXIST;
+                    pthread_mutex_unlock(&downloadMutex);//unlock
+
+                    break;
+                }
+                default:break;
+
+            }
+            //close ftp connect
+            close(sockfd);
+        }
+    }
+
+}
+
+
+
+
+/**************************************************************************************************
+*    function   :   download files from data center;
 *    para       :   {void}
 *
 *    return     :   {void}
 *
 *    history    :   {2013.7.25 wujun} frist create;
 **************************************************************************************************/
-void upload()
+
+void download()
 {
-	int     i,j;
-
-    char    *filename,tempFilename;
-    char    *analysisCenterPath,*tempAnalysisCenterPath;
-	char    *productCenterPath, *tempProductCenterPath;
-	char    *productCenterdir;
-    int     uploadState = 0;
-
-	int     ftperror = 0;//ftp relative error code
-	int     sockfd = 0;
-	int     len = 0;
+    int 	i = 0;
+	int     taskNum;
+	int     stationNum;
+	char    *state;
 
 	//downlaod starting time and end time
 	char    startTime[100] = {0};
 	char    endTime[100] = {0};
 	time_t  timer;
 
-	while(1)
-	{
-		sleep(1);
+	//ftp
+	int     sockfd = 0;
+	int     ftperror = 0;//ftp error code
 
+    while(1)
+    {
+        DownloadNode * p,*p1;
+		p = downloadList->next;//temporary variable always points to uploadList head pointer.
+        p1 = downloadList;
 
-		UploadNode * p,*p1;
-		p =  uploadList->next;//temporary variable always points to uploadList head pointer.
-        p1 = uploadList;
-        display();
+		//travers daily task arry which max size is smaller than 1000;
+        while( p != NULL )
+        {
+            pthread_mutex_lock(&downloadMutex);//lock
+            stationNum = strlen(p->state);
+            taskNum = p -> taskNum;
+            int len = strlen(p->state) + 1;
+            state = (char*)malloc(len);
+            memset(state, 0, len);
+            pthread_mutex_unlock(&downloadMutex);//unlock
 
-		//to traverse the upload task list, check whether there are some upload task or not.
-		while( p!= NULL )
-		{
-            pthread_mutex_lock(&uploadMutex);//lock
+            /*
+            *   1.according to state , count download tasks
+            *   2.excute some concurrency process
+            */
+            int j = 0;
+            pthread_mutex_t p[MAX_DOWNLOAD_TASK_NUM];
+            int realTaskThreadMem = sizeof(pthread_mutex_t)*taskNum;
+            p = (pthread_mutex_t *)malloc(realTaskThreadMem);
+            memset(p,0,realTaskThreadMem);
 
-            len = strlen(p->filename) + 1;
-            filename = malloc(sizeof(char)*len);
-            memset(filename,0,len);
-            strcpy(filename, p->filename);
-
-            len += strlen(".inmp");
-            tempFilename = malloc(sizeof(char)*len);
-            memset(filename,0,len);
-            sprintf(tempFilename,"%s%s",p->filename, ".inmp");
-
-            len = strlen(filename) + strlen(p->analysisCenterPath) + 1;
-            analysisCenterPath = malloc(sizeof(char)*len);
-            memset(analysisCenterPath,0,len);
-            sprintf(analysisCenterPath,"%s%s",p->analysisCenterPath,filename);
-
-            len = strlen(tempFilename) + strlen(analysisCenterPath) + 1;
-            tempAnalysisCenterPath = malloc(sizeof(char)*len);
-            memset(tempAnalysisCenterPath,0,len);
-            sprintf(tempAnalysisCenterPath,"%s%s",p->analysisCenterPath,tempFilename);
-
-            len = strlen(p->filename) + strlen(p->productCenterPath) + 1;
-            productCenterPath = malloc(sizeof(char)*len);
-            memset(productCenterPath,0,len);
-            sprintf(productCenterPath,"%s%s",p->productCenterPath,p->filename);
-
-            len = strlen(p->productCenterPath) + 1;
-            productCenterdir = malloc(sizeof(char)*len);
-            memset(productCenterdir,0,len);
-            strcpy(productCenterdir, p->productCenterPath);
-
-
-            len = strlen(tempFilename) + strlen(p->productCenterPath) + 1;
-            tempProductCenterPath = malloc(sizeof(char)*len);
-            memset(tempProductCenterPath,0,len);
-            sprintf(tempProductCenterPath,"%s%s",p->productCenterPath,tempFilename);
-
-            uploadState = p->state;
-
-            pthread_mutex_unlock(&uploadMutex);//unlock
-
-            if( (uploadState == UPLOAD_FILE_EXIST) || (uploadState == UPLOAD_FILE_UNKNOWN) )
-			{
-                //pthread_mutex_unlock(&uploadMutex);//unlock
-				//we have three times to try to connect to ftp server ,if failed. Otherwise send network error.
-				int conncectTimes = 0;
-				while((sockfd = connectFtpServer(p->server->ip, p->server->port, p->server->username, p->server->passwd)) <= FTP_CONNECT_FAILED_FLAG)
-				{
-					if( MAX_CONNECT_TIMES <= ++conncectTimes )
-					{
-						//to recod failed connnection time
-						timer =time(NULL);
-						memset(startTime, 0, 100);
-						strftime( startTime, sizeof(startTime), "%Y-%m-%d %T",localtime(&timer) );
-
-						//add event log;
-						pthread_mutex_lock(&logMutex);//lock
-						addEventLog(UPLOAD_CONNNET_FAILED, filename, startTime,"");
-						pthread_mutex_unlock(&logMutex);//unlock
-
-                        #ifdef DEBUG
-                        printf("connect error.\n");
-                        #endif
-						break;
-					}
-
-					//delay some time and connect ftp again.
-                    //delay();
-                }
-
-                if( sockfd > FTP_CONNECT_FAILED_FLAG )
-                {
-                    pthread_mutex_lock(&uploadMutex);//lock
-                    p->state = UPLOAD_FILE_UPLOADING;//uploading state
-                    pthread_mutex_unlock(&uploadMutex);//unlock
-                    #ifdef DEBUG
-                    printf("filename = %s,\nprefix%s\n",filename,analysisCenterPath);
-                    #endif
-
-                    // record starting-upload time
-                    timer =time(NULL);
-                    memset(startTime, 0, 100);
-                    strftime( startTime, sizeof(startTime), "%Y-%m-%d %T",localtime(&timer) );
-
-                    /*
-                    *   1.check out whether the file's father dir do exist or not.
-                    *   2.if exist, then upload the specifed file;
-                    *   3.else, make dir and then upload the file;
-                    *   4.rename the file if upload it completely.
-                    */
-                    ftp_mkdir(productCenterdir, sockfd);//make sure the dir exists.
-                    ftperror = ftp_put(tempAnalysisCenterPath, tempProductCenterPath, sockfd);
-
-                    // record end-upload time
-                    timer =time(NULL);
-                    memset(endTime, 0, 100);
-                    strftime( endTime, sizeof(endTime), "%Y-%m-%d %T",localtime(&timer) );
-
-                    //add log
-
-                    switch(ftperror)
-                    {
-                        case UPLOAD_CONNNET_FAILED:
-                        {
-                            pthread_mutex_lock(&logMutex);//lock
-                            addEventLog(L_UPLOAD_CONNNET_FAILED, filename, startTime,endTime);
-                            pthread_mutex_unlock(&logMutex);//unlock
-
-                            pthread_mutex_lock(&uploadMutex);//lock
-                            p->state = UPLOAD_FILE_UPLOAD_FAILED;
-                            pthread_mutex_unlock(&uploadMutex);//unlock
-
-                            break;
-                        }
-                        case UPLOAD_LOCAL_FILENAME_NULL:
-                        case UPLOAD_LOCAL_OPEN_ERROR:
-                        case UPLOAD_DATA_SOCKET_ERROR:
-                        case UPLOAD_PORT_MODE_ERROR:
-                        {
-                            pthread_mutex_lock(&logMutex);//lock
-                            addEventLog(L_UPLOAD_FAILED, filename, startTime,endTime);
-                            pthread_mutex_unlock(&logMutex);//unlock
-
-                            pthread_mutex_lock(&uploadMutex);//lock
-                            p->state = UPLOAD_FILE_UPLOAD_FAILED;
-                            pthread_mutex_unlock(&uploadMutex);//unlock
-
-                            break;
-                        }
-                        case UPLOAD_SUCCESS:
-                        {
-                            ftp_rename(tempProductCenterPath,productCenterPath, sockfd);//if upload succsessfull, then rename the temporary file
-
-                            pthread_mutex_lock(&logMutex);//lock
-                            addEventLog(L_UPLOAD_SUCCESS, filename, startTime,endTime);
-                            pthread_mutex_unlock(&logMutex);//unlock
-
-                            pthread_mutex_lock(&uploadMutex);//lock
-                            p->state = UPLOAD_FILE_UPLOAD_SUCCESS;
-                            pthread_mutex_unlock(&uploadMutex);//unlock
-
-                            break;
-                        }
-                        default:break;
-                    }
-
-
-                    close(sockfd);
-                }
-            }
-            else if((uploadState == UPLOAD_FILE_NONEXIST) || (uploadState == UPLOAD_FILE_UPLOAD_INTIME) || (uploadState == UPLOAD_FILE_UPLOAD_LATE))
+            for( i = 0; i < stationNum; i++)
             {
-
-                timer =time(NULL);
-                memset(endTime, 0, 100);
-                strftime( endTime, sizeof(endTime), "%Y-%m-%d %T",localtime(&timer) );
-
-                switch(uploadState)
+                if(state[i] == 2) //if file does not exist
                 {
-                    case UPLOAD_FILE_NONEXIST:
+                    p[i] = fork();//create new process.
+                    if(p[i] == 0)
                     {
-                        pthread_mutex_lock(&logMutex);//lock
-                        addEventLog(L_UPLOAD_FILE_NOEXIST, filename, endTime,endTime);
-                        pthread_mutex_unlock(&logMutex);//unlock
-                        break;
+                        #ifdef DEBUG
+                        printf("....\n");
+                        #endif
+                        sigleDownload(p, i);
+                        return 0;
                     }
-                    case UPLOAD_FILE_UPLOAD_INTIME:
-                    {
-                        pthread_mutex_lock(&logMutex);//lock
-                        addEventLog(L_UPLOAD_INTIME, filename, endTime,endTime);
-                        pthread_mutex_unlock(&logMutex);//unlock
-                        break;
-                    }
-                    case UPLOAD_FILE_UPLOAD_LATE:
-                    {
-                        pthread_mutex_lock(&logMutex);//lock
-                        addEventLog(L_UPLOAD_LATE, filename, endTime,endTime);
-                        pthread_mutex_unlock(&logMutex);//unlock
-                        break;
-                    }
-                    default:break;
 
+                    j++;//record real task number.
                 }
 
-
-                pthread_mutex_lock(&uploadMutex);//lock
-                p1->next=p->next;
-                ////freeUploadNode(p);//free(p);
-                p=p1;
-                pthread_mutex_unlock(&uploadMutex);//unlock
+                if( (j % maxDownloadTaskNum == 0)  || ( j == taskNum ))
+                {
+                    wait(NULL);
+                    wait(NULL);
+                    #ifdef DEBUG
+                    printf("waiting\n");
+                    #endif
+                }
             }
-
-            pthread_mutex_lock(&uploadMutex);//lock
-            p1=p;
-            p=p->next;
-            pthread_mutex_unlock(&uploadMutex);//lock
-
         }
 
+
+
     }
-
 }
-
 
 
 
@@ -500,7 +525,7 @@ int config(char *conf)
         memset(name, 0, i);
         strncpy(name, buff, i-1);
         j = i;
-        clearSpace(name);
+
 
         int parNum = 0;
         if( !strcmp(name,"productCenterFtp"))
@@ -575,11 +600,6 @@ int config(char *conf)
 
             //make sure the product cener fpt info placed in the first node.
             fs->next = fsNode;
-            printf("fs:%o\tnode%o\n",fs->next,fsNode);
-
-
-            printf("fsNode->ip:%s\n",fsNode->ip);
-            printf("fs:%o\tnode%o\n",fs->next,fsNode);
             fsNode ->next = NULL;
             fsNode = NULL;
 
@@ -687,7 +707,7 @@ int config(char *conf)
                 j = i;
                 printf("statesionFileName:%s\n",statesionFileName);
 
-                StationList *slNode;
+                StationList slNode;
                 slNode = (StationList *)malloc(sizeof(StationList));
                 memset(slNode, 0, sizeof(StationList));
 
@@ -735,7 +755,6 @@ int config(char *conf)
             tempDownloadFileSuffix = (char *)malloc(i-j);
             memset(tempDownloadFileSuffix, 0, i-j);
             strncpy( tempDownloadFileSuffix, buff+j, i-j-1);
-            clearSpace(tempDownloadFileSuffix);
             j = i;
             printf("%s\n",tempDownloadFileSuffix);
         }
@@ -746,9 +765,19 @@ int config(char *conf)
             tempUploadFileSuffix = (char *)malloc(i-j);
             memset(tempUploadFileSuffix, 0, i-j);
             strncpy( tempUploadFileSuffix, buff+j, i-j-1);
-            clearSpace(tempUploadFileSuffix);
             j = i;
             printf("%s\n",tempUploadFileSuffix);
+        }
+
+        if( !strcmp(name,"maxDownloadTaskNum"))
+        {
+            while(buff[i++] !='\n');
+            char *num = (char *)malloc(i-j);
+            memset(num, 0, i-j);
+            strncpy( num, buff+j, i-j-1);
+            j = i;
+            maxDownloadTaskNum = atoi(num);
+            printf("%d\n",maxDownloadTaskNum);
         }
 
         if( !strcmp(name,"BDLocalPathPrefix"))
@@ -757,7 +786,6 @@ int config(char *conf)
             uploadPath->BDLocalPathPrefix = (char *)malloc(i-j);
             memset(uploadPath->BDLocalPathPrefix, 0, i-j);
             strncpy( uploadPath->BDLocalPathPrefix, buff+j, i-j-1);
-            clearSpace(uploadPath->BDLocalPathPrefix);
             j = i;
             printf("%s\n",uploadPath->BDLocalPathPrefix);
 
@@ -769,7 +797,6 @@ int config(char *conf)
             uploadPath->GNSSLocalPathPrefix = (char *)malloc(i-j);
             memset(uploadPath->GNSSLocalPathPrefix, 0, i-j);
             strncpy( uploadPath->GNSSLocalPathPrefix, buff+j, i-j-1);
-            clearSpace(uploadPath->GNSSLocalPathPrefix);
             j = i;
             printf("%s\n",uploadPath->GNSSLocalPathPrefix);
 
@@ -781,7 +808,6 @@ int config(char *conf)
             uploadPath->BDLocalPathPrefixBak = (char *)malloc(i-j);
             memset(uploadPath->BDLocalPathPrefixBak, 0, i-j);
             strncpy( uploadPath->BDLocalPathPrefixBak, buff+j, i-j-1);
-            clearSpace(uploadPath->BDLocalPathPrefixBak);
             j = i;
             printf("%s\n",uploadPath->BDLocalPathPrefixBak);
         }
@@ -793,7 +819,6 @@ int config(char *conf)
             uploadPath->GNSSLocalPathPrefixBak = (char *)malloc(i-j);
             memset(uploadPath->GNSSLocalPathPrefixBak, 0, i-j);
             strncpy( uploadPath->GNSSLocalPathPrefixBak, buff+j, i-j-1);
-            clearSpace(uploadPath->GNSSLocalPathPrefixBak);
             j = i;
             printf("%s\n",uploadPath->GNSSLocalPathPrefixBak);
 
@@ -805,7 +830,6 @@ int config(char *conf)
             uploadPath->BDRemotePathPrefix = (char *)malloc(i-j);
             memset(uploadPath->BDRemotePathPrefix, 0, i-j);
             strncpy( uploadPath->BDRemotePathPrefix, buff+j, i-j-1);
-            clearSpace(uploadPath->BDRemotePathPrefix);
             j = i;
             printf("%s\n",uploadPath->BDRemotePathPrefix);
 
@@ -818,7 +842,6 @@ int config(char *conf)
             uploadPath->GNSSRemotePathPrefix = (char *)malloc(i-j);
             memset(uploadPath->GNSSRemotePathPrefix, 0, i-j);
             strncpy( uploadPath->GNSSRemotePathPrefix, buff+j, i-j-1);
-            clearSpace(uploadPath->GNSSRemotePathPrefix);
             j = i;
             printf("%s\n",uploadPath->GNSSRemotePathPrefix);
 
@@ -827,39 +850,163 @@ int config(char *conf)
     fclose(fp);
 }
 
+void mergeStationList(char (*stationFileNames)[MAX_STATION_FILE_NAME_SIZE])
+{
+    int i = sizeof(a)/sizeof(*a);
+    int j = 0;
+    int totalStations = 0;
+    StationNode * p = sl->next;
+
+    for(i=0;i<sizeof(a)/sizeof(*a);i++)
+    {
+        while( p != NULL)
+        {
+            if(!strcmp(p->name, stationFileNames[i]))
+            {
+               totalStations += sizeof(p->sstateList)/sizeof(*(p->sstateList));
+            }
+
+            p = p->next;
+        }
+    }
+
+    char (*newStaionArray)[5];
+    newStaionArray = (char **)malloc(totalStations*5);
+    memset(newStaionArray, 0, totalStations*5);
+    totalStations = 0;
+    for(i=0;i<sizeof(a)/sizeof(*a);i++)
+    {
+        while( p != NULL)
+        {
+            if(!strcmp(p->name, stationFileNames[i]))
+            {
+               memcpy(*newStaionArray+totalStations, *(p->sstateList), sizeof(p->sstateList));
+               totalStations += sizeof(p->sstateList)/sizeof(*(p->sstateList));
+               break;
+            }
+
+            p = p->next;
+        }
+    }
+
+    int deleteNum = 0;
+    for(i=0;i<totalStations-1;i++)
+    {
+        for(j=i+1;j<totalStations;j++)
+        {
+            if(!strcmp(*newStaionArray+i, *newStaionArray+i) )
+            {
+                memset(*newStaionArray+i, 0, 5);
+                deleteNum++;
+            }
+        }
+    }
+
+
+    StationNode * newStationNode = (StationNode *)malloc(sizeof(StationNode));
+    memset(newStationNode, 0, sizeof(StationNode));
+
+    char (*mergeStationArray)[5] = (char **)malloc((totalStations - deleteNum)*5);
+    memset(mergeStationArray, 0, (totalStations - deleteNum)*5);
+
+    for(i=0,j=0;i<totalStations-1;i++)
+    {
+        if(strlen(*newStaionArray+i))
+        {
+            memcpy(*mergeStationArray+(j++), *newStaionArray+i, 5);
+        }
+
+    }
+
+    p = sl->next;
+    sl->next = newStationNode;
+    newStationNode = p;
+
+    free(newStaionArray);
+    #ifdef DEBUG
+    printf("j = %d,\tdeleteNum = %d,\ttotalStations = %d\n", j,deleteNum,totalStations);
+    #endif
+
+}
+
+
+void stationListReload()
+{
+    DownInfo *p = downInfoList->next;
+    StationNode *psl = sl->next;
+    int i=0,j=0;
+
+
+    while( p != NULL )
+    {
+        i=0; j=0;
+        while(psl != NULL)
+        {
+            if(!strcmp(p->stateList, psl->name))// not equal to
+            {
+                continue;
+            }
+
+            psl  = psl->next;
+        }
+
+        if( psl == NULL)
+        {
+            //get file number according to the character ','
+            while( p->stateList[i] )
+            {
+                if(p->stateList[i] == ',')
+                {
+                    j++;
+                }
+                i++;
+            }
+
+            //allocate memory
+            char (*stationFileName)[MAX_STATION_FILE_NAME_SIZE] = (char **)malloc((j+1)*MAX_STATION_FILE_NAME_SIZE);
+            memset(stationFileName, 0, (j+1)*MAX_STATION_FILE_NAME_SIZE);
+
+            strcpy(*stationFileName[0], strtok(p->stateList,','));
+            for(i = 1; i <= j; i++)
+            {
+                strcpy(stationFileName[i], strtok(NULL,','));
+            }
+
+            mergeStationList(stationFileName);
+
+            free(stationFileName);
+
+
+        }
+    }
+
+}
+
+
 int main()
 {
 
-	// monitor analysis center,update the gloable variable uploadList, is always running
-	pthread_t analysisCenterMonitorTread;
-	// start up uoload function,transfer data from  analysis center to products&service center
-    pthread_t uploadTread;
+	// start up download function,transfer data from  analysis center to products&service center
+    pthread_t downloadTread;
 	// log file uploading or downloading action state whether success or failed
 	pthread_t logTread;
 	// the most important thread, the other is actived by it,expect analysisCenterMonitorTread.
 	pthread_t timingTaskTread;
 
     config("system.ini");
-    traverseList();
-    initUploadlist();
-
-	//create seven threads,but never destroy them.
-	{
-		//create the thread analysis Center   Monitor
-		pthread_create(&analysisCenterMonitorTread,NULL,analysisCenterMonitor,(void *)NULL);
-
-		//create the thread upload
-		pthread_create(&uploadTread,NULL,upload,(void *)NULL);
-
-		//create the thread upload
-		pthread_create(&logTread,NULL,log,(void *)NULL);
-
-		//create the thread timing task
-		pthread_create(&timingTaskTread,NULL,timingTask,(void *)NULL);
-
-	}
+    readDownloadInfo(downInfoList);
+    stationListReload();
+    //initDownloadlist();
 
 
-	while(1);
+    //create the thread upload
+    //pthread_create(&downloadTread,NULL,upload,(void *)NULL);
+    //create the thread upload
+    //pthread_create(&logTread,NULL,log,(void *)NULL);
+    //create the thread timing task
+    //pthread_create(&timingTaskTread,NULL,timingTask,(void *)NULL);
+
+
+	//while(1);
 }
 

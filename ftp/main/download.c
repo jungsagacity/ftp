@@ -2,61 +2,85 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <malloc.h>
 #include <string.h>
-#include "global.h"
 
 #include "download.h"
 
-char    hourly_type[13]= {'D','N','G','L','R','M','T','J','A','K','I','E'}; //Type of  hourly file
-char    highrate_type[7]=  {'D','N','G','L','R','M'}; //Type of highrate file
-int     tmp=-1;
+int    tmp=-1;
+
+extern FtpSever *fs;
+DownloadList downloadList;
+extern DownInfo *downInfoList;
+extern StationList sl;
 
 
-DownloadList downloadList[MAX_DOWNLOAD_TASK_NUM]; //全局变量，返回每条数据的名及状态
-int     downloadList_numb; //记录当天记录的条数
-
-
-int itoa(int tempInt, char * str, int dec) //int to char*
+/*
+int main()
 {
-    sprintf(str,"%d",tempInt);
+    downInfoList= initDownInfolist();
+    readtxt(downInfoList);    //displayDW(DI);
+
+
+    downloadList=(DownloadNode*)malloc(sizeof(DownloadNode));
+    memset(downloadList, 0, sizeof(DownloadNode));
+    downloadList->next = NULL;
+    time_module_control();
+
+    test1:
+            creat_list(2013,220,24,0,downInfoList);
+            DownloadNode *p=downloadList->next;
+            while(p!=NULL)
+            {
+                printf("%s\n%s\n%s\n\n",p->filename,p->remotePath,p->localPath);
+                //printf("taskNum=%d\n%s\n%s\n",p->taskNum,p->state,p->server->ip);
+                p=p->next;
+            }
+
 }
+*/
 
-void str_copy(char A[],char B[],int i)//把B从第i个字符加到”igmas“后复制给A
+
+
+
+/******************************************************************************************
+*    function   :
+*    para       :
+*
+*    return     :
+*    history    :   {2013.7.27 yangyang} create;
+*                   {2013.8.8 yangyang}  modify
+******************************************************************************************/
+
+void time_module_control()
 {
-    int j=0;
-    char tmp[MAX]= {'\0'};
-    while(B[i]!='\0')
+
+    MYtime mt;
+    MYtime *pmt = &mt;
+    int test=-1;
+    while(1)
     {
-        tmp[j++]=B[i++];
-    }
-    strcpy(A,DATA_CENTER_PATH_PREFIX);
-    strcat(A,tmp);
-}
-
-void module_control()
-{
-
-        MYtime mt;
-        MYtime *pmt = &mt;
         get_currentime(pmt);    //get current time
-        int test=-1;
-        if(mt.minute==10||mt.minute==25||mt.minute==40||mt.minute==55)//定时检查成立的时间条件
+        if(mt.minute==10||mt.minute==25||mt.minute==40||mt.minute==55)//the condition to check the file whether exist
         {
             if(test!=mt.minute)
             {
-			    test=mt.minute;
-                if(mt.minute==25&&mt.hour==0)//检查当天第一个文件 当天开始，记录清空;
+                test=mt.minute;
+
+                if(mt.minute==25&&mt.hour==0)//at the begin of a day ,init the DownloadNode;
                 {
-                    downloadList_numb=0;
-					int i;
-					for(i=0;i<MAX_DOWNLOAD_TASK_NUM;i++)
-					{
-					    strcpy(downloadList[i].remote_filename,"\0");
-						strcpy(downloadList[i].local_filename,"\0");
-						downloadList[i].state=DOWNLOAD_FILE_DEFAULT;
-					}
+                    DownloadNode *p=downloadList->next;
+                    DownloadNode *q=p->next;
+                    downloadList->next=NULL;
+                    while(q!=NULL)
+                    {
+                        free(p);
+                        p=q;
+                        q=p->next;
+                    }
+                    free(p);
                 }
-                //mt中保存测试时间，下面转化为文件开始传输时间，
+                //mt store the check time and then get the time that the file begin to transport
                 int year,day,hour,minute;
                 minute=mt.minute-10;
                 if(minute==0)
@@ -64,7 +88,7 @@ void module_control()
                     if(mt.hour==0&&mt.day==1)
                     {
                         year=mt.year-1;
-                        hour=24;                   //在处理00:00时，转化成24:00
+                        hour=24;     //when deal with the time 00:00 ,transfer to 4:00
                         if(year%4==0&&year%100!=0)
                             day=R_year;
                         else
@@ -89,181 +113,345 @@ void module_control()
                     day=mt.day;
                     hour=mt.hour;
                 }
+                printf("the file transport time is:%d %d %d:%d\n",year,day,hour,minute);
                 if(minute%15==0)
                 {
-                    char download_list[20][MAX]= {'\0'};
-                    int  undownload_numb=0;
-                    int  tmp=creat_current_direct(year,day,hour,minute,download_list);//生成全部列表
-                    undownload_numb=creat_logfile(year,day,hour,minute,download_list,tmp); //更新log_data
+                    //creat the download list
+                    creat_list(year,day,hour,minute,downInfoList);
                     #ifdef DEBUG
-					printf("当前新增数据条数：%d  缺失数据条数： %d  \n\n",tmp,undownload_numb);
-				    #endif
+                    DownloadNode *p=downloadList->next;
+
+                    while(p!=NULL)
+                    {
+                        printf("%s\n%s\n%s\n\n",p->filename,p->remotePath,p->localPath);
+                        //printf("taskNum=%d\n%s\n%s\n",p->taskNum,p->state,p->server->ip);
+                        p=p->next;
+                    }
+                    #endif
+
                 }
             }
-
-
-    }
-}
-
-int creat_current_direct(int year,int day,int hour,int minute,char download_list[][MAX])//创建当前时刻下载列表(current)
-{
-    int k=0;//返回当前文件个数
-    //根据时间找到查询的根路径
-    char  current_root_direct[MAX];
-    strcpy(current_root_direct,DW_ANALYSIS_CENTER_PATH_PREFIX);
-    char year_direct[5]= {'\0'};
-    itoa(year,year_direct,10);
-    strcat(current_root_direct,year_direct);
-    strcat(current_root_direct,"/");
-    char day_direct[5]= {'\0'};
-    three_day(day,day_direct);
-    strcat(current_root_direct,day_direct);
-    //找到了每天的起始路径，然后分小时文件和十五分钟文件查找
-    //hourly_file
-    if(minute==0)
-    {
-        hour=(hour+24-1)%24;
-        char current_hourly_direct[MAX]= {'\0'};
-        strcpy(current_hourly_direct,current_root_direct);
-        strcat(current_hourly_direct,Hourly);
-        int current_type_hourly;
-        for(current_type_hourly=0; current_type_hourly<strlen(hourly_type); current_type_hourly++)
-        {
-		    //小时目录下类型目录路径
-            char current_type_direct1[MAX]= {'\0'};
-            char current_type_tmp1[2]= {'\0'};
-            current_type_tmp1[0]=hourly_type[current_type_hourly];
-
-            strcpy(current_type_direct1,current_hourly_direct);
-            strcat(current_type_direct1,"/");
-            strcat(current_type_direct1,current_type_tmp1);
-
-            //检查当前时刻传输的数据是否成功(hour_file)
-			//小时目录下类型目录下小时路径
-            char current_type_hour_direct1[MAX]= {'\0'};
-            char current_type_hour_tmp1[3]= {'\0'};
-            two_hour(hour,current_type_hour_tmp1);
-            strcpy(current_type_hour_direct1,current_type_direct1);
-            strcat(current_type_hour_direct1,"/");
-            strcat(current_type_hour_direct1,current_type_hour_tmp1);
-
-            //路径生成完毕，下面生成文件名
-            char current_file_hourname[20]= {'\0'};
-            creat_hourly_filename(year,day,hour,current_type_hourly,current_file_hourname);//creaet hourly filename
-            char current_file_hourdirect[MAX]= {'\0'};
-            strcpy(current_file_hourdirect,current_type_hour_direct1);
-            strcat(current_file_hourdirect,"/");
-            strcat(current_file_hourdirect,current_file_hourname);
-            strcpy(download_list[k++],current_file_hourdirect);
-
         }
     }
-    //highrate_file
-    minute=(minute+60-15)%60;
-    char current_highrate_direct[MAX]= {'\0'};
-    strcpy(current_highrate_direct,current_root_direct);
-    strcat(current_highrate_direct,Highrate);
-    int current_type_highrate;
-    for(current_type_highrate=0; current_type_highrate<strlen(highrate_type); current_type_highrate++)
-    {
-	    //十五分钟目录下类型目录路径
-        char current_type_direct2[MAX]= {'\0'};
-        char current_type_tmp2[2]= {'\0'};
-        current_type_tmp2[0]=highrate_type[current_type_highrate];
-        strcpy(current_type_direct2,current_highrate_direct);
-        strcat(current_type_direct2,"/");
-        strcat(current_type_direct2,current_type_tmp2);
-
-        //检查当前时刻传输的数据是否成功(highrate_file)
-        //加入小时路径
-        char current_type_hour_direct2[MAX]= {'\0'};
-        char current_type_hour_tmp2[3]= {'\0'};
-        two_hour(hour,current_type_hour_tmp2);
-        strcpy(current_type_hour_direct2,current_type_direct2);
-        strcat(current_type_hour_direct2,"/");
-        strcat(current_type_hour_direct2,current_type_hour_tmp2);
-
-        //加入分钟路径
-        char current_type_hour_highrate_direct[MAX]= {'\0'};
-        char current_type_hour_tmp3[3]= {'\0'};
-        two_minute(minute,current_type_hour_tmp3);
-        strcpy(current_type_hour_highrate_direct,current_type_hour_direct2);
-        strcat(current_type_hour_highrate_direct,"/");
-        strcat(current_type_hour_highrate_direct,current_type_hour_tmp3);
-
-        //路径生成完毕，下面生成文件名
-        char current_file_highratename[20]= {'\0'};
-        creat_highrate_filename(year,day,hour,minute,current_type_highrate,current_file_highratename);//creat highrate filename
-        char current_file_highratedirect[MAX]= {'\0'};
-        strcpy(current_file_highratedirect,current_type_hour_highrate_direct);
-        strcat(current_file_highratedirect,"/");
-        strcat(current_file_highratedirect, current_file_highratename);
-        strcpy(download_list[k++],current_file_highratedirect);
-    }
-	#ifdef DEBUG
-		printf("\n(minite=0，15m->transger，25m->check，minute=45，0m->transger(hourly and highrate files)\n");
-        printf("\n the time remark the filename：%d %d %d:%d\n",year,day,hour,minute);
-    #endif
-
-    return k;
 }
 
 
-int creat_logfile(int year,int day,int hour,int minute,char download_list[][MAX],int tmp)//日志记录，修改日志记录数组，并写入txt文件保存
+/******************************************************************************************
+*    function   :
+*    para       :
+*
+*    return     :
+*    history    :   {2013.8.9 yangyang} frist create;
+******************************************************************************************/
+
+void creat_list(int year,int day,int hour,int minute,DownInfo *DI)
 {
-    int i,k=0;//k返回需要下载的文件个数
-    int flag=0;
-    /*
-    //创建下载日志路径名称
-    char log_name[MAX]= {'\0'};
-    char file_year[10]= {'\0'};
-    char file_day[5]= {'\0'};
-    three_day(day ,file_day);
-    itoa(year,file_year,10);
-    strcpy(log_name,LOGDIRECT);
-    strcat(log_name,file_year);
-    strcat(log_name,file_day);
-    strcat(log_name,".txt");
-    //printf("logfilename：%s\n",log_name);
-    //printf("downloadList_numb=%d\n",downloadList_numb);
-    */
-	#ifdef DEBUG
-	    FILE *fp=fopen("/home/jung/tmp/FromDC/logs/212.txt","a+");
-		fprintf(fp,"the transfer time of current files :%d %d %d:%d\n",year,day,hour%24,minute);
-    #endif
-
-
-    for(i=0; i<tmp; i++)
+    //download include(daily,hourly,highrate)
+    if(minute==0&&hour==24)
     {
-        flag=Search_undownload_file(download_list[i]);//判断是否存在
-        strcpy(downloadList[downloadList_numb+i].local_filename,download_list[i]);
-        str_copy(downloadList[downloadList_numb+i].remote_filename,downloadList[downloadList_numb+i].local_filename,strlen(DW_ANALYSIS_CENTER_PATH_PREFIX));
-        downloadList[downloadList_numb+i].state=flag;
-
-        #ifdef DEBUG
-        if(downloadList[i+downloadList_numb].state== DOWNLOAD_FILE_NONEXIST )
+        minute=(minute+60-15)%60;
+        hour=(hour+24-1)%24;
+        DownInfo *p=DI->next;
+        while(p!=NULL)
         {
+            //creat node
+            DownloadNode *s;
+            s=(DownloadNode*)malloc(sizeof(DownloadNode));
+            memset(s, 0, sizeof(DownloadNode));
+            add_Info(s,p,year,day,hour,minute);
+
+            //insert the node at the head
+            s->next=downloadList->next;
+            downloadList->next=s;
+            p=p->next;
+        }
+    }
+
+    //download include(hourly,highrate)
+    else if(minute==0)
+    {
+        minute=(minute+60-15)%60;
+        hour=(hour+24-1)%24;
+        DownInfo *p=DI->next;
+        while(p!=NULL)
+        {
+            //creat node
+            DownloadNode *s;
+            s=(DownloadNode*)malloc(sizeof(DownloadNode));
+            memset(s, 0, sizeof(DownloadNode));
+            if(strcmp(p->timeType,Hourly)==0||strcmp(p->timeType,Highrate)==0)
+            {
+                add_Info(s,p,year,day,hour,minute);
+                s->next=downloadList->next;
+                downloadList->next=s;
+            }
+
+            //insert the node at the head
+
+            p=p->next;
+        }
+    }
+
+    //download include(highrate)
+    else
+    {
+        minute=(minute+60-15)%60;
+        DownInfo *p=DI->next;
+        while(p!=NULL)
+        {
+            //creat node
+            DownloadNode *s;
+            s=(DownloadNode*)malloc(sizeof(DownloadNode));
+            memset(s, 0, sizeof(DownloadNode));
+            if(strcmp(p->timeType,Highrate)==0)
+            {
+                add_Info(s,p,year,day,hour,minute);
+                s->next=downloadList->next;
+                downloadList->next=s;
+            }
+            //insert the node at the head
+
+            p=p->next;
+        }
+    }
+}
+
+
+/******************************************************************************************
+*    function   :
+*    para       :
+*
+*    return     :   {void}
+*    history    :   {2013.8.10 yangyang} frist create
+******************************************************************************************/
+
+void add_Info(DownloadNode *s,DownInfo *p,int year,int day,int hour,int minute)
+{
+
+    //add filename
+    s->filename=(char*)malloc(sizeof(char)*MAX_size);
+    memset(s->filename,0,MAX_size);
+    creat_filename(year,day,hour,minute,p->fileType,p->timeType,s->filename);
+
+    //add filepath(server local)
+    s->remotePath=replace_path(p->dataCenterPath,year,day,hour,minute,p->fileType);
+    s->localPath=replace_path(p->localPath,year,day,hour,minute,p->fileType);
+
+
+
+    //add ftpserver
+    FtpSever *f=fs->next;
+    while(strcmp(p->downloadServer,f->ip)!=0)
+    {
+        f=f->next;
+    }
+    s->server=f;
+
+    //add  station list
+    StationList *w=sl->next;
+    while(strcmp(p->stateList,w->name)!=0)
+    {
+        w=w->next;
+    }
+    s->station=w->list;
+
+    int i=0;
+    int k=0;
+    s->state=(char*)malloc(sizeof(char)*MAX_size);
+    memset(s->state,0,MAX_size);
+
+    while(s->station[i]!=NULL)
+    {
+        char *filepath1=(char*)malloc(sizeof(char)*MAX_size);
+        memset(filepath1,0,sizeof(char)*MAX_size);
+        strcpy(filepath1,s->localPath);
+        strcat(filepath1,s->filename);
+        char *check1=replace(filepath1,stationame,s->stations[i]);
+#ifdef  DEBUG
+        printf("check1=%s\n",check1);
+#endif
+        char *tmp1=(char*)malloc(sizeof(char)*MAX_size);
+        memset(tmp1,0,sizeof(char)*MAX_size);
+        strcpy(tmp1,s->filename);
+        char *tmp2=replace(tmp1,success_extension,extensioname);
+
+        char *filepath2=(char*)malloc(sizeof(char)*MAX_size);
+        memset(filepath2,0,MAX_size);
+        strcpy(filepath2,s->localPath);
+        strcat(filepath2,tmp2);
+        char *check2=replace(filepath2,stationame,s->stations[i]);
+#ifdef  DEBUG
+        printf("check2=%s\n",check2);
+#endif
+
+        //add state
+        if(Search_file(check1)==DOWNLOAD_FILE_EXIST||Search_file(check2)==DOWNLOAD_FILE_EXIST)
+        {
+            s->state[i]=DOWNLOAD_FILE_EXIST;
+        }
+        else
+        {
+            s->state[i]==DOWNLOAD_FILE_NONEXIST;
             k++;
         }
-
-            fprintf(fp,"%s %d\n",download_list[i],flag);  //写入日志
-        #endif
+        i++
     }
-    downloadList_numb+=tmp;
-	#ifdef DEBUG
-        printf("downloadList_numb = %d\n", downloadList_numb);
-	    fclose(fp);
-    #endif
 
-    return k;
+    //add  taskNum
+    s->taskNum=k;
+
+
 }
 
-void get_currentime(MYtime *mt)//获取当前时间，并转化成所需要的形式
+
+
+/******************************************************************************************
+*    function   :
+*    para       :
+*
+*    return     :
+*    history    :   {2013.8.9 yangyang} frist create;
+******************************************************************************************/
+
+char *replace(char *str1,char *str2,char *str3)
+{
+    char *p;
+    p=strstr(str1,str2);
+    int k=p-str1+1;
+    char *q;
+    q=(char*)malloc(sizeof(char)*MAX_size);
+    memset(q,0,MAX_size);
+    strncpy(q,str1,k-1);
+    strcat(q,str3);
+    strcat(q,p+strlen(str2));
+    return q;
+}
+
+
+/******************************************************************************************
+*    function   :
+*    para       :
+*
+*    return     :
+*    history    :   {2013.8.9 yangyang} frist create;
+******************************************************************************************/
+
+char *replace_path(char *rpath,int year,int day,int hour,int minute,char *type)
+{
+    char *p;
+    //replace year
+    char *yy1;
+    p=strstr(rpath,yyyy);
+    if(p!=NULL)
+    {
+        char *y;
+        y=(char*)malloc(sizeof(char)*MAX_size);
+        memset(y,0,MAX_size);
+        sprintf(y,"/%04d/",year);
+        yy1=replace(rpath,yyyy,y);
+        free(y);
+    }
+    //replace day
+    char *dd1;
+    p=strstr(rpath,ddd);
+    if(p!=NULL)
+    {
+        char *d;
+        d=(char*)malloc(sizeof(char)*MAX_size);
+        memset(d,0,MAX_size);
+        sprintf(d,"/%03d/",day);
+        dd1=replace(yy1,ddd,d);
+        free(d);
+    }
+    char *ff1,*hh1,*mm1;
+    p=strstr(rpath,yyf);
+    if(p!=NULL)
+    {
+        char *f;
+        f=(char*)malloc(sizeof(char)*MAX_size);
+        memset(f,0,MAX_size);
+        sprintf(f,"/%02d%c/",year%100,type[0]+32);
+        ff1=replace(dd1,yyf,f);
+        free(f);
+        return ff1;
+    }
+    else
+    {
+        char *q;
+        q=strstr(rpath,hh);
+        if(q!=NULL)
+        {
+            char *h;
+            h=(char*)malloc(sizeof(char)*MAX_size);
+            memset(h,0,MAX_size);
+            sprintf(h,"/%02d/",hour);
+            hh1=replace(dd1,hh,h);
+            free(h);
+
+            char *s;
+            s=strstr(rpath,mm);
+            if(s!=NULL)
+            {
+                char *m;
+                m=(char*)malloc(sizeof(char)*MAX_size);
+                memset(m,0,MAX_size);
+                sprintf(m,"/%02d/",minute);
+                mm1=replace(hh1,mm,m);
+                free(m);
+                return mm1;
+            }
+            else
+                return hh1;
+        }
+        else
+            return dd1;
+
+    }
+
+}
+
+
+/******************************************************************************************
+*    function   :   creat the file name
+*    para       :   {int year,int day,int hour,int minute,int type,char *highrate_filename}
+*                      *highrate_filename  store the filename,type is the type of the file
+*
+*    return     :   {void}
+*    history    :   {2013.7.23 yangyang} frist create;
+******************************************************************************************/
+
+void creat_filename(int year,int day,int hour,int minute,char *type,char *timetype,char filename[])
+{
+    if(strcmp(timetype,Daily)==0)
+    {
+        sprintf(filename,"%s%03d0.%02d%c.Z",stationame,day,year%100,type[0]+32);
+    }
+    else if(strcmp(timetype,Hourly)==0)
+    {
+        sprintf(filename,"%s%03d%c.%02d%c.Z",stationame,day,hour+97,year%100,type[0]+32);
+    }
+    else if(strcmp(timetype,Highrate)==0)
+    {
+        sprintf(filename,"%s%03d%c%02d.%02d%c.Z",stationame,day,hour+97,minute,year%100,type[0]+32);
+    }
+    //printf("%s\n",filename);
+}
+
+
+/******************************************************************************************
+*    function   :   get the current data time and transfer two the user_defined struct
+*    para       :   {MYtime *mt}  MYtime is the user_defined struct of time
+*
+*    return     :   {void}
+*    history    :   {2013.7.25 yangyang} frist create;
+******************************************************************************************/
+
+void get_currentime(MYtime *mt)
 {
     struct tm *currentime;
     time_t t;
-    time(&t);
-    currentime=localtime(&t);
+    time(&t);               //get the millsecond
+    currentime=localtime(&t);//store in the struct currentime
     mt->year=currentime->tm_year+1900;
     mt->month=currentime->tm_mon+1;
     mt->day=transfer(mt->year,mt->month,currentime->tm_mday);
@@ -271,125 +459,26 @@ void get_currentime(MYtime *mt)//获取当前时间，并转化成所需要的形式
     mt->minute=currentime->tm_min;
     mt->second=currentime->tm_sec;
 
-	#ifdef DEBUG
     if(tmp!=mt->minute)
     {
         printf ( "Current date/time: %s", asctime (currentime));
-        if(mt->minute==10||mt->minute==25||mt->minute==40||mt->minute==55)
-        {
-            FILE *fp=fopen("/home/jung/tmp/FromDC/logs/212.txt","a+");
-            fprintf(fp,"The current data/time if:%s",asctime(currentime));
-            fclose(fp);
-        }
         tmp=mt->minute;
     }
-     #endif
-}
-
-void creat_hourly_filename(int year,int day,int hour,int type,char hour_filename[])//创建小时文件名(不包含路径)
-{
-    strcpy(hour_filename,DATA_SATION);//strcat the DC_station
-    char tmp1[5]= {'\0'};
-    three_day(day,tmp1);
-    strcat(hour_filename,tmp1);
-    hour_filename[7]=hour+97;
-    hour_filename[8]='.';
-    char tmp2[5]= {'\0'};
-    two_year(year,tmp2);
-    hour_filename[9]=tmp2[0];
-    hour_filename[10]=tmp2[1];
-    hour_filename[11]=hourly_type[type];
-    hour_filename[12]='.';
-    hour_filename[13]='Z';
-    hour_filename[14]='\0';
-    //printf("%s\n",hour_filename);
-}
-
-void creat_highrate_filename(int year,int day,int hour,int minute,int type,char highrate_filename[])//creat highrate_filename
-{
-    strcpy(highrate_filename,DATA_SATION);//strcat the DC_station
-    char tmp1[5]= {'\0'};
-    three_day(day,tmp1);
-    strcat(highrate_filename,tmp1); //strcat the day in the year
-    highrate_filename[7]=hour+97;
-    char tmp2[5]= {'\0'};
-    two_minute(minute,tmp2);
-    highrate_filename[8]=tmp2[0];
-    highrate_filename[9]=tmp2[1];
-    highrate_filename[10]='.';
-    char tmp3[5]= {'\0'};
-    two_year(year,tmp3);
-    highrate_filename[11]=tmp3[0];
-    highrate_filename[12]=tmp3[1];
-    highrate_filename[13]=highrate_type[type];
-    highrate_filename[14]='.';
-    highrate_filename[15]='Z';
-    highrate_filename[16]='\0';
-	//printf("%s\n",highrate_filename);
 }
 
 
-/*************************************************************************************
-*    function   :   get the last two char of the year
-*    para       :   {int year,char *y}; the two char store in y(like year=2013,y="13")
+/**********************************************************************************
+*    function   :   chang the data(month&&day) to the day of the year from 1 to 365
+*    para       :   {int year,int month,int day}(like 2012.12.31->sum=366)
 *
-*    return     :   {void}
-*
+*    return     :   int sum;
 *    history    :   {2013.7.20 yangyang} frist create;
-**************************************************************************************/
+***********************************************************************************/
 
-void two_year(int year,char y[])  //get the last two char of the year
-{
-    int mode_year;
-    mode_year=year%100;
-    sprintf(y,"%02d",mode_year);
-}
-
-void three_day(int day,char d[])//change the day to char*
-{
-    char tmp[5]= {'\0'};
-    itoa(day,tmp,10);
-    if(day<10)
-    {
-        strcpy(d,"00");
-        strcat(d,tmp);
-    }
-    else if(day<100)
-    {
-        strcpy(d,"0");
-        strcat(d,tmp);
-    }
-    else
-    {
-        strcpy(d,tmp);
-    }
-}
-
-void  two_hour(int hour, char h[])//change the hour to char *
-{
-    char tmp[5]= {'\0'};
-    itoa(hour,tmp,10);
-    if(hour<10)
-    {
-        strcpy(h,"0");
-        strcat(h,tmp);
-    }
-    else
-        strcpy(h,tmp);
-}
-
-void two_minute(int minute,char m[])//change the minute to char *
-{
-    if(minute==0)
-        strcpy(m,"00");
-    else
-        itoa(minute,m,10);
-}
-
-int transfer(int year,int month,int day)    //change the data to the day in the year
+int transfer(int year,int month,int day)
 {
     int a[12]= {31,28,31,30,31,30,31,31,30,31,30,31};  //Days of every month
-    int i,sum=0;                                       //sum is the
+    int i,sum=0;
     for(i=0; i<month-1; i++)
     {
         sum+=a[i];
@@ -400,14 +489,297 @@ int transfer(int year,int month,int day)    //change the data to the day in the 
 }
 
 
+/************************************************************************************
+*    function   :   check the file exist or not
+*    para       :   {char *filename} the file name include the path(like F:\tmp\1.txt
+*
+*    return     :    int (DOWNLOAD_FILE_EXIST mean exist &&DOWNLOAD_FILE_NONEXIST not)
+*    history    :   {2013.7.22 yangyang} frist create;
+*************************************************************************************/
 
-int Search_undownload_file(char filename[])         //check the file exist or  not
+char Search_file(char filename[])
 {
     int k=0;
     k=access(filename,0);
     if( k == 0)
-        return DOWNLOAD_FILE_EXIST	;
+        return DOWNLOAD_FILE_EXIST;
     else
         return DOWNLOAD_FILE_NONEXIST;
+}
+
+
+
+
+
+
+
+
+
+/****************************************
+ *      function    :   display the list
+ *      para        :   DownInfo * head
+        return      :   void
+****************************************/
+
+void displayDW(DownInfo * head)
+{
+    DownInfo * p;
+    p=head->next;
+    while(p!=NULL)
+    {
+        printf("%d\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n",p->id,p->source,p->timeType,p->fileType,p->stateList,p->downloadServer,p->dataCenterPath,p->localPath);
+        p=p->next;
+    }
+}
+
+
+/**
+ *      function    :   Initialize list
+ *      para        :   void
+        return      :   {DownInfo * }
+                        head of the list
+**/
+
+
+DownInfo * initDownInfolist()
+{
+    DownInfo * downInfoList = (DownInfo*)malloc(sizeof(DownInfo));
+    downInfoList -> next = NULL;
+    return downInfoList;
+}
+
+/**
+ *      function    :   insert into the list
+ *      para        :   {DownInfo * downInfoList,DownInfo * down}
+                        DownInfo * downInfoList:the head node of the list
+                        DownInfo * down        :the node which is going to be deleted
+        return      :   {DownInfo * }
+**/
+
+
+DownInfo * addDownInfo(DownInfo * downInfoList,DownInfo * down)
+{
+    down->next = downInfoList->next;
+    downInfoList->next = down;
+}
+
+/**
+ *      function    :   delete the node ,free the memory
+ *      para        :   {DownInfo * downInfoList,DownInfo * down}
+                        DownInfo * downInfoList:the head node of the list
+                        DownInfo * down        :the new node
+        return      :   {void }
+**/
+
+
+void  delDownInfo(DownInfo * downInfoList,DownInfo * down)
+{
+    DownInfo * p =downInfoList,*q = downInfoList->next;
+    while(q != down && q!=NULL)
+    {
+        p=q;
+        q=q->next;
+    }
+    if(q==NULL)
+    {
+#ifdef DEBUG_1
+        printf("The node is not exist\n");
+#endif
+    }
+    else
+    {
+        p->next=q->next;
+        free(q->localPath);
+        free(q->dataCenterPath);
+        free(q->downloadServer);
+        free(q->stateList);
+        free(q->fileType);
+        free(q->timeType);
+        free(q->source);
+        free(q);
+    }
+
+}
+
+/**
+ *      function    :   remove the space in the string
+ *      para        :   {char  * str}
+        return      :   {void }
+**/
+
+void removespace(char  * str)
+{
+    if(str==NULL)
+    {
+        char * p=str;
+        int i=0;
+        while((*p)!=0)
+        {
+            if((*p)!=' ')
+            {
+                str[i++]=*p;
+            }
+            p++;
+        }
+        str[i]=0;
+    }
+}
+
+/**
+ *      function    :   main function of reading the download information file
+ *      para        :   {DownInfo * downInfoList}
+                        the head node of the list
+        return      :   {int}   0:open file failed
+                                1:success
+**/
+
+int readDownloadInfo(DownInfo * downInfoList)
+{
+    FILE *fp;
+    char delims[]="\t";
+    char buf[BUF_SIZE];
+    char * tmp = NULL;
+    if((fp=fopen(DOWN_INFO_PATH,"r"))==NULL)
+    {
+#ifdef DEBUG_1
+        printf("cannot open file\n");
+#endif
+        return 0;
+    }
+
+    //read lines
+    while(fgets(buf,BUF_SIZE,fp)!=NULL)
+    {
+        int i = 0;
+        removespace(buf);
+        //spilt the line with the "\t"
+        tmp=strtok(buf,delims);
+        int id = atoi(tmp);
+
+#ifdef DEBUG_1
+        printf("id:%d\n",id);
+#endif
+
+        //not the notes
+        if(strstr(tmp,"#")==0)
+        {
+            //create the new node
+            DownInfo * dw;
+            dw = (DownInfo *)malloc(sizeof(DownInfo));
+
+            while(tmp!=NULL)
+            {
+#ifdef DEBUG_1
+                printf("tmp%d:%s\n",i,tmp);
+#endif
+
+                tmp = strtok(NULL,delims);
+
+                dw->id=id;
+
+
+                switch(i)
+                {
+                    //source like:GPS+GLONASS
+                case 0:
+                {
+                    int len=strlen(tmp)+1;
+                    dw->source = (char *)malloc(len);
+                    memset(dw->source,0, len);
+                    strcpy(dw->source, tmp);
+#ifdef DEBUG_1
+                    printf("source:%s\n",dw->source);
+#endif
+                    break;
+
+                }
+                //timeType like;hourly/daily
+                case 1:
+                {
+                    int len=strlen(tmp)+1;
+                    dw->timeType = (char *)malloc(len);
+                    memset(dw->timeType,0, len);
+                    strcpy(dw->timeType, tmp);
+#ifdef DEBUG_1
+                    printf("timeType:%s\n",dw->timeType);
+#endif
+                    break;
+
+                }
+                //fileType like: D/N/G
+                case 2:
+                {
+
+                    int len=strlen(tmp)+1;
+                    dw->fileType = (char *)malloc(len);
+                    memset(dw->fileType,0, len);
+                    strcpy(dw->fileType, tmp);
+#ifdef DEBUG_1
+                    printf("fileType:%s\n",dw->fileType);
+#endif
+                    break;
+
+                }
+                //stateList like:igu.sta
+                case 3:
+                {
+
+                    int len=strlen(tmp)+1;
+                    dw->stateList = (char *)malloc(len);
+                    memset(dw->stateList,0, len);
+                    strcpy(dw->stateList, tmp);
+#ifdef DEBUG_1
+                    printf("stateList:%s\n",dw->stateList);
+#endif
+                    break;
+
+                }
+                //downloadServer like:icddis.gsfc.nasa.gov
+                case 4:
+                {
+                    int len=strlen(tmp)+1;
+                    dw->downloadServer = (char *)malloc(len);
+                    memset(dw->downloadServer,0, len);
+                    strcpy(dw->downloadServer, tmp);
+#ifdef DEBUG_1
+                    printf("dw->downloadServer:%s\n",dw->downloadServer);
+#endif
+                    break;
+                }
+                //dataCenterPath like:pub/gps/data/hourly/yyyy/ddd/hh/
+                case 5:
+                {
+                    int len=strlen(tmp)+1;
+                    dw->dataCenterPath = (char *)malloc(len);
+                    memset(dw->dataCenterPath,0, len);
+                    strcpy(dw->dataCenterPath, tmp);
+#ifdef DEBUG_1
+
+                    printf("dw->dataCenterPath:%s\n",dw->dataCenterPath);
+#endif
+                    break;
+                }
+                //localPath  like:GNSS/yyyy/ddd/hourly/hh/
+                case 7:
+                {
+                    int len=strlen(tmp)+1;
+                    dw->localPath = (char *)malloc(len);
+                    memset(dw->localPath,0, len);
+                    strcpy(dw->localPath, tmp);
+#ifdef DEBUG_1
+                    printf("localPath:%s\n",dw->localPath);
+#endif
+                    break;
+
+                }
+                }
+                i++;
+
+            }
+            addDownInfo(downInfoList,dw);
+        }
+    }
+    fclose(fp);
+    return 1;
 }
 

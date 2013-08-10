@@ -1,5 +1,5 @@
-main:main.o upload.o ftp.o log.o  msem.o
-	gcc main.o upload.o ftp.o log.o  msem.o -o  main
+main:main_download.o upload.o ftp.o log.o  msem.o
+	gcc main_download.o upload.o ftp.o log.o  msem.o -o  main -lpthread
 
 ftp.o: ftp.c
 	gcc -c ftp.c -o ftp.o
@@ -11,11 +11,9 @@ log.o:log.c
 upload.o: upload.c
 	gcc -c upload.c -o upload.o
 
-msem.o: msem.c
-	gcc -c msem.c -o msem.o
 
-main.o: main.c
-	gcc -c main.c -o main.o
+main_download.o: main_download.c
+	gcc -c main_download.c -o main_download.o
 
 clean:
 	rm -f main *.o

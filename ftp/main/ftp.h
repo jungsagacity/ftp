@@ -45,5 +45,7 @@ int get_port();
 int xconnect_ftpdata();
 int ftp_get(char* src_file, char * dst_file, int socket_control);
 int ftp_put(char* src_file, char * dst_file, int socket_control);
+int ftp_rename(char *oldName, char *newName, int socket_control);
+int ftp_mkdir(char *dirName, int socket_control);
 
 #endif
