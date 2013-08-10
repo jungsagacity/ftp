@@ -7,21 +7,21 @@
 #include <sys/inotify.h>
 #include <malloc.h>
 #include <time.h>
-#include <pthread.h>
+
 
 #include "global.h"
 #include "upload.h"
+#include "msem.h"
 
 
 
 /********  GLOBAL VARIBALES  ********/
-struct UploadNode * uploadList;
+UploadList uploadList;
 //head of the uploadlist
-struct UploadNode * tail;
-//tail of the uploadlist for insert
+extern FtpServer * fs;
+extern UploadPath * uploadPath;
+extern int giSemUpload;
 
-
-pthread_mutex_t uploadMutex = PTHREAD_MUTEX_INITIALIZER;
 
 #ifdef DEBUG
 
@@ -48,7 +48,7 @@ void display()
     p=uploadList;
     while(p!=NULL)
     {
-        printf("链表：%s\t%d\n",p->filename,p->state);
+        printf("链表：%s\t%s\t%s\t%d\n",p->filename,p->analysisCenterPath,p->productCenterPath,p->state);
         p=p->next;
     }
 }
@@ -104,12 +104,18 @@ struct tm * gettime()
 	return localtime(&t);
 }
 
+/**
+ *      function    :   initialize the list,create the head node
+ *      para        :   void
+        return      :   void
+**/
+
 void initUploadlist()
 {
     uploadList = (UploadNode*)malloc(sizeof(UploadNode));
+    memset(uploadList, 0, sizeof(UploadNode));
+    uploadList ->state = 100;
     uploadList -> next = NULL;
-
-    tail = uploadList;
 }
 
 /**
@@ -123,20 +129,19 @@ void insertlist(UploadNode * p0)
     #ifdef DEBUG
     printf("insert\n");
     #endif
-    pthread_mutex_lock(&uploadMutex);//lock
+
     #ifdef DEBUG
     printf("insert list metux.\n");
     #endif
-    p0->next=NULL;
     //insert into the end of the list
-//    tail->next = p0;
-//   tail = p0;
+    sem_p(giSemUpload);//lock
     p0->next=uploadList->next;
     uploadList->next=p0;
+    sem_v(giSemUpload);//unlock
     #ifdef DEBUG
     display();
     #endif
-    pthread_mutex_unlock(&uploadMutex);//unlock
+
 }
 
 
@@ -148,7 +153,7 @@ void insertlist(UploadNode * p0)
 
 void search(char * name)
 {
-    pthread_mutex_lock(&uploadMutex);//lock
+    sem_p(giSemUpload);//lock
 
 	/*
 	the list is empty which obvious means the file is not upload
@@ -165,12 +170,15 @@ void search(char * name)
         //create a new node ,the insert into list
         UploadNode *p0;
 		p0=(UploadNode *)malloc(sizeof(UploadNode));
+		int len = strlen(name)+1;
+		p0->filename = (char *)malloc(len);
+		memset(p0->filename,0, len);
 		strcpy(p0->filename,name);
 		//state=UPLOAD_FILE_NONEXIST ,  not upload in time
  		p0->state=UPLOAD_FILE_NONEXIST;
- 		pthread_mutex_unlock(&uploadMutex);//unlock
+ 		sem_v(giSemUpload);//unlock
         insertlist(p0);
-        pthread_mutex_lock(&uploadMutex);//lock
+        sem_p(giSemUpload);//lock
 
 	}
 	/*
@@ -180,7 +188,7 @@ void search(char * name)
 	*/
     else
     {
-        //pthread_mutex_lock(&uploadMutex);//lock
+        //sem_p(giSemUpload);//lock
         UploadNode *p1;
 
         //p2=uploadList;
@@ -264,11 +272,15 @@ void search(char * name)
 
             UploadNode *p0;
             p0=(UploadNode *)malloc(sizeof(UploadNode));
+            int len = sizeof(name)+1;
+            p0->filename = (char *)malloc(len);
+            memset(p0->filename,0, len);
             strcpy(p0->filename,name);
+
             p0->state=UPLOAD_FILE_NONEXIST;//未生成 state=4
-            pthread_mutex_unlock(&uploadMutex);//unlock
+            sem_v(giSemUpload);//unlock
             insertlist(p0);
-            pthread_mutex_lock(&uploadMutex);//lock
+            sem_p(giSemUpload);//lock
             #ifdef DEBUG
             printf("%s:文件未生成\n",name);//待定
             //display();
@@ -277,7 +289,39 @@ void search(char * name)
     }
 
 
-    pthread_mutex_unlock(&uploadMutex);//unlock
+    sem_v(giSemUpload);//unlock
+}
+
+/**
+ *      function    :   delete the node,and free the memory
+ *      para        :   {UploadNode * up}   the point to the node you want to delete
+        return      :   void
+**/
+void  delUpload(UploadNode * up)
+{
+    UploadNode * p =uploadList,*q = uploadList->next;
+    while(q != up && q!=NULL)
+    {
+        p=q;
+        q=q->next;
+    }
+    if(q==NULL)
+    {
+        #ifdef DEBUG
+        printf("The node is not exist\n");
+        #endif
+    }
+    else
+    {
+        p->next=q->next;
+
+        free(q->productCenterPath);
+        free(q->analysisCenterPath);
+        free(q->filename);
+
+        free(q);
+    }
+
 }
 
 /**
@@ -286,6 +330,7 @@ void search(char * name)
         return      :   {int}   1:leap year
                                 0:not a leap year
 **/
+
 int IsLeapYear(int year)
 {
 	if ((year%400==0) ||(year%4==0&& year%100!=0))
@@ -299,6 +344,7 @@ int IsLeapYear(int year)
  *      para        :   {int year,int month,int day}    like 2013,07,31
         return      :   {int}
 **/
+
 int GetDaysOfMonth(int year,int month,int day)
 {
     int i=0;
@@ -321,6 +367,7 @@ int GetDaysOfMonth(int year,int month,int day)
     //add the current month's day
     return i+day-1;
 }
+
 /**
  *      function    :   count 北斗周
  *      para        :   {int year,int month,int day}    like 2013,07,31
@@ -341,6 +388,132 @@ int BTS_Time(int year,int month,int day)
     return (days/7+1);
 }
 
+/**
+ *      function    :   if the folder is not exist,create it
+ *      para        :   {char *filePath}
+        return      :   {int}       -1: wrong para
+                                     0:create success
+**/
+
+int fileIsExist(char *filePath)
+{
+    printf("filePath: %s\n",filePath);
+    int len =  strlen(filePath);
+    char *path;
+    if( len == 0)
+    {
+        return -1;
+    }
+
+    path = (char *)malloc(len+1);
+    memset(path,0,len+1);
+    sprintf(path,"%s",filePath);
+    printf("path:%s\n",path);
+    int p;
+    //create each folder
+    for( p = 1; p <= len; p++ )
+    {
+        if( path[p] == '/')
+        {
+            path[p] = 0;
+            if( access(path, 0) != 0)
+            {
+                if( mkdir(path, 0777) == -1 )
+                {
+                    #ifdef DEBUG
+                    printf("make dir %s error",path);
+                    #endif
+                    return -1;
+                }
+            }
+
+             path[p] = '/';
+        }
+
+    }
+
+    free(path);
+
+    return 0;
+}
+
+/**
+ *      function    :   copy the file to the backup folder
+ *      para        :   {char * filename,int flg}
+        return      :   {void}
+**/
+
+void copyfile(char * filename,int type,char * dir)
+{
+	//char * filename = p0->filename;
+	char * current_path;
+	char * backup_path;
+	char * filepath;
+    char command[COMMAND_SIZE] = {0};
+	printf("filename:%s\n",filename);
+
+	//the file is named after BD week, from the third to the sixth
+	if((strstr(filename,"isa")==0)&&(strstr(filename,"dcb")==0))
+	{
+		strncpy(dir, filename+3, 4);
+		#ifdef DEBUG
+        printf("if\n");
+		printf("%s\n",dir);
+		#endif
+	}
+	//the file is named after year and month, from the third to the eighth
+	else
+	{
+		strncpy(dir,filename+3,6);
+		#ifdef DEBUG
+		printf("else\n");
+		printf("%s\n",dir);
+		#endif
+	}
+
+    //the file is in the BD folder
+    if(type==1)
+	{
+        current_path=uploadPath->BDLocalPathPrefix;
+        backup_path=uploadPath->BDLocalPathPrefixBak;
+	}
+	//the file is in the GNSS folder
+	else
+	{
+        current_path=uploadPath->GNSSLocalPathPrefix;
+        backup_path=uploadPath->GNSSLocalPathPrefixBak;
+	}
+
+	int lenth = strlen(backup_path)+strlen(dir)+strlen(PATH_SUFFIX)+1;
+	filepath = (char * )malloc(lenth);
+	memset(filepath,0,lenth);
+	sprintf(filepath,"%s%s%s",backup_path,dir,PATH_SUFFIX);
+	printf("filepath:%s\n",filepath);
+
+	if(fileIsExist(filepath)==0)
+    {
+
+        sprintf(command,"cp %s%s %s%s",current_path,filename,backup_path,dir);
+
+        #ifdef DEBUG
+        printf("command:%s\n",command);
+        #endif
+
+        FILE *pf;
+        if((pf=popen(command,"r"))==NULL)
+        {
+            //move failed
+            #ifdef _DEBUG
+            perror("移动失败");
+            #endif
+        }
+        pclose(pf);
+    }
+
+    free(filepath);
+}
+
+
 
 /**
  *      function    :   This method does the dirty work of determining what happened,
@@ -358,18 +531,22 @@ static void _inotify_event_handler(struct inotify_event *event)
 	/* The mask is the magic that tells us what file operation occurred */
 
     /*File was closed */
-    if(event->mask & IN_CLOSE_WRITE)
+    if(strstr(event->name,UNIX_Z)==0)
     {
-        if(strstr(event->name,UNIX_Z)==0)
+        if(event->mask & IN_CLOSE_WRITE)
         {
             #ifdef DEBUG
+            printf("wd:%d",event->wd);
             printf("IN_CLOSE_WRITE\n");
             printf("event->name: %s\n", event->name);
             #endif
-            char command[COMMAND_SIZE];
+            char command[COMMAND_SIZE]={0};
             FILE *pf;
             //get the command to compress the file with unix.z
-            sprintf(command,"compress -f %s%s",UP_ANALYSIS_CENTER_PATH_PREFIX,event->name);
+            if(event->wd==1)
+                sprintf(command,"compress -f %s%s",uploadPath->BDLocalPathPrefix,event->name);
+            else
+                sprintf(command,"compress -f %s%s",uploadPath->GNSSLocalPathPrefix,event->name);
             //execute the command of compression
             if((pf=popen(command,"r"))==NULL)
             {
@@ -379,31 +556,76 @@ static void _inotify_event_handler(struct inotify_event *event)
                 #endif
             }
             pclose(pf);
+
+        }
+
+        /* File was deleted means the compression is over*/
+        if(event->mask & IN_DELETE)
+        {
+            #ifdef DEBUG
+            printf("IN_DELETE\n");
+            printf("event->name: %s\n", event->name);
+            #endif
+            char name[STD_FILENAME_SIZE];
+            strcpy(name,event->name);
+            int type = event-> wd;
+            char * dir;
+            UploadNode *p0;
+            p0=(UploadNode *)malloc(sizeof(UploadNode));
+
+            int len1 = strlen(name)+strlen(UNIX_Z)+1;
+            p0->filename=(char *)malloc(len1);
+            memset(p0->filename,0, len1);
+            sprintf(p0->filename,"%s%s",name,UNIX_Z);
+            printf("filename:%s\n",p0->filename);
+            //move the file to the backup folder
+
+            dir = (char *)malloc(10);
+            memset(dir,0,10);
+
+            //move the file to the backup folder
+            copyfile(p0->filename,type,dir);
+
+            //BEIDOU
+            if(type==1)
+            {
+                int len2=strlen(uploadPath->BDLocalPathPrefix)+1;
+                p0->analysisCenterPath=(char *)malloc(len2);
+                memset(p0->analysisCenterPath,0, len2);
+                strcpy(p0->analysisCenterPath,uploadPath->BDLocalPathPrefix);
+
+                int len3 = strlen(uploadPath->BDRemotePathPrefix)+strlen(dir)+strlen(PATH_SUFFIX)+1;
+                p0->productCenterPath=(char *)malloc(len3);
+                memset(p0->productCenterPath,0, len3);
+                sprintf(p0->productCenterPath,"%s%s%s",uploadPath->BDRemotePathPrefix,dir,PATH_SUFFIX);
+            }
+            //GNSS
+            else
+            {
+                int len2=strlen(uploadPath->GNSSLocalPathPrefix)+1;
+                p0->analysisCenterPath=(char *)malloc(len2);
+                memset(p0->analysisCenterPath,0, len2);
+                strcpy(p0->analysisCenterPath,uploadPath->GNSSLocalPathPrefix);
+
+                int len3 = strlen(uploadPath->GNSSRemotePathPrefix)+strlen(dir)+strlen(PATH_SUFFIX)+1;
+                p0->productCenterPath=(char *)malloc(len3);
+                memset(p0->productCenterPath,0, len3);
+                sprintf(p0->productCenterPath,"%s%s%s",uploadPath->GNSSRemotePathPrefix,dir,PATH_SUFFIX);
+            }
+
+
+
+            p0->state=UPLOAD_FILE_EXIST;
+            p0->server=fs->next;
+            #ifdef DEBUG
+            printf("filename:%s\n",p0->filename);
+            printf("传入：%s\n",p0->filename);
+            log_checktask(p0->filename,"文件创建");
+            #endif
+            //create a new node
+            insertlist(p0);
         }
     }
-
-    /* File was deleted */
- 	if(event->mask & IN_DELETE)
-	{
-        #ifdef DEBUG
-		printf("IN_DELETE\n");
-		printf("event->name: %s\n", event->name);
-		#endif
-//		pthread_mutex_lock(&uploadMutex);//lock
-		UploadNode *p0;
-		p0=(UploadNode *)malloc(sizeof(UploadNode));
-		//the event name is without suffix ".Z"
-		sprintf(p0->filename,"%s%s",event->name,UNIX_Z);
-		//set the state=0,the file is producted,waiting upload
-		p0->state=0;
-        #ifdef DEBUG
-        printf("传入：%s\n",p0->filename);
-		log_checktask(p0->filename,"文件创建");
-        #endif
-        //create a new node
-//        pthread_mutex_unlock(&uploadMutex);//unlock
-		insertlist(p0);
-	}
 }
 
 /**
@@ -421,15 +643,16 @@ void analysisCenterMonitor()
     #endif
 
     //strcut and variables to store the monitor events
- //   initUploadlist();
+    //   initUploadlist();
 	unsigned char buf[BUF_MAX] = {0};
 	struct inotify_event *event = {0};
 	int fd = inotify_init();
 	/*
-	set monitor path with the UP_ANALYSIS_CENTER_PATH_PREFIX
+	set monitor path with the uploadPath->BDLocalPathPrefix or 2
 	set the monitor condition with INOTIFY_EVENTS
 	*/
-	int wd = inotify_add_watch(fd,UP_ANALYSIS_CENTER_PATH_PREFIX ,INOTIFY_EVENTS);
+	int wd_1 = inotify_add_watch(fd,uploadPath->BDLocalPathPrefix ,INOTIFY_EVENTS);
+	int wd_2 = inotify_add_watch(fd,uploadPath->GNSSLocalPathPrefix ,INOTIFY_EVENTS);
 	fd_set fds;
 	FD_ZERO(&fds);
 	FD_SET(fd, &fds);
@@ -451,7 +674,9 @@ void analysisCenterMonitor()
 		}
 	}
 	//cancel the monitor
-	inotify_rm_watch(fd, wd);
+	inotify_rm_watch(fd, wd_1);
+	inotify_rm_watch(fd, wd_2);
+
 }
 
 
@@ -465,7 +690,7 @@ void analysisCenterMonitor()
 
 void hourtask(int wwww,int d,int hr)
 {
-	char std_filename[STD_FILENAME_SIZE];
+	char std_filename[STD_FILENAME_SIZE]={0};
 	char pre_filename[PRE_FILENAME_SIZE]="ACI";
 	char post_filename[POST_FILENAME_SIZE]=".irt.Z";
     sprintf(std_filename,"%s%04d%d_%02d%s",pre_filename,wwww,d,hr,post_filename);
@@ -482,7 +707,7 @@ void hourtask(int wwww,int d,int hr)
 
 void hour6task(int wwww,int d,int hr)
 {
-	char std_filename[3][STD_FILENAME_SIZE];
+	char std_filename[3][STD_FILENAME_SIZE]={0};
 	char pre_filename[PRE_FILENAME_SIZE]="ACU";
 	char post_filename[3][POST_FILENAME_SIZE]={".sp3.Z",".erp.Z",".tro.Z"};
 	int i=0;
@@ -503,7 +728,7 @@ void hour6task(int wwww,int d,int hr)
 
 void daytask(int wwww,int d)
 {
-	char std_filename[4][STD_FILENAME_SIZE];
+	char std_filename[4][STD_FILENAME_SIZE]={0};
 	char pre_filename[PRE_FILENAME_SIZE]="ACR";
 	char post_filename[3][POST_FILENAME_SIZE]={".sp3.Z",".clk.Z",".erp.Z"};
 	int i=0;
@@ -525,7 +750,7 @@ void daytask(int wwww,int d)
 
 void daytask1(int wwww,int d)
 {
-	char std_filename[STD_FILENAME_SIZE];
+	char std_filename[STD_FILENAME_SIZE]={0};
 	char pre_filename[PRE_FILENAME_SIZE]="ACR";
 	char post_filename[POST_FILENAME_SIZE]=".ion.Z";
     sprintf(std_filename,"%s%04d%d%s",pre_filename,wwww,d,post_filename);
@@ -542,7 +767,7 @@ void daytask1(int wwww,int d)
 
 void weektask(int wwww)
 {
-	char std_filename[7][STD_FILENAME_SIZE];
+	char std_filename[7][STD_FILENAME_SIZE]={0};
 	char pre_filename[PRE_FILENAME_SIZE]="AAC";
 	char post_filename[7][POST_FILENAME_SIZE]={"7.sp3.Z","7.clk.Z","7.snx.Z","7.erp.Z","7.tro.Z","7.ion.Z","7.sum.Z"};
 	int i=0;
@@ -567,7 +792,7 @@ void weektask(int wwww)
 
 void monthtask(int yyyy,int mm)
 {
-	char std_filename[STD_FILENAME_SIZE];
+	char std_filename[STD_FILENAME_SIZE]={0};
 	char pre_filename[PRE_FILENAME_SIZE]="AAC";
 	char post_filename[POST_FILENAME_SIZE]=".dcb.Z";
     sprintf(std_filename,"%s%04d%02d%s",pre_filename,yyyy,mm,post_filename);
@@ -585,7 +810,7 @@ void monthtask(int yyyy,int mm)
 
 void monthtask1(int yyyy,int mm)
 {
-	char std_filename[STD_FILENAME_SIZE];
+	char std_filename[STD_FILENAME_SIZE]={0};
 	char pre_filename[PRE_FILENAME_SIZE]="AAI";
 	char post_filename[POST_FILENAME_SIZE]=".isa.Z";
     sprintf(std_filename,"%s%04d%02d%s",pre_filename,yyyy,mm,post_filename);
@@ -679,4 +904,5 @@ void analysisCenterCheckTask()
         else hourtask(wwww,wday-1,hour-1);
     }
     else hourtask(wwww,wday,hour-1);
+
 }

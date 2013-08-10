@@ -11,22 +11,23 @@
 /*-------------PRODUCT CENTER setting---------------------------------------
 *
 *-------------------------------------------------------------------------*/
-#define 	UP_ANALYSIS_CENTER_PATH_PREFIX		"/home/jung/ftp/upload/"
+#define 	UP_ANALYSIS_CENTER_PATH_PREFIX1		"/home/jung/ftp/upload/iGMAS"
+#define 	UP_ANALYSIS_CENTER_PATH_PREFIX2		"/home/jung/ftp/upload/iGIS"
 #define		PRODUCT_CENTER_PATH_PREFIX			"upload/"
 
 
 /*-------------DATA CENTER setting---------------------------------------------
 *
 *-------------------------------------------------------------------------*/
-#define   	DW_ANALYSIS_CENTER_PATH_PREFIX      "/home/jung/tmp/FromDC/"           
+#define   	DW_ANALYSIS_CENTER_PATH_PREFIX      "/home/jung/tmp/FromDC/"
 #define   	DATA_CENTER_PATH_PREFIX           	"download/iGMAS/"
 #define 	DATA_SATION							"ssss"
 
 /*-------------LOG setting---------------------------------------------
 *
 *-------------------------------------------------------------------------*/
-#define 	UPLOAD_LOG_FILE			"upload.log"	
-#define 	DOWNLOAD_LOG_FILE		"download.log"					
+#define 	UPLOAD_LOG_FILE			"upload.log"
+#define 	DOWNLOAD_LOG_FILE		"download.log"
 
 
 //-------------FTP setting---------------------------------//
@@ -52,6 +53,31 @@
 
 
 
+typedef struct ftpserver
+{
+    char    *ip;
+    int     port;
+    char    *username;
+    char    *passwd;
+    struct  ftpserver * next;
+}FtpServer;
 
+typedef struct stationlist
+{
+    char *name;
+    char (*station)[5];
+    struct stationlist * next;
+}StationList;
+
+typedef struct uploadPathInfo
+{
+    char * BDLocalPathPrefix;
+    char * GNSSLocalPathPrefix;
+    char * BDLocalPathPrefixBak;
+    char * GNSSLocalPathPrefixBak;
+    char * BDRemotePathPrefix;
+    char * GNSSRemotePathPrefix;
+
+}UploadPath;
 
 #endif

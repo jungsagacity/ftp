@@ -222,202 +222,6 @@ void upload()
         display();
 
 		//to traverse the upload task list, check whether there are some upload task or not.
-		while( p!= NULL )
-		{
-            printf("upload...\n");
-            sem_p(giSemUpload);//lock
-
-            len = strlen(p->filename) + 1;
-            filename = malloc(sizeof(char)*len);
-            memset(filename,0,len);
-            strcpy(filename, p->filename);
-
-            len += strlen(".inmp");
-            tempFilename = malloc(sizeof(char)*len);
-            memset(filename,0,len);
-            sprintf(tempFilename,"%s%s",p->filename, ".inmp");
-
-            len = strlen(filename) + strlen(p->analysisCenterPath) + 1;
-            analysisCenterPath = malloc(sizeof(char)*len);
-            memset(analysisCenterPath,0,len);
-            sprintf(analysisCenterPath,"%s%s",p->analysisCenterPath,filename);
-
-            len = strlen(tempFilename) + strlen(analysisCenterPath) + 1;
-            tempAnalysisCenterPath = malloc(sizeof(char)*len);
-            memset(tempAnalysisCenterPath,0,len);
-            sprintf(tempAnalysisCenterPath,"%s%s",p->analysisCenterPath,tempFilename);
-
-            len = strlen(p->filename) + strlen(p->productCenterPath) + 1;
-            productCenterPath = malloc(sizeof(char)*len);
-            memset(productCenterPath,0,len);
-            sprintf(productCenterPath,"%s%s",p->productCenterPath,p->filename);
-
-            len = strlen(tempFilename) + strlen(p->productCenterPath) + 1;
-            tempProductCenterPath = malloc(sizeof(char)*len);
-            memset(tempProductCenterPath,0,len);
-            sprintf(tempProductCenterPath,"%s%s",p->productCenterPath,tempFilename);
-
-            uploadState = p->state;
-
-            sem_v(giSemUpload);//unlock
-
-            if( (uploadState == UPLOAD_FILE_EXIST) || (uploadState == UPLOAD_FILE_UNKNOWN) )
-			{
-                //pthread_mutex_unlock(&uploadMutex);//unlock
-				//we have three times to try to connect to ftp server ,if failed. Otherwise send network error.
-				int conncectTimes = 0;
-				while((sockfd = connectFtpServer(p->server->ip, p->server->port, p->server->username, p->server->passwd)) <= FTP_CONNECT_FAILED_FLAG)
-				{
-					if( MAX_CONNECT_TIMES <= ++conncectTimes )
-					{
-						//to recod failed connnection time
-						timer =time(NULL);
-						memset(startTime, 0, 100);
-						strftime( startTime, sizeof(startTime), "%Y-%m-%d %T",localtime(&timer) );
-
-						//add event log;
-						sem_p(giSemLog);//lock
-						addEventLog(UPLOAD_CONNNET_FAILED, filename, startTime,"");
-						sem_v(giSemLog);//unlock
-
-                        #ifdef DEBUG
-                        printf("connect error.\n");
-                        #endif
-						break;
-					}
-
-					//delay some time and connect ftp again.
-                    //delay();
-                }
-
-                if( sockfd > FTP_CONNECT_FAILED_FLAG )
-                {
-                    sem_p(giSemUpload);//lock
-                    p->state = UPLOAD_FILE_UPLOADING;//uploading state
-                    sem_v(&giSemUpload);//unlock
-                    #ifdef DEBUG
-                    printf("filename = %s,\nprefix%s\n",filename,analysisCenterPath);
-                    #endif
-
-                    // record starting-upload time
-                    timer =time(NULL);
-                    memset(startTime, 0, 100);
-                    strftime( startTime, sizeof(startTime), "%Y-%m-%d %T",localtime(&timer) );
-
-                    /*
-                    *   1.check out whether the file's father dir do exist or not.
-                    *   2.if exist, then upload the specifed file;
-                    *   3.else, make dir and then upload the file;
-                    *   4.rename the file if upload it completely.
-                    */
-                    ftp_mkdir(tempAnalysisCenterPath);//make sure the dir exists.
-                    ftperror = ftp_put(tempAnalysisCenterPath, tempProductCenterPath, sockfd);
-
-                    // record end-upload time
-                    timer =time(NULL);
-                    memset(endTime, 0, 100);
-                    strftime( endTime, sizeof(endTime), "%Y-%m-%d %T",localtime(&timer) );
-
-                    //add log
-
-                    switch(ftperror)
-                    {
-                        case UPLOAD_CONNNET_FAILED:
-                        {
-                            sem_p(giSemLog);//lock
-                            addEventLog(L_UPLOAD_CONNNET_FAILED, filename, startTime,endTime);
-                            sem_v(giSemLog);//unlock
-
-                            sem_p(giSemUpload);//lock
-                            p->state = UPLOAD_FILE_UPLOAD_FAILED;
-                            sem_v(giSemUpload);//unlock
-
-                            break;
-                        }
-                        case UPLOAD_LOCAL_FILENAME_NULL:
-                        case UPLOAD_LOCAL_OPEN_ERROR:
-                        case UPLOAD_DATA_SOCKET_ERROR:
-                        case UPLOAD_PORT_MODE_ERROR:
-                        {
-                            sem_p(giSemLog);//lock
-                            addEventLog(L_UPLOAD_FAILED, filename, startTime,endTime);
-                            sem_v(giSemLog);//unlock
-
-                            sem_p(giSemUpload);//lock
-                            p->state = UPLOAD_FILE_UPLOAD_FAILED;
-                            sem_v(giSemUpload);//unlock
-
-                            break;
-                        }
-                        case UPLOAD_SUCCESS:
-                        {
-                            ftp_rename(tempProductCenterPath,productCenterPath);//if upload succsessfull, then rename the temporary file
-
-                            sem_p(giSemLog);//lock
-                            addEventLog(L_UPLOAD_SUCCESS, filename, startTime,endTime);
-                            sem_v(giSemLog);//unlock
-
-                            sem_p(giSemUpload);//lock
-                            p->state = UPLOAD_FILE_UPLOAD_SUCCESS;
-                            sem_v(giSemUpload);//unlock
-
-                            break;
-                        }
-                        default:break;
-                    }
-
-
-                    close(sockfd);
-                }
-            }
-            else if((uploadState == UPLOAD_FILE_NONEXIST) || (uploadState == UPLOAD_FILE_UPLOAD_INTIME) || (uploadState == UPLOAD_FILE_UPLOAD_LATE))
-            {
-
-                timer =time(NULL);
-                memset(endTime, 0, 100);
-                strftime( endTime, sizeof(endTime), "%Y-%m-%d %T",localtime(&timer) );
-
-                switch(uploadState)
-                {
-                    case UPLOAD_FILE_NONEXIST:
-                    {
-                        sem_p(giSemLog);//lock
-                        addEventLog(L_UPLOAD_FILE_NOEXIST, filename, endTime,endTime);
-                        sem_v(giSemLog);//unlock
-                        break;
-                    }
-                    case UPLOAD_FILE_UPLOAD_INTIME:
-                    {
-                        sem_p(giSemLog);//lock
-                        addEventLog(L_UPLOAD_INTIME, filename, endTime,endTime);
-                        sem_v(giSemLog);//unlock
-                        break;
-                    }
-                    case UPLOAD_FILE_UPLOAD_LATE:
-                    {
-                        sem_p(giSemLog);//lock
-                        addEventLog(L_UPLOAD_LATE, filename, endTime,endTime);
-                        sem_v(giSemLog);//unlock
-                        break;
-                    }
-                    default:break;
-
-                }
-
-
-                sem_p(giSemUpload);//lock
-                p1->next=p->next;
-                ////freeUploadNode(p);//free(p);
-                p=p1;
-                sem_v(giSemUpload);//unlock
-            }
-
-            sem_p(giSemUpload);//lock
-            p1=p;
-            p=p->next;
-            sem_v(giSemUpload);//lock
-
-        }
 
     }
 
@@ -831,7 +635,6 @@ int config(char *conf)
 
     }
 
-
     fclose(fp);
 }
 
@@ -869,75 +672,41 @@ int main()
 {
 
 	// monitor analysis center,update the gloable variable uploadList, is always running
-	pid_t p_analysisCenterMonitor;
+	pthread_t analysisCenterMonitorTread;
 	// start up uoload function,transfer data from  analysis center to products&service center
-    pid_t p_upload;
+    pthread_t uploadTread;
 	// start up download function,transfer data from  data center to analysis center
-	//pid_t download;
+	pthread_t downloadTread;
 	// log file uploading or downloading action state whether success or failed
-	pid_t p_log;
+	pthread_t logTread;
 	// the most important thread, the other is actived by it,expect analysisCenterMonitorTread.
-	pid_t p_timingTask;
+	pthread_t timingTaskTread;
 
-
-    config("system.ini");
-
+	config("system.ini");
     traverseList();
-
-	//initilise upload list
-    initUploadlist();
     //initilise upload list
-    //initDownloadloadlist();
-    //initialise sem_upload,sem_download state.
-    initSem();
+    initUploadlist();
 
-	//create five processes,but never destroy them.
+
+	//create seven threads,but never destroy them.
 	{
-        //create t analysis Center   Monitor process
-        p_analysisCenterMonitor = fork();
-        if( p_analysisCenterMonitor == 0)
-        {
-            analysisCenterMonitor();
-            return 0;
-        }
+		//create the thread analysis Center   Monitor
+		pthread_create(&analysisCenterMonitorTread,NULL,analysisCenterMonitor,(void *)NULL);
 
-        //create the upload process
-        p_upload = fork();
-        if( p_upload == 0)
-        {
-            upload();
-            return 0;
-        }
+		//create the thread upload
+		pthread_create(&uploadTread,NULL,upload,(void *)NULL);
 
-        //create the download process
-        //download = fork();
-        //if( download == 0)
-        //{
-        //    download();
-        //    return 0;
-        //}
+		//create the thread upload
+		pthread_create(&logTread,NULL,log,(void *)NULL);
 
-        //create the timingTask process
-        p_timingTask = fork();
-        if( p_timingTask == 0)
-        {
-            timingTask();
-            return 0;
-        }
+		//create the thread timing task
+		pthread_create(&timingTaskTread,NULL,timingTask,(void *)NULL);
 
-        //create the log process
-        p_log = fork();
-        if( p_log == 0)
-        {
-            log();
-            return 0;
-        }
 	}
 
+
 	while(1);
-
-	return 0;
-
-
 }
+
+
 

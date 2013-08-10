@@ -15,24 +15,30 @@
 
 /********  MACRO DEFINITION  ********/
 
-#define INOTIFY_EVENTS IN_CLOSE_WRITE|IN_DELETE
+#define     INOTIFY_EVENTS          IN_CLOSE_WRITE|IN_DELETE
 //events of monitor
-#define BUF_MAX 1024
+#define     BUF_MAX                 1024
 // the max size of buffer to store the temporary monitor events
-#define UNIX_Z ".Z"
+#define     UNIX_Z                  ".Z"
 //the suffix of compression
-#define PRE_FILENAME_SIZE 4
+#define     PRE_FILENAME_SIZE       4
 //the size of the prefix of filename ,like"ACC","ACI"..
-#define POST_FILENAME_SIZE 8
+#define     POST_FILENAME_SIZE      8
 //the size of the suffix of filename ,like".irt.Z"
-#define STD_FILENAME_SIZE 20
+#define     STD_FILENAME_SIZE       20
 //the max size of the standard filename ,like"ACUwwwwd_HR.sp3.Z"
-#define COMMAND_SIZE 1000
+#define     COMMAND_SIZE            1000
 //to storre compression command,include full path and filename
-#define BEIDOU_YEAR 2006
-#define BEIDOU_MONTH 1
-#define BEIDOU_DAY 1
+#define     FILE_DIR_SIZE           7
+//the week or the year&month folder
+#define     BACKUP_FULL_PATH_SIZE   200
+#define     BEIDOU_YEAR             2006
+#define     BEIDOU_MONTH            1
+#define     BEIDOU_DAY              1
 //the first day of the BEIDOU week
+
+#define     PATH_SUFFIX             "/"
+
 
 /********  UploadNode->state  MACRO DEFINITION ********/
 #define        UPLOAD_FILE_EXIST                0
@@ -75,17 +81,22 @@ the file is exist,but didn't upload in time
 #endif
 
 
+
 typedef struct UploadNode
 {
-    char filename[STD_FILENAME_SIZE];
-    int state;
+    char * filename;
+    char * analysisCenterPath;
+    char * productCenterPath;
+    char state;
+    FtpServer * server;
     struct UploadNode * next;
-}UploadNode;
+}UploadNode,*UploadList;
 
 /*
 the strcucture of the upload list
 it included filename and state and the point to the next node
 filename records the name of the upload file,end with .z
+type means the file is GNSS or BEIDOU
 state indicates the state of the upload,it include 5 state
 UPLOAD_FILE_EXIST(0):           can be uploaded
 UPLOAD_FILE_UPLOADING(1):       uploading
@@ -103,11 +114,15 @@ void display();
 #endif
 
 struct tm * gettime();
+void initUploadlist();
 void insertlist(UploadNode * p0);
+void  delUpload(UploadNode * up);
 void search(char * name);
 int IsLeapYear(int year);
 int GetDaysOfMonth(int year,int month,int day);
 int BTS_Time(int year,int month,int day);
+int fileIsExist(char *filePath);
+void copyfile(char * filename,int type,char * dir);
 static void _inotify_event_handler(struct inotify_event *event);
 void analysisCenterMonitor();
 void hourtask(int wwww,int d,int hr);

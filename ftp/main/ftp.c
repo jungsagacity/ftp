@@ -818,3 +818,93 @@ int ftp_put(char* src_file, char * dst_file, int socket_control)
 	usleep(100);
 
 }
+
+
+
+
+
+/**
+ *      function    :   rename upload file in ftp server 
+ *      para        :   {char * oldName}   	old file name;
+ *                      {char * newName} 	new file name;
+ *                      {int socket_control} socket file description
+ *
+ *      return      :   {int} 	-1: error;
+								0: OK
+                                
+ *      history     :   {2013.7.18 wujun} fristly be created
+                        {2013.7.29 wujun} modify return data type from void to int
+**/
+int ftp_rename(char *oldName, char *newName, int socket_control)
+{
+    int error;
+
+    if(ftp_send_cmd("RNFR ", oldName, socket_control) < 0)
+    {
+        plog("Can not send user message.");
+        return -1;
+    }
+
+    error = ftp_get_reply(socket_control);
+    if( error == 350 )//350 Ready for RNTO.
+    {
+        if(ftp_send_cmd("RNTO ", newName, socket_control) < 0)
+        {
+            plog("Can not send user message.");
+            return -1;
+        }
+        else
+        {
+            error = ftp_get_reply(socket_control);
+            if(error == 250)//250 Rename successful.
+            {
+                return 0;
+            }else
+			{
+				plog("RNTO command excuted failed.");				
+				return -1;
+			}
+        }
+    }else
+	{
+		plog("RNFR command excuted failed.");					
+		return -1;
+	}
+
+    
+}
+
+
+
+/**
+ *      function    :   make dir in ftp server
+ *      para        :   {char * dirName} dir name;                    
+ *                      {int socket_control} socket file description
+ *
+ *      return      :   {int} 	-1: error;
+								0: OK
+                                
+ *      history     :   {2013.7.18 wujun} fristly be created
+                        {2013.7.29 wujun} modify return data type from void to int
+**/
+int ftp_mkdir(char *dirName, int socket_control)
+{
+    int err;
+
+    if(ftp_send_cmd("MKD ", dirName, socket_control) < 0)
+    {
+        plog("Can not send user message.");
+        return -1;
+    }
+
+    err = ftp_get_reply(socket_control);
+    if(err == 257)
+    {
+        return 0;
+    }else
+	{
+		plog("create dir error.");
+    	return -1;
+	}
+}
+

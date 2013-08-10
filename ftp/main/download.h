@@ -20,12 +20,18 @@
 #define   Highrate              "/highrate"
 
 
-typedef  struct
+typedef  struct DNode
 {
-    char remote_filename[MAX_FTP_FILE_PATH_LEN];
-    char local_filename [MAX_FTP_FILE_PATH_LEN];
-    int  state;        //-1(exist)&&1(non_exist)
-} DownloadList;
+    char *filename;//download file name;
+    char *remotePath;//file address in remote ftp server
+    char *localPath;//where file needed to place
+    char *state ;//every char corresponds to one station in the next member variable char *stations
+    char (*stations)[5];//the name of a string array storing the staion names.
+    int   taskNum;//task number.
+    FtpServer *server;
+    struct DNode *next;
+} DownloadNode,*DownloadList;
+
 
 
 typedef struct        //自定义时间数据结构
