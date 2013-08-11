@@ -10,7 +10,7 @@
 #include "ftp.h"
 #include "upload.h"
 #include "global.h"
-#include "log.h"
+#include "utility.h"
 
 
 
@@ -19,69 +19,16 @@
 *
 *--------------------------------------------------------------------------------------------*/
 extern  UploadList uploadList;//upload.c, file list periodically created by product center.
-extern  EventLog *elog;//record event,when an exception Occurs, like ftp connection,abnormal upload or download.
-extern  pthread_mutex_t uploadMutex;
-pthread_mutex_t logMutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t uploadMutex = PTHREAD_MUTEX_INITIALIZER;
-char *tempDownloadFileSuffix;
-char *tempUploadFileSuffix;
-char    *downloadInfoFile;
-FtpServer *fs;
-StationList sl;
-UploadPath *uploadPath;
+extern  pthread_mutex_t uploadMutex;//upload.c
+extern char *tempDownloadFileSuffix;//utility.c
+extern char *tempUploadFileSuffix;//utility.c
+extern char *downloadInfoFile;//utility.c
+extern      FtpServer   *fs;//utility.c
+extern      UploadPath *uploadPath;//utility.c
 
 
 
-/*-------------------------------------FUNCTION-------------------------------------------------
-*
-*----------------------------------------------------------------------------------------------*/
 
-/*****************************************************************************************
-*    function   :   clear all blank space char
-*    para       :   {char *str} the target string
-*
-*    return     :   {void}
-*
-*    history    :   {2013.7.25 wujun} frist create;
-******************************************************************************************/
-int clearSpace(char *str)
-{
-    if(str == NULL) return -1;
-    if(strlen(str) == 0) return -1;
-
-    char *p = str;
-    int i=0;
-
-    while((*p) !=0)
-    {
-        if((*p) != ' ')
-        {
-            str[i++] = *p;
-        }
-
-        p ++;
-    }
-    str[i] = 0;
-
-    return 0;
-}
-
-
-/**************************************************************************************************
-*    function   :   delay some time
-*    para       :   {void}
-*
-*    return     :   {void}
-*
-*    history    :   {2013.7.25 wujun} frist create;
-**************************************************************************************************/
-
-void delay()
-{
-    int b=0,e=0;
-    for(b=0;b<20000;b++)
-    for(e=0;e<2000;e++);
-}
 
 
 /*************************************************************************************************
@@ -265,7 +212,7 @@ void upload()
 				//we have three times to try to connect to ftp server ,if failed. Otherwise send network error.
 				int conncectTimes = 0;
 				//while((sockfd = connectFtpServer(p->server->ip, p->server->port, p->server->username, p->server->passwd)) <= FTP_CONNECT_FAILED_FLAG)
-				while( (sockfd = connectFtpServer("127.0.0.1", 21, "ftpuser", "123456")) <= 0)
+				while( (sockfd = connectFtpServer(p->server->ip, p->server->port, p->server->username, p->server->passwd)) <= 0)
 				{
 					if( MAX_CONNECT_TIMES <= ++conncectTimes )
 					{
@@ -441,436 +388,6 @@ void upload()
 }
 
 
-
-
-
-/**************************************************************************************************
-*    function   :   event log thread
-*    para       :   {void}
-*
-*    return     :   {void}
-*
-*    history    :   {2013.7.25 wujun} frist create;
-**************************************************************************************************/
-extern FILE *upLogFp;
-extern FILE *dwLogFp;
-void log()
-{
-	initEventLog();
-	while(1)
-	{
-
-		delay();
-
-		pthread_mutex_lock(&logMutex);//lock
-		writeEventLog(UPLOAD_LOG_FILE, DOWNLOAD_LOG_FILE);
-		pthread_mutex_unlock(&logMutex);//unlock
-	}
-
-    fclose(dwLogFp);
-	fclose(upLogFp);
-}
-
-
-
-/**************************************************************************************************
-*    function   :   load system.ini file
-*    para       :   {char *conf} system.ini path
-*
-*    return     :   {int} -1:error;0:ok.
-*
-*    history    :   {2013.8.9 wujun} frist create;
-**************************************************************************************************/
-int config(char *conf)
-{
-    int k=0;
-    FILE *fp;
-    fp = fopen(conf, "r");
-
-    char buff[1000];
-    memset(buff, 0, 1000);
-
-    FtpServer * fsNode;
-
-    fs=(FtpServer *)malloc(sizeof(FtpServer));
-    memset(fs, 0, sizeof(FtpServer));
-    fs->next = NULL;
-
-    sl = (StationNode *)malloc(sizeof(StationNode));
-    memset(sl,0,sizeof(StationList));
-    sl->next = NULL;
-
-    uploadPath = (UploadPath*)malloc(sizeof(UploadPath));
-    memset(uploadPath, 0, sizeof(UploadPath));
-
-
-    if(fp == NULL)
-    {
-        printf("open file error.\n");
-        return -1;
-    }
-
-    while(fgets(buff, 1000, fp) != NULL)
-    {
-        if((buff[0] == '#') || (buff[0] == '\n') )
-        {
-            continue;
-        }
-
-        clearSpace(buff);
-        //printf("%s\n",buff);
-
-        int i, j;
-        i = j =0;
-        while(buff[i++] != ':');
-        char *name;
-        name = (char *)malloc(i);
-        memset(name, 0, i);
-        strncpy(name, buff, i-1);
-        j = i;
-        clearSpace(name);
-
-        int parNum = 0;
-        if( !strcmp(name,"productCenterFtp"))
-        {
-            fsNode = (FtpServer*)malloc(sizeof(FtpServer));
-            memset(fsNode, 0, sizeof(FtpServer));
-            printf("new node addr: \t%o\n",fsNode);
-
-            while(buff[i-1] !='\n')
-            {
-                while(buff[i++] != '\t' && buff[i-1] != '\n');
-                switch( ++parNum )
-                {
-                    case 1://ftp server ip
-                    {
-                        fsNode->ip = (char *)malloc(i-j);
-                        memset(fsNode->ip, 0, i-j);
-                        strncpy(fsNode->ip,buff+j, i-j-1);
-                        j = i;
-                        #ifdef DEBUG
-                        printf("ip:%s\n",fsNode->ip);
-                        #endif
-                        break;
-                    }
-                    case 2://port
-                    {
-                        char port[10] = {0};
-                        strncpy(port,buff+j, i-j-1);
-                        fsNode->port = atoi(port);
-                        j = i;
-                        #ifdef DEBUG
-                        printf("port:%d\n",fsNode->ip);
-                        #endif
-                        break;
-                    }
-                    case 3://username
-                    {
-                        fsNode->username = (char *)malloc(i-j);
-                        memset(fsNode->username, 0, i-j);
-                        strncpy(fsNode->username,buff+j, i-j-1);
-                        j = i;
-
-
-                        if( buff[i-1] == '\n')
-                        {
-                            fsNode->passwd = (char *)malloc(1);
-                            memset(fsNode->passwd, 0, 1);
-
-                        }
-
-                        #ifdef DEBUG
-                        printf("username:%s\n",fsNode->username);
-                        #endif
-                        break;
-                    }
-                    case 4://passwd
-                    {
-                        fsNode->passwd = (char *)malloc(i-j);
-                        memset(fsNode->passwd, 0, i-j);
-                        strncpy(fsNode->passwd,buff+j, i-j-1);
-
-                        #ifdef DEBUG
-                        printf("passwd:%s\n",fsNode->passwd);
-                        #endif
-                        break;
-
-                    }
-                    default:break;
-                }
-
-            }
-
-            //make sure the product cener fpt info placed in the first node.
-            fs->next = fsNode;
-            printf("fs:%o\tnode%o\n",fs->next,fsNode);
-
-
-            printf("fsNode->ip:%s\n",fsNode->ip);
-            printf("fs:%o\tnode%o\n",fs->next,fsNode);
-            fsNode ->next = NULL;
-            fsNode = NULL;
-
-        }
-
-
-        if( !strcmp(name,"dataCenterFtp"))
-        {
-            fsNode = (FtpServer*)malloc(sizeof(FtpServer));
-            memset(fsNode, 0, sizeof(FtpServer));
-            parNum = 0;
-            while(buff[i-1] !='\n')
-            {
-                while(buff[i++] != '\t' && buff[i-1] != '\n');
-                switch( ++parNum )
-                {
-                    case 1://ftp server ip
-                    {
-                        fsNode->ip = (char *)malloc(i-j);
-                        memset(fsNode->ip, 0, i-j);
-                        strncpy(fsNode->ip,buff+j, i-j-1);
-                        j = i;
-
-                        #ifdef DEBUG
-                        printf("fsNode->ip:%s\n",fsNode->ip);
-                        #endif
-                        break;
-                    }
-                    case 2://port
-                    {
-                        char port[10] = {0};
-                        strncpy(port,buff+j, i-j-1);
-                        fsNode->port = atoi(port);
-                        j = i;
-                        #ifdef DEBUG
-                        printf("port:%d\n",fsNode->ip);
-                        #endif
-                        break;
-                    }
-                    case 3://username
-                    {
-                        fsNode->username = (char *)malloc(i-j);
-                        memset(fsNode->username, 0, i-j);
-                        strncpy(fsNode->username,buff+j, i-j-1);
-                        j = i;
-
-
-                        if( buff[i-1] == '\n')
-                        {
-                            fsNode->passwd = NULL;
-                        }
-
-                        #ifdef DEBUG
-                        printf("username:%s\n",fsNode->username);
-                        #endif
-                        break;
-                    }
-                    case 4://passwd
-                    {
-                        fsNode->passwd = (char *)malloc(i-j);
-                        memset(fsNode->passwd, 0, i-j);
-                        strncpy(fsNode->passwd,buff+j, i-j-1);
-
-                        #ifdef DEBUG
-                        printf("passwd:%s\n",fsNode->passwd);
-                        #endif
-                        break;
-
-                    }
-                    default:break;
-                }
-
-            }
-
-            //make sure the product cener fpt info placed in the first node.
-            if(fs->next == NULL)
-            {
-                fsNode ->next = NULL;
-                fs->next = fsNode;
-
-            }else
-            {
-                FtpServer * tmp = fs->next->next;
-                fsNode ->next = tmp;
-                fs->next->next = fsNode;
-
-
-            }
-
-            fsNode = NULL;
-
-        }
-
-        if( !strcmp(name,"stations"))
-        {
-            printf("buf:%s\n",buff);
-            while(buff[i-1] !='\n')
-            {
-                while(buff[i++] != '\t' && buff[i-1] != '\n');
-                char *statesionFileName;
-                statesionFileName = (char *)malloc(i-j);
-                memset(statesionFileName, 0, i-j);
-                strncpy(statesionFileName,buff+j, i-j-1);
-
-                j = i;
-                printf("statesionFileName:%s\n",statesionFileName);
-
-                StationNode *slNode;
-                slNode = (StationNode *)malloc(sizeof(StationNode));
-                memset(slNode, 0, sizeof(StationNode));
-
-                FILE *fp = fopen(statesionFileName,"r");
-                if(fp == NULL)
-                {
-                    printf("The file %s does not exist.\n",statesionFileName);
-                    return -1;
-                }
-
-                char buf[7];
-                char (*station)[5];
-
-                while(fgets(buf,7,fp))
-                {
-                    k++;
-                }
-
-                printf("k = %d\n",k);
-
-                station = (char **)malloc(k*5);
-                memset(station,0,k*5);
-
-                fseek(fp, 0,SEEK_SET);
-                 while(fgets(buf,7,fp))
-                {
-                    strncpy(station[--k], buf, 4);
-                    //printf("%s\n",station[k]);
-                }
-
-                slNode ->name = statesionFileName;
-                slNode ->station = station;
-                sl->next = slNode;
-                slNode ->next = NULL;
-
-                //free(station);
-                fclose(fp);
-                delay();
-                k = 0;
-            }
-        }
-
-        if( !strcmp(name,"tempDownloadFileSuffix"))
-        {
-            while(buff[i++] !='\n');
-            tempDownloadFileSuffix = (char *)malloc(i-j);
-            memset(tempDownloadFileSuffix, 0, i-j);
-            strncpy( tempDownloadFileSuffix, buff+j, i-j-1);
-            clearSpace(tempDownloadFileSuffix);
-            j = i;
-            printf("%s\n",tempDownloadFileSuffix);
-        }
-
-        if( !strcmp(name,"tempUploadFileSuffix"))
-        {
-            while(buff[i++] !='\n');
-            tempUploadFileSuffix = (char *)malloc(i-j);
-            memset(tempUploadFileSuffix, 0, i-j);
-            strncpy( tempUploadFileSuffix, buff+j, i-j-1);
-            clearSpace(tempUploadFileSuffix);
-            j = i;
-            printf("%s\n",tempUploadFileSuffix);
-        }
-
-        if( !strcmp(name,"BDLocalPathPrefix"))
-        {
-            while(buff[i++] !='\n');
-            uploadPath->BDLocalPathPrefix = (char *)malloc(i-j);
-            memset(uploadPath->BDLocalPathPrefix, 0, i-j);
-            strncpy( uploadPath->BDLocalPathPrefix, buff+j, i-j-1);
-            clearSpace(uploadPath->BDLocalPathPrefix);
-            j = i;
-            printf("%s\n",uploadPath->BDLocalPathPrefix);
-
-        }
-
-        if( !strcmp(name,"GNSSLocalPathPrefix"))
-        {
-            while(buff[i++] !='\n');
-            uploadPath->GNSSLocalPathPrefix = (char *)malloc(i-j);
-            memset(uploadPath->GNSSLocalPathPrefix, 0, i-j);
-            strncpy( uploadPath->GNSSLocalPathPrefix, buff+j, i-j-1);
-            clearSpace(uploadPath->GNSSLocalPathPrefix);
-            j = i;
-            printf("%s\n",uploadPath->GNSSLocalPathPrefix);
-
-        }
-
-        if( !strcmp(name,"BDLocalPathPrefixBak"))
-        {
-            while(buff[i++] !='\n');
-            uploadPath->BDLocalPathPrefixBak = (char *)malloc(i-j);
-            memset(uploadPath->BDLocalPathPrefixBak, 0, i-j);
-            strncpy( uploadPath->BDLocalPathPrefixBak, buff+j, i-j-1);
-            clearSpace(uploadPath->BDLocalPathPrefixBak);
-            j = i;
-            printf("%s\n",uploadPath->BDLocalPathPrefixBak);
-        }
-
-
-        if( !strcmp(name,"GNSSLocalPathPrefixBak"))
-        {
-            while(buff[i++] !='\n');
-            uploadPath->GNSSLocalPathPrefixBak = (char *)malloc(i-j);
-            memset(uploadPath->GNSSLocalPathPrefixBak, 0, i-j);
-            strncpy( uploadPath->GNSSLocalPathPrefixBak, buff+j, i-j-1);
-            clearSpace(uploadPath->GNSSLocalPathPrefixBak);
-            j = i;
-            printf("%s\n",uploadPath->GNSSLocalPathPrefixBak);
-
-        }
-
-        if( !strcmp(name,"BDRemotePathPrefix"))
-        {
-            while(buff[i++] !='\n');
-            uploadPath->BDRemotePathPrefix = (char *)malloc(i-j);
-            memset(uploadPath->BDRemotePathPrefix, 0, i-j);
-            strncpy( uploadPath->BDRemotePathPrefix, buff+j, i-j-1);
-            clearSpace(uploadPath->BDRemotePathPrefix);
-            j = i;
-            printf("%s\n",uploadPath->BDRemotePathPrefix);
-
-        }
-
-
-        if( !strcmp(name,"GNSSRemotePathPrefix"))
-        {
-            while(buff[i++] !='\n');
-            uploadPath->GNSSRemotePathPrefix = (char *)malloc(i-j);
-            memset(uploadPath->GNSSRemotePathPrefix, 0, i-j);
-            strncpy( uploadPath->GNSSRemotePathPrefix, buff+j, i-j-1);
-            clearSpace(uploadPath->GNSSRemotePathPrefix);
-            j = i;
-            printf("%s\n",uploadPath->GNSSRemotePathPrefix);
-
-        }
-
-        if( !strcmp(name,"downloadInfoFile"))
-        {
-
-            while(buff[i++] !='\n');
-            downloadInfoFile = (char *)malloc(i-j);
-            memset(downloadInfoFile, 0, i-j);
-            strncpy( downloadInfoFile, buff+j, i-j-1);
-            j = i;
-            #ifdef BUG
-            printf("%s\n",downloadInfoFile);
-            #endif
-
-        }
-    }
-    fclose(fp);
-    delay();
-}
-
 int main()
 {
 
@@ -879,29 +396,21 @@ int main()
 	// start up uoload function,transfer data from  analysis center to products&service center
     pthread_t uploadTread;
 	// log file uploading or downloading action state whether success or failed
-	pthread_t logTread;
-	// the most important thread, the other is actived by it,expect analysisCenterMonitorTread.
+
 	pthread_t timingTaskTread;
 
     config("system.ini");
     //traverseList();
     initUploadlist();
 
-	//create seven threads,but never destroy them.
-	{
-		//create the thread analysis Center   Monitor
-		pthread_create(&analysisCenterMonitorTread,NULL,analysisCenterMonitor,(void *)NULL);
+    //create the thread analysis Center   Monitor
+    pthread_create(&analysisCenterMonitorTread,NULL,analysisCenterMonitor,(void *)NULL);
 
-		//create the thread upload
-		pthread_create(&uploadTread,NULL,upload,(void *)NULL);
+    //create the thread upload
+    pthread_create(&uploadTread,NULL,upload,(void *)NULL);
 
-		//create the thread upload
-		pthread_create(&logTread,NULL,log,(void *)NULL);
-
-		//create the thread timing task
-		pthread_create(&timingTaskTread,NULL,timingTask,(void *)NULL);
-
-	}
+    //create the thread timing task
+    pthread_create(&timingTaskTread,NULL,timingTask,(void *)NULL);
 
 
 	while(1);

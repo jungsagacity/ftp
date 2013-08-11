@@ -20,7 +20,7 @@ UploadList uploadList;
 extern FtpServer * fs;
 extern UploadPath * uploadPath;
 
-extern pthread_mutex_t uploadMutex ;
+pthread_mutex_t uploadMutex = PTHREAD_MUTEX_INITIALIZER;
 
 
 void up_delay()

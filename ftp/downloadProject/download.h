@@ -29,6 +29,10 @@
 #define   Z                ".Z"
 #define   MAX_STATION_FILE_NAME_SIZE   20
 
+#define    HANDLE_NO        1
+#define    HANDLE_YES       2
+
+
 typedef struct        //自定义时间数据结构
 {
     int year;
@@ -63,6 +67,7 @@ typedef  struct DNode
     char *state ;        //every char corresponds to one station in the next member variable char *stations
     int   taskNum;       //task number.
     FtpServer *server;
+    char  isHandled;//1: not deal with,2:has been deal with.
     struct DNode *next;
 } DownloadNode, *DownloadList;
 

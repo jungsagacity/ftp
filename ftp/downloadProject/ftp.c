@@ -35,18 +35,14 @@ int dirIsExist(char *filePath)
 {
     if( filePath == NULL )
     {
-        #ifdef DEBUG
-        printf("Fun(dirIsExist): parameter is NULL.\n");
-        #endif
+        plog("%s\n","Fun(dirIsExist): parameter is NULL.\n");
         return -1;
     }
 
     int len =  strlen(filePath);
     if( len == 0)
     {
-        #ifdef DEBUG
-        printf("Fun(dirIsExist): parameter content is '0' .\n");
-        #endif
+        plog("%s\n","Fun(dirIsExist): parameter content is '0' .\n");
         return -1;
     }
 
@@ -55,9 +51,7 @@ int dirIsExist(char *filePath)
     path = (char *)malloc(len+1);
     if( path == NULL)
     {
-        #ifdef DEBUG
-        printf("Fun(dirIsExist): malloc \"path\" error.\n");
-        #endif
+        plog("%s\n","Fun(dirIsExist): malloc \"path\" error.\n");
         return -1;
     }
 
@@ -74,9 +68,7 @@ int dirIsExist(char *filePath)
             {
                 if( mkdir(path, 0777) == -1 )
                 {
-                    #ifdef DEBUG
-                    printf("Fun(dirIsExist): mkdir %s error.\n.", path);
-                    #endif
+                    plog("Fun(dirIsExist): mkdir %s error.\n.", path);
                     return -1;
                 }
             }
@@ -120,9 +112,7 @@ int plog(char *format,...)
 {
    	if( format == NULL)
    	{
-        #ifdef DEBUG
         printf("Fun(writeLog): parameter is Null.\n");
-        #endif
         return -1;
    	}
 
@@ -139,7 +129,7 @@ int plog(char *format,...)
     int month = st->tm_mon + 1;
     int year = st->tm_year + 1990;
 
-    sprintf(startTime, "%s",ctime(&t));
+    strftime( startTime, sizeof(startTime), "%Y-%m-%d %T",localtime(&t) );
     startTime[strlen(startTime)-1] = 0;
 
     char logFile[100] ;
@@ -154,9 +144,7 @@ int plog(char *format,...)
         dwLogFp = fopen( logFile ,"wt");
         if( dwLogFp == NULL )
         {
-            #ifdef DEBUG
-            printf("Fun(writeLog):create file %s error.\n ",logFile);
-            #endif
+            plog("%s\n","Fun(writeLog):create file %s error.\n ",logFile);
             return -1;
         }
     }
@@ -164,7 +152,7 @@ int plog(char *format,...)
 
     va_list arg_ptr;
     va_start(arg_ptr, format);
-    fprintf(dwLogFp,"%s\n",startTime);
+    fprintf(dwLogFp,"%s\t",startTime);
     vfprintf(dwLogFp, format, arg_ptr);
     va_end(arg_ptr);
 
@@ -413,14 +401,17 @@ int connectFtpServer(char * server_ip, int port, char * user, char * password)
         return -1;
     }
 
+    int maxConnectTimes = 0 ;
     while ( (error=ftp_login(socket_control, user, password)) == -1 )
     {
-       error=ftp_login(socket_control, user, password);
-
+        if( (++maxConnectTimes) <3 )
+        {
+            error=ftp_login(socket_control, user, password);
+        }
+        return -1;
     }
-    #ifdef DEBUG
-    printf("socket_control = %d\n",socket_control);
-    #endif
+    plog("socket_control = %d\n",socket_control);
+
     return socket_control;
 
 }
@@ -644,17 +635,14 @@ int ftp_get(char* src_file, char * dst_file, int socket_control)
 
 	if( strlen(src_file) == 0 )
 	{
-		#ifdef DEBUG
-		plog("download: local file path is invalid.\n");
-		#endif
+		plog("%s","download: local file path is invalid.\n");
 		return DOWNLOAD_LOCAL_FILENAME_NULL;
 	}
 
 	if( strlen(dst_file) == 0 )
 	{
-		#ifdef DEBUG
-		plog("download: remote file path is invalid.\n");
-		#endif
+
+		plog("%s","download: remote file path is invalid.\n");
 		return DOWNLOAD_REMOTE_FILENAME_NULL;
 	}
 
@@ -676,9 +664,7 @@ int ftp_get(char* src_file, char * dst_file, int socket_control)
     get_sock = xconnect_ftpdata();
     if(get_sock < 0)
     {
-        #ifdef DEBUG
-        plog("download:socket error!\n");
-        #endif
+        plog("%s","download:socket error!\n");
         return DOWNLOAD_CONNECT_SOCKET_ERROR;
     }
 
@@ -697,9 +683,7 @@ int ftp_get(char* src_file, char * dst_file, int socket_control)
                 (socklen_t *)&set);
             if(new_sock == -1)
             {
-                #ifdef  DEBUG
-                plog("download:accept  errno\n");
-                #endif
+                plog("%s","download:accept  errno\n");
                 i++;
                 continue;
             }
@@ -707,16 +691,13 @@ int ftp_get(char* src_file, char * dst_file, int socket_control)
         }
         if(new_sock == -1)
         {
-            #ifdef DEBUG
-            plog("download:Sorry, you can't use PORT mode. \n");
-            #endif
+            plog("%s","download:Sorry, you can't use PORT mode. \n");
             return DOWNLOAD_PORT_MODE_ERROR;
         }
 
 		replayId = ftp_get_reply(socket_control);
-		#ifdef DEBUG
-		printf("reply code:%d",replayId);
-        #endif
+		plog("reply code:%d\n",replayId);
+
         if(replayId == 550)//remote file does not exist.
         {
             return DOWNLOAD_REMOTE_FILE_NOEXIST;
@@ -725,9 +706,7 @@ int ftp_get(char* src_file, char * dst_file, int socket_control)
         local_file = open(dst_file, O_RDWR|O_CREAT|O_TRUNC);
         if(local_file < 0)
         {
-            #ifdef DEBUG
-            plog("download:creat local file  error!\n");
-            #endif
+            plog("%s","download:creat local file  error!\n");
             return DOWNLOAD_CREAET_LOCALFILE_ERROR;
         }
 
@@ -754,9 +733,8 @@ int ftp_get(char* src_file, char * dst_file, int socket_control)
     else
     {
 		replayId = ftp_get_reply(socket_control);
-		#ifdef DEBUG
-		printf("reply code:%d",replayId);
-        #endif
+		plog("reply code:%d\n",replayId);
+
         if(replayId == 550)//remote file does not exist.
         {
             return DOWNLOAD_REMOTE_FILE_NOEXIST;
@@ -765,9 +743,7 @@ int ftp_get(char* src_file, char * dst_file, int socket_control)
         local_file = open(dst_file, O_RDWR|O_CREAT|O_TRUNC);
         if(local_file < 0)
         {
-            #ifdef DEBUG
-            plog("download:creat local file  error!\n");
-            #endif
+            plog("%s","download:creat local file  error!\n");
             return DOWNLOAD_CREAET_LOCALFILE_ERROR;
         }
 
@@ -788,9 +764,8 @@ int ftp_get(char* src_file, char * dst_file, int socket_control)
                 write(local_file, rcv_buf, count);
             }
         }
-        #ifdef DEBUG
-		plog(" get over.\n");
-        #endif
+		plog("%s","get over.\n");
+
 
     }
 
@@ -824,28 +799,24 @@ int ftp_put(char* src_file, char * dst_file, int socket_control)
 
     if(stat(src_file,&file_info)<0)
     {
-        #ifdef DEBUG
         memset(log,0 ,500);
         sprintf(log,"upload:local file %s doesn't exist!\n",src_file);
-        plog(log);
-        #endif
+        plog("%s",log);
+
         return UPLOAD_LOCAL_FILENAME_NULL;
     }
     local_file=open(src_file,O_RDONLY);
     if(local_file<0)
     {
-        #ifdef DEBUG
-        plog("upload: Open file error.\n");
-        #endif
+        plog("%s","upload: Open file error.\n");
+
         return UPLOAD_LOCAL_OPEN_ERROR;
     }
     file_put_sock=xconnect_ftpdata();
     if(file_put_sock<0)
     {
         ftp_get_reply(socket_control);
-        #ifdef DEBUG
-        plog("upload:Creat data socket error.\n");
-        #endif
+        plog("%s","upload:Creat data socket error.\n");
         return UPLOAD_DATA_SOCKET_ERROR;
     }
     ftp_send_cmd("STOR ",dst_file,socket_control);
@@ -861,9 +832,7 @@ int ftp_put(char* src_file, char * dst_file, int socket_control)
             new_sock=accept(file_put_sock,(struct sockaddr *)&local_host,(socklen_t*)&set);
             if(new_sock==-1)
             {
-                #ifdef DEBUG
-                plog("upload:error create new_sock in put port.\n");
-                #endif
+                plog("%s","upload:error create new_sock in put port.\n");
                 i++;
                 continue ;
             }
@@ -872,9 +841,7 @@ int ftp_put(char* src_file, char * dst_file, int socket_control)
         }
         if(new_sock==-1)
         {
-            #ifdef DEBUG
-            plog("upload:The PORT mode won't work.\n");
-            #endif
+            plog("%s","upload:The PORT mode won't work.\n");
             return UPLOAD_PORT_MODE_ERROR;
         }
         while(1)
@@ -934,9 +901,7 @@ int ftp_rename(char *oldName, char *newName, int socket_control)
     error = ftp_get_reply(socket_control);
     if( error < 0)
     {
-        #ifdef DEBUG
-        plog("Can not send user message.\n");
-        #endif
+        plog("%s","Can not send user message.\n");
         return -1;
     }
 
@@ -947,9 +912,7 @@ int ftp_rename(char *oldName, char *newName, int socket_control)
         error = ftp_get_reply(socket_control);
         if( error < 0)
         {
-            #ifdef DEBUG
-            plog("Can not send user message.\n");
-            #endif
+            plog("%s","Can not send user message.\n");
             return -1;
         }
         else
@@ -959,17 +922,13 @@ int ftp_rename(char *oldName, char *newName, int socket_control)
                 return 0;
             }else
 			{
-				#ifdef DEBUG
-				plog("RNTO command excuted failed.\n");
-				#endif
+				plog("%s","RNTO command excuted failed.\n");
 				return -1;
 			}
         }
     }else
 	{
-		#ifdef DEBUG
-		plog("RNFR command excuted failed.\n");
-		#endif
+		plog("%s","RNFR command excuted failed.\n");
 		return -1;
 	}
 
@@ -1009,16 +968,14 @@ int ftp_mkdir(char *dirName, int socket_control)
         if( path[p] == '/')
         {
             path[p] = 0;
-            #ifdef DEBUG
-            printf("path:%s\n",path);
-            #endif
+
+            plog("path:%s\n",path);
+
             ftp_send_cmd("MKD ", path, socket_control);
             int error = ftp_get_reply(socket_control);
             if( error < 0)
             {
-                #ifdef DEBUG
-                plog("Can not send user message.");
-                #endif
+                plog("%s","Can not send user message.");
                 return -1;
             }
             path[p] = '/';

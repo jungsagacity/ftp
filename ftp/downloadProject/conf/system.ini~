@@ -3,8 +3,8 @@ productCenterFtp : 192.168.1.106	21	ftpuser	123456
 
 #data center ftp server login info
 #dataCenterFtp : 210.72.144.2	21	public	123456
-dataCenterFtp : cddis.gsfc.nasa.gov	21	anonymous
-
+#dataCenterFtp : cddis.gsfc.nasa.gov	21	anonymous
+dataCenterFtp : cddis.gsfc.nasa.gov	21	anonymous111
 dataCenterFtp : 210.72.144.2	21	test
 
 

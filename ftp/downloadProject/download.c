@@ -109,7 +109,7 @@ void time_module_control()
             creat_list(year,day,hour,minute,downInfoList);
             #ifdef DEBUG
             if(downloadList->next != NULL)
-                printf("add new task: %s\t%s", downloadList->next->filename,downloadList->next->localPath);
+                printf("add new task: %s\t%s\n", downloadList->next->filename,downloadList->next->localPath);
             #endif
         }
 
@@ -225,7 +225,7 @@ void add_Info(DownloadNode *s,DownInfo *p,int year,int day,int hour,int minute)
     //add filepath(server local)
     s->remotePath = replace_path( p->dataCenterPath, year, day, hour, minute, p->fileType );
     s->localPath = replace_path( p->localPath, year, day, hour, minute, p->fileType );
-
+    s->isHandled = HANDLE_NO;
     //add ftpserver
     FtpServer *f = fs->next;
 
