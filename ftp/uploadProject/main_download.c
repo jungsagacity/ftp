@@ -152,7 +152,7 @@ void timingTask()
 					#endif
 
                     pthread_mutex_lock(&downloadMutex);//lock
-					time_module_control();
+					//module_control();
 					pthread_mutex_unlock(&downloadMutex);//unlock
 				}
 
@@ -216,7 +216,7 @@ void sigleDownload(DownloadNode *dwNode, int nodeid)
 	int i = 0;
 	for(i=0;i<4;i++)
 	{
-        realFilename[i] = (dwNode->station)[nodeid][i];//replace ssss
+        realFilename[i] = dwNode->stations[nodeid][i];//replace ssss
 	}
 
     len += strlen(tempDownloadFileSuffix) + 1;
@@ -359,20 +359,6 @@ void sigleDownload(DownloadNode *dwNode, int nodeid)
 }
 
 
-void printTask(DownloadNode * p)
-{
-    printf("\n*****************************************************\n");
-    printf("filename:\t\n",p->filename);
-    printf("localpath:\t%s\n",p->localPath);
-    printf("remotepath:\t%s\n",p->remotePath);
-    printf("taskNum:\t%s\n",p->taskNum);
-    printf("server->ip:\t%s\n", p->server->ip);
-    printf("server->port:\t%d\n", p->server->port);
-    printf("server->username:\t%s\n", p->server->username);
-    printf("server->passwd:\t%s\n", p->server->passwd);
-    printf("\n*****************************************************\n");
-}
-
 
 
 /**************************************************************************************************
@@ -427,11 +413,13 @@ void download()
             p = (pthread_mutex_t *)malloc(realTaskThreadMem);
             memset(p,0,realTaskThreadMem);
 
-            //for( i = 0; i < stationNum; i++)
+            for( i = 0; i < stationNum; i++)
             {
-                printTask(p);
+
             }
         }
+
+
 
     }
 }
@@ -473,12 +461,8 @@ void log()
 int config(char *conf)
 {
     int k=0;
-    FILE *fp = fopen(conf, "r");
-    if(fp == NULL)
-    {
-        printf("file open error.\n");
-        return -1;
-    }
+    FILE *fp;
+    fp = fopen(conf, "r");
 
     char buff[1000];
     memset(buff, 0, 1000);
@@ -695,9 +679,9 @@ int config(char *conf)
                 j = i;
                 printf("statesionFileName:%s\n",statesionFileName);
 
-                StationNode *slNode,*temp;
-                slNode = (StationNode *)malloc(sizeof(StationNode));
-                memset(slNode, 0, sizeof(StationNode));
+                StationList slNode;
+                slNode = (StationList *)malloc(sizeof(StationList));
+                memset(slNode, 0, sizeof(StationList));
 
                 FILE *fp = fopen(statesionFileName,"r");
                 if(fp == NULL)
@@ -720,24 +704,16 @@ int config(char *conf)
                 memset(station,0,k*5);
 
                 fseek(fp, 0,SEEK_SET);
-                int t = 0;
                  while(fgets(buf,7,fp))
                 {
-                    if(t<k)
-                    {
-                        strncpy(station[t++], buf, 4);
-                        printf("%s\n",station[t-1]);
-                    }
-                    memset(buf, 0, 7);
-
+                    strncpy(station[--k], buf, 4);
+                    //printf("%s\n",station[k]);
                 }
 
                 slNode ->name = statesionFileName;
                 slNode ->station = station;
-                slNode ->stationNum = k;
-                temp = sl->next;
                 sl->next = slNode;
-                slNode ->next = temp;
+                slNode ->next = NULL;
 
                 //free(station);
                 fclose(fp);
@@ -855,26 +831,23 @@ int config(char *conf)
 
         }
     }
-
     fclose(fp);
 }
 
-void mergeStationList(char * name, char (*stationFileNames)[MAX_STATION_FILE_NAME_SIZE], int arrayLines)
+void mergeStationList(char (*stationFileNames)[MAX_STATION_FILE_NAME_SIZE])
 {
-    int i;
+    int i = sizeof(stationFileNames)/sizeof(*stationFileNames);
     int j = 0;
     int totalStations = 0;
     StationNode * p = sl->next;
 
-    for(i=0;i<arrayLines;i++)
+    for(i=0;i<sizeof(stationFileNames)/sizeof(*stationFileNames);i++)
     {
-        p = sl->next;
         while( p != NULL)
         {
-
             if(!strcmp(p->name, stationFileNames[i]))
             {
-               totalStations += p->stationNum;
+               totalStations += sizeof(p->station)/sizeof(*(p->station));
             }
 
             p = p->next;
@@ -885,26 +858,19 @@ void mergeStationList(char * name, char (*stationFileNames)[MAX_STATION_FILE_NAM
     newStaionArray = (char **)malloc(totalStations*5);
     memset(newStaionArray, 0, totalStations*5);
     totalStations = 0;
-    for(i=0;i<arrayLines;i++)
+    for(i=0;i<sizeof(stationFileNames)/sizeof(*stationFileNames);i++)
     {
-        p = sl->next;
         while( p != NULL)
         {
             if(!strcmp(p->name, stationFileNames[i]))
             {
-                int j;
-                for(j=0; j< p->stationNum; j++)
-                {
-                    strcpy(newStaionArray[totalStations+j],(p->station)[j]);
-                }
-                totalStations += p->stationNum;
-                break;
+               memcpy(*newStaionArray+totalStations, *(p->station), sizeof(p->station));
+               totalStations += sizeof(p->station)/sizeof(*(p->station));
+               break;
             }
 
             p = p->next;
         }
-
-
     }
 
     int deleteNum = 0;
@@ -912,9 +878,9 @@ void mergeStationList(char * name, char (*stationFileNames)[MAX_STATION_FILE_NAM
     {
         for(j=i+1;j<totalStations;j++)
         {
-            if(!strcmp(newStaionArray[i], newStaionArray[j]) )
+            if(!strcmp(*newStaionArray+i, *newStaionArray+i) )
             {
-                memset(newStaionArray[i], 0, 5);
+                memset(*newStaionArray+i, 0, 5);
                 deleteNum++;
             }
         }
@@ -927,30 +893,22 @@ void mergeStationList(char * name, char (*stationFileNames)[MAX_STATION_FILE_NAM
     char (*mergeStationArray)[5] = (char **)malloc((totalStations - deleteNum)*5);
     memset(mergeStationArray, 0, (totalStations - deleteNum)*5);
 
-    j=0;
-    for(i=0;i<totalStations;i++)
+    for(i=0,j=0;i<totalStations-1;i++)
     {
-        if(strlen(newStaionArray[i]))
+        if(strlen(*newStaionArray+i))
         {
-            strcpy(mergeStationArray[j++], newStaionArray[i]);
+            memcpy(*mergeStationArray+(j++), *newStaionArray+i, 5);
         }
 
     }
 
-
-    newStationNode->name = (char *)malloc(strlen(name)+1);
-    memset(newStationNode->name, 0 ,strlen(name)+1);
-    strcpy(newStationNode->name,name);
-
-    newStationNode->station = mergeStationArray;
-    newStationNode ->stationNum = j;
     p = sl->next;
     sl->next = newStationNode;
-    newStationNode->next = p;
+    newStationNode = p;
 
-    //free(newStaionArray);
+    free(newStaionArray);
     #ifdef DEBUG
-    printf("num = %d,\tdeleteNum = %d,\ttotalStations = %d\n", newStationNode ->stationNum,deleteNum,totalStations);
+    printf("j = %d,\tdeleteNum = %d,\ttotalStations = %d\n", j,deleteNum,totalStations);
     #endif
 
 }
@@ -959,69 +917,50 @@ void mergeStationList(char * name, char (*stationFileNames)[MAX_STATION_FILE_NAM
 void stationListReload()
 {
     DownInfo *p = downInfoList->next;
-    StationNode *psl;
+    StationNode *psl = sl->next;
     int i=0,j=0;
 
 
     while( p != NULL )
     {
-
         i=0; j=0;
-        psl = sl->next;
-
         while(psl != NULL)
         {
             if(!strcmp(p->stationList, psl->name))// not equal to
             {
-                break;
+                continue;
             }
 
             psl  = psl->next;
         }
 
-
         if( psl == NULL)
         {
             //get file number according to the character ','
-            while( (p->stationList)[i] )
+            while( p->stationList[i] )
             {
-
-                if((p->stationList)[i] == ',')
+                if(p->stationList[i] == ',')
                 {
                     j++;
                 }
                 i++;
             }
 
-
             //allocate memory
             char (*stationFileName)[MAX_STATION_FILE_NAME_SIZE] = (char **)malloc((j+1)*MAX_STATION_FILE_NAME_SIZE);
             memset(stationFileName, 0, (j+1)*MAX_STATION_FILE_NAME_SIZE);
 
-            printf("j=%d: %s\n",j, p->stationList);
-            char *name = malloc(strlen(p->stationList)+1);
-            memset(name, 0, strlen(p->stationList)+1);
-            strcpy(name, p->stationList);
-            //printf("sss: %s\n",strtok(p->stationList,","));
-            strcpy(stationFileName[0], strtok(p->stationList,","));
-            //printf("kk:%s\n",stationFileName[0]);
+            strcpy(*stationFileName[0], strtok(p->stationList,','));
             for(i = 1; i <= j; i++)
             {
-                strcpy(stationFileName[i], strtok(NULL,","));
+                strcpy(stationFileName[i], strtok(NULL,','));
             }
-            printf("merge........%s.\n", name);
-            //mergeStationList(name, stationFileName, j+1);
+
+            mergeStationList(stationFileName);
             free(stationFileName);
-            free(name);
 
         }
-
-        p = p->next;
-
-
     }
-
-
 
 }
 
@@ -1035,13 +974,9 @@ void initList()
     memset(fs, 0, sizeof(FtpServer));
     fs->next = NULL;
 
-    sl = (StationNode *)malloc(sizeof(StationNode));
-    memset(sl,0,sizeof(StationNode));
+    sl = (StationList *)malloc(sizeof(StationList));
+    memset(sl,0,sizeof(StationList));
     sl->next = NULL;
-
-    downloadList=(DownloadNode*)malloc(sizeof(DownloadNode));
-    memset(downloadList, 0, sizeof(DownloadNode));
-    downloadList->next = NULL;
 }
 
 
@@ -1051,15 +986,13 @@ void testStationList()
 
     while(p != NULL)
     {
-        int i = p->stationNum;
-        printf("i : %d,\tname : %s\n",i,p->name);
+        printf("name : %s\n",p->name);
+        int i = sizeof(p->station)/sizeof(*(p->station));
         while(i--)
         {
             printf("%d\t%s\n",i,(p->station)[i]);
         }
-        int j;
-        //if() break;
-        break;
+
         p = p->next;
     }
 }
@@ -1077,22 +1010,22 @@ int main()
     initList();
     config("system.ini");
 
-    readDownloadInfo(downloadInfoFile, downInfoList);
-    testStationList();
+    //readDownloadInfo(downloadInfoFile, downInfoList);
+
     //displayDW(downInfoList);
-    //stationListReload();
-    //testStationList();
+    stationListReload();
+    testStationList();
     //initDownloadlist();
 
 
     //create the thread upload
-    pthread_create(&downloadTread,NULL,download,(void *)NULL);
+    //pthread_create(&downloadTread,NULL,upload,(void *)NULL);
     //create the thread upload
-    pthread_create(&logTread,NULL,log,(void *)NULL);
+    //pthread_create(&logTread,NULL,log,(void *)NULL);
     //create the thread timing task
-    pthread_create(&timingTaskTread,NULL,timingTask,(void *)NULL);
+    //pthread_create(&timingTaskTread,NULL,timingTask,(void *)NULL);
 
 
-	while(1);
+	//while(1);
 }
 

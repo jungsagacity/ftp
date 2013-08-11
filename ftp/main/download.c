@@ -7,40 +7,13 @@
 
 #include "download.h"
 
+
 int    tmp=-1;
 
-extern FtpSever *fs;
 DownloadList downloadList;
+extern FtpServer *fs;
 extern DownInfo *downInfoList;
 extern StationList sl;
-
-
-/*
-int main()
-{
-    downInfoList= initDownInfolist();
-    readtxt(downInfoList);    //displayDW(DI);
-
-
-    downloadList=(DownloadNode*)malloc(sizeof(DownloadNode));
-    memset(downloadList, 0, sizeof(DownloadNode));
-    downloadList->next = NULL;
-    time_module_control();
-
-    test1:
-            creat_list(2013,220,24,0,downInfoList);
-            DownloadNode *p=downloadList->next;
-            while(p!=NULL)
-            {
-                printf("%s\n%s\n%s\n\n",p->filename,p->remotePath,p->localPath);
-                //printf("taskNum=%d\n%s\n%s\n",p->taskNum,p->state,p->server->ip);
-                p=p->next;
-            }
-
-}
-*/
-
-
 
 
 /******************************************************************************************
@@ -240,7 +213,7 @@ void add_Info(DownloadNode *s,DownInfo *p,int year,int day,int hour,int minute)
 
 
     //add ftpserver
-    FtpSever *f=fs->next;
+    FtpServer *f=fs->next;
     while(strcmp(p->downloadServer,f->ip)!=0)
     {
         f=f->next;
@@ -248,25 +221,25 @@ void add_Info(DownloadNode *s,DownInfo *p,int year,int day,int hour,int minute)
     s->server=f;
 
     //add  station list
-    StationList *w=sl->next;
-    while(strcmp(p->stateList,w->name)!=0)
+    StationNode * w=sl->next;
+    while(strcmp(p->stationList,w->name)!=0)
     {
         w=w->next;
     }
-    s->station=w->list;
+    s->station=w->station;
 
     int i=0;
     int k=0;
     s->state=(char*)malloc(sizeof(char)*MAX_size);
     memset(s->state,0,MAX_size);
 
-    while(s->station[i]!=NULL)
+    while((s->station)[i]!=NULL)
     {
         char *filepath1=(char*)malloc(sizeof(char)*MAX_size);
         memset(filepath1,0,sizeof(char)*MAX_size);
         strcpy(filepath1,s->localPath);
         strcat(filepath1,s->filename);
-        char *check1=replace(filepath1,stationame,s->stations[i]);
+        char *check1=replace(filepath1,stationame,(s->station)[i]);
 #ifdef  DEBUG
         printf("check1=%s\n",check1);
 #endif
@@ -279,7 +252,7 @@ void add_Info(DownloadNode *s,DownInfo *p,int year,int day,int hour,int minute)
         memset(filepath2,0,MAX_size);
         strcpy(filepath2,s->localPath);
         strcat(filepath2,tmp2);
-        char *check2=replace(filepath2,stationame,s->stations[i]);
+        char *check2=replace(filepath2,stationame,(s->station)[i]);
 #ifdef  DEBUG
         printf("check2=%s\n",check2);
 #endif
@@ -294,7 +267,7 @@ void add_Info(DownloadNode *s,DownInfo *p,int year,int day,int hour,int minute)
             s->state[i]==DOWNLOAD_FILE_NONEXIST;
             k++;
         }
-        i++
+        i++;
     }
 
     //add  taskNum
@@ -497,7 +470,7 @@ int transfer(int year,int month,int day)
 *    history    :   {2013.7.22 yangyang} frist create;
 *************************************************************************************/
 
-char Search_file(char filename[])
+char Search_file(char *filename)
 {
     int k=0;
     k=access(filename,0);
@@ -506,11 +479,6 @@ char Search_file(char filename[])
     else
         return DOWNLOAD_FILE_NONEXIST;
 }
-
-
-
-
-
 
 
 
@@ -527,7 +495,7 @@ void displayDW(DownInfo * head)
     p=head->next;
     while(p!=NULL)
     {
-        printf("%d\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n",p->id,p->source,p->timeType,p->fileType,p->stateList,p->downloadServer,p->dataCenterPath,p->localPath);
+        printf("%d\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n",p->id,p->source,p->timeType,p->fileType,p->stationList,p->downloadServer,p->dataCenterPath,p->localPath);
         p=p->next;
     }
 }
@@ -592,7 +560,7 @@ void  delDownInfo(DownInfo * downInfoList,DownInfo * down)
         free(q->localPath);
         free(q->dataCenterPath);
         free(q->downloadServer);
-        free(q->stateList);
+        free(q->stationList);
         free(q->fileType);
         free(q->timeType);
         free(q->source);
@@ -633,19 +601,21 @@ void removespace(char  * str)
                                 1:success
 **/
 
-int readDownloadInfo(DownInfo * downInfoList)
+int readDownloadInfo(char * downloadInfoFile, DownInfo * downInfoList)
 {
     FILE *fp;
     char delims[]="\t";
     char buf[BUF_SIZE];
     char * tmp = NULL;
-    if((fp=fopen(DOWN_INFO_PATH,"r"))==NULL)
+    if((fp=fopen(downloadInfoFile,"r"))==NULL)
     {
-#ifdef DEBUG_1
+#ifdef DEBUG
         printf("cannot open file\n");
 #endif
         return 0;
     }
+    printf("df\n");
+
 
     //read lines
     while(fgets(buf,BUF_SIZE,fp)!=NULL)
@@ -656,7 +626,7 @@ int readDownloadInfo(DownInfo * downInfoList)
         tmp=strtok(buf,delims);
         int id = atoi(tmp);
 
-#ifdef DEBUG_1
+#ifdef DEBUG
         printf("id:%d\n",id);
 #endif
 
@@ -669,7 +639,7 @@ int readDownloadInfo(DownInfo * downInfoList)
 
             while(tmp!=NULL)
             {
-#ifdef DEBUG_1
+#ifdef DEBUG
                 printf("tmp%d:%s\n",i,tmp);
 #endif
 
@@ -687,7 +657,7 @@ int readDownloadInfo(DownInfo * downInfoList)
                     dw->source = (char *)malloc(len);
                     memset(dw->source,0, len);
                     strcpy(dw->source, tmp);
-#ifdef DEBUG_1
+#ifdef DEBUG
                     printf("source:%s\n",dw->source);
 #endif
                     break;
@@ -700,7 +670,7 @@ int readDownloadInfo(DownInfo * downInfoList)
                     dw->timeType = (char *)malloc(len);
                     memset(dw->timeType,0, len);
                     strcpy(dw->timeType, tmp);
-#ifdef DEBUG_1
+#ifdef DEBUG
                     printf("timeType:%s\n",dw->timeType);
 #endif
                     break;
@@ -714,22 +684,22 @@ int readDownloadInfo(DownInfo * downInfoList)
                     dw->fileType = (char *)malloc(len);
                     memset(dw->fileType,0, len);
                     strcpy(dw->fileType, tmp);
-#ifdef DEBUG_1
+#ifdef DEBUG
                     printf("fileType:%s\n",dw->fileType);
 #endif
                     break;
 
                 }
-                //stateList like:igu.sta
+                //stationList like:igu.sta
                 case 3:
                 {
 
                     int len=strlen(tmp)+1;
-                    dw->stateList = (char *)malloc(len);
-                    memset(dw->stateList,0, len);
-                    strcpy(dw->stateList, tmp);
-#ifdef DEBUG_1
-                    printf("stateList:%s\n",dw->stateList);
+                    dw->stationList = (char *)malloc(len);
+                    memset(dw->stationList,0, len);
+                    strcpy(dw->stationList, tmp);
+#ifdef DEBUG
+                    printf("stationList:%s\n",dw->stationList);
 #endif
                     break;
 
@@ -741,7 +711,7 @@ int readDownloadInfo(DownInfo * downInfoList)
                     dw->downloadServer = (char *)malloc(len);
                     memset(dw->downloadServer,0, len);
                     strcpy(dw->downloadServer, tmp);
-#ifdef DEBUG_1
+#ifdef DEBUG
                     printf("dw->downloadServer:%s\n",dw->downloadServer);
 #endif
                     break;
@@ -753,7 +723,7 @@ int readDownloadInfo(DownInfo * downInfoList)
                     dw->dataCenterPath = (char *)malloc(len);
                     memset(dw->dataCenterPath,0, len);
                     strcpy(dw->dataCenterPath, tmp);
-#ifdef DEBUG_1
+#ifdef DEBUG
 
                     printf("dw->dataCenterPath:%s\n",dw->dataCenterPath);
 #endif
@@ -766,7 +736,7 @@ int readDownloadInfo(DownInfo * downInfoList)
                     dw->localPath = (char *)malloc(len);
                     memset(dw->localPath,0, len);
                     strcpy(dw->localPath, tmp);
-#ifdef DEBUG_1
+#ifdef DEBUG
                     printf("localPath:%s\n",dw->localPath);
 #endif
                     break;

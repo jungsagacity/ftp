@@ -9,8 +9,9 @@
 *----------------------------------------------------------------------------------------------*/
 EventLog *elog; //global variable
 EventLog *elogTail;//global variable
-extern pthread_mutex_t logMutex ;
+pthread_mutex_t logMutex ;
 
+pthread_mutex_t logMutex = PTHREAD_MUTEX_INITIALIZER;
 /**
 *    function   :   initialise EventLog header
 *    para       :   {void}

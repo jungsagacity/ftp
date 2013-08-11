@@ -1,0 +1,15 @@
+#序号	数据源	时间类型	文件类型	站点列表文件	下载服务器	数据中心文件路径格式	数据中心文件路径范例	分析中心存放根目录	分析中心文件路径范例	说明
+1	GPS+GLONASS	hourly	D	igu.sta	cddis.gsfc.nasa.gov	pub/gps/data/hourly/yyyy/ddd/hh/	(case:/pub/gps/data/hourly/2013/212/22/abmf212w.13d.Z)	GNSS/yyyy/ddd/hourly/hh/	(case: GNSS/2013/212/hourly/22/abmf212w.13d.Z)	GPS+GLONASS小时观测文件
+2	GPS+GLONASS	daily	D	igr.sta,igs.sta	cddis.gsfc.nasa.gov	pub/gps/data/daily/yyyy/ddd/yyf/	(case:/pub/gps/data/daily/2013/212/13d/abmf2120.13d.Z)	GNSS/yyyy/ddd/daily/	(case: GNSS/2013/212/daily/abmf2120.13d.Z)	GPS+GLONASS天观测文件
+3	GPS	hourly	N	igu.sta	cddis.gsfc.nasa.gov	pub/gps/data/hourly/yyyy/ddd/hh/	(case:/pub/gps/data/hourly/2013/212/22/abmf212w.13n.Z)	GNSS/yyyy/ddd/hourly/hh/	(case: GNSS/2013/212/hourly/22/abmf212w.13n.Z)	GPS 小时导航信息文件
+4	GLONASS	hourly	G	igu.sta	cddis.gsfc.nasa.gov	pub/gps/data/hourly/yyyy/ddd/hh/	(case:/pub/gps/data/hourly/2013/212/22/abmf212w.13g.Z)	GNSS/yyyy/ddd/hourly/hh/	(case: GNSS/2013/212/hourly/22/abmf212w.13g.Z)	GLONASS 小时导航信息文件
+5	GPS	daily	N	igr.sta,igs.sta	cddis.gsfc.nasa.gov	pub/gps/data/daily/yyyy/ddd/yyf/	(case:/pub/gps/data/daily/2013/212/13d/abmf2120.13d.Z)	GNSS/yyyy/ddd/daily/	(case: GNSS/2013/212/daily/abmf2120.13n.Z)	GPS 天导航信息文件
+6	GLONASS	daily	G	igr.sta,igs.sta	cddis.gsfc.nasa.gov	pub/gps/data/daily/yyyy/ddd/yyf/	(case:/pub/gps/data/daily/2013/212/13g/abmf2120.13d.Z)	GNSS/yyyy/ddd/daily/	(case: GNSS/2013/212/daily/abmf2120.13g.Z)	GLONASS 天导航信息文件
+7	BD	highrate	D	bd-IGS.sta	210.72.144.2	iGMAS/yyyy/ddd/highrate/hh/mm/	(case: iGMAS/2013/212/highrate/22/15/abmf212w15.13o.Z)	BD/yyyy/ddd/highrate/hh/mm/	(case: BD/2013/212/highrate/22/15/abmf212w15.13o.Z)	BeiDou 分钟观测文件
+8	BD	hourly	D	bd-IGS.sta	210.72.144.2	iGMAS/yyyy/ddd/hourly/hh/	(case: GMAS/2013/212/hourly/22/abmf212w.13d.Z)	BD/yyyy/ddd/hourly/hh/	(case: BD/2013/212/hourly/22/abmf212w.13d.Z)	BeiDou小时观测文件
+9	BD	hourly	D	bd-IGS.sta	cddis.gsfc.nasa.gov	gps/data/campaign/mgex/hourly/rinex3/yyyy/ddd/hh/	(case:/pub/gps/data/hourly/2013/212/22/abmf212w.13d.Z)	BD/yyyy/ddd/hourly/hh/	(case: BD/2013/212/hourly/22/abmf212w.13d.Z)	BeiDou小时观测文件
+10	BD	daily	D	bd-IGS.sta	210.72.144.3	iGMAS/yyyy/ddd/daily/	(case: iGMAS/2013/212/daily/abmf212w.13d.Z)	BD/yyyy/ddd/daily/	(case: BD/2013/212/daily/abmf2120.13d.Z)	BeiDou天观测文件
+11	BD	daily	D	bd-IGS.sta	 cddis.gsfc.nasa.gov	gps/data/campaign/mgex/daily/rinex3/yyyy/ddd/yyf/	(case: iGMAS/2013/212/daily/abmf212w.13d.Z)	BD/yyyy/ddd/daily/	(case: BD/2013/212/daily/abmf2120.13d.Z)	BeiDou天观测文件
+12	BD	highrate	R	bd-IGS.sta	210.72.144.2	iGMAS/yyyy/ddd/highrate/hh/mm/	(case: GMAS/2013/212/highrate/22/15/abmf212w15.13r.Z)	BD/yyyy/ddd/highrate/hh/mm/	(case: BD/2013/212/highrate/22/15/abmf212w15.13r.Z)	BeiDou 分钟导航信息文件
+13	BD	hourly	R	bd-IGS.sta	210.72.144.2	iGMAS/yyyy/ddd/hourly/hh/	(case: GMAS/2013/212/hourly/22/15/abmf212w.13r.Z)	BD/yyyy/ddd/hourly/hh/	(case: BD/2013/212/hourly/22/abmf212w.13r.Z)	BeiDou 小时导航信息文件
+14	BD	daily	R	bd-IGS.sta	210.72.144.2	iGMAS/yyyy/ddd/daily/	(case: GMAS/2013/212/daily/abmf212w15.13r.Z)	BD/yyyy/ddd/daily/	(case: BD/2013/212/daily/abmf2120.13r.Z)	BeiDou 天导航信息文件

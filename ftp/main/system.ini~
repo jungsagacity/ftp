@@ -5,8 +5,8 @@ productCenterFtp : 192.168.1.106	21	ftpuser	123456
 #dataCenterFtp : 210.72.144.2	21	public	123456
 #dataCenterFtp : cddis.gsfc.nasa.gov	21	anonymous
 
-dataCenterFtp : 192.168.1.106	21	ftpuser	123456
-dataCenterFtp : 192.168.1.106	21	ftpuser	123456
+dataCenterFtp : 192.168.1.107	21	ftpuser	123456
+dataCenterFtp : 192.168.1.108	21	ftpuser	123456
 
 #download file temparory file name's suffix
 tempDownloadFileSuffix : .inmp
@@ -14,9 +14,16 @@ tempDownloadFileSuffix : .inmp
 #upload file temparory file name's suffix
 tempUploadFileSuffix : .inmp
 
+#max download task number.
+maxDownloadTaskNum : 50
+
+
+#download requirement list file path
+downloadInfoFile : downloadInfo.txt
+
 
 #stations file
-stations : igr.sta	igs.sta
+stations : igr.sta	igs.sta	bd-IGS.sta
 
 
 #upload path info

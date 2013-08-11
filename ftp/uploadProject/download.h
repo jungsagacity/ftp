@@ -52,7 +52,7 @@ typedef  struct DNode
     char *filename;      //download file name;
     char *remotePath;    //file address in remote ftp server
     char *localPath;     //where file needed to place
-    char (*station)[5]; //the name of a string array storing the staion names.
+    char (*stations)[5]; //the name of a string array storing the staion names.
     char *state ;        //every char corresponds to one station in the next member variable char *stations
     int   taskNum;       //task number.
     FtpServer *server;
@@ -88,7 +88,6 @@ int  transfer(int year,int month,int day);
 void creat_list(int year,int day,int hour,int minute,DownInfo *DI);
 void add_Info(DownloadNode *s,DownInfo *p,int year,int day,int hour,int minute);
 void time_module_control();
-char Search_file(char *filename);
 
 //read the request file
 int readDownloadInfo(char * downloadInfoFile, DownInfo * downInfoList);

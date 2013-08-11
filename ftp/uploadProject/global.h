@@ -68,7 +68,6 @@ typedef struct stationlist
 {
     char *name;
     char (*station)[5];
-    int  stationNum;
     struct stationlist * next;
 }StationNode, *StationList;
 
