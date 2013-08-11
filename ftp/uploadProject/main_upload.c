@@ -21,10 +21,11 @@
 extern  UploadList uploadList;//upload.c, file list periodically created by product center.
 extern  EventLog *elog;//record event,when an exception Occurs, like ftp connection,abnormal upload or download.
 extern  pthread_mutex_t uploadMutex;
-extern  pthread_mutex_t logMutex;
-
+pthread_mutex_t logMutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t uploadMutex = PTHREAD_MUTEX_INITIALIZER;
 char *tempDownloadFileSuffix;
 char *tempUploadFileSuffix;
+char    *downloadInfoFile;
 FtpServer *fs;
 StationList sl;
 UploadPath *uploadPath;
@@ -83,7 +84,7 @@ void delay()
 }
 
 
-/************************************************************************************************
+/*************************************************************************************************
 *    function   :   periodically check if there is task needed to be excuted;
 *    para       :   {void}
 *
@@ -100,80 +101,83 @@ void timingTask()
 
 	// 5 minute point at which needed to check task.
 	int minute[5] = {0,10,25,40,55};
-	int tempMin = 0;
+	int tempMin = 0, temphour = 0, tempday = 0;
 
 	//temporary struct taskMinute used to transfer the 5 minute point in case of repetitive excution
 	struct taskMinute
 	{
-		int min;//record the check minute of every hour
-		char traverseState;//record traverse state,0;uncheck,1:checked
-	}taskMins[5];
+		int min[5];//record the check minute of every hour
+		int hour;//record the check minute of every hour
+		int day;
+		char traverseState[5];//record traverse state,0;uncheck,1:checked
+	}taskMins;
 
 	// initialise the struct array,making sure the traverseState is zero
 	int i = 0;
 	for( i=0;i<5;i++)
 	{
-		taskMins[i].min = minute[i];
-		taskMins[i].traverseState = 0;
+		(taskMins.min)[i] = minute[i];
+		(taskMins.traverseState)[i] = 0;
 	}
+
+	t=time(NULL);
+    st = localtime(&t);//get current datetime
+    tempMin = st->tm_min;//catch the current minute
+    taskMins.hour = st->tm_hour;
+    taskMins.day = st->tm_mday;
+
 
 	//main process
 	while(1)
 	{
 
-
 		{// every second excute the main process
 			t=time(NULL);
 			st = localtime(&t);//get current datetime
 			tempMin = st->tm_min;//catch the current minute
-
+            temphour = st->tm_hour;
+            tempday = st->tm_mday;
             //delay some time and check task again.
             delay();
-    //        printf("...........timig...............\n");
 		}
 
 		//check whether there exist excutable task.
 		for( i = 0; i < 5; i ++)
 		{
-			if(tempMin == taskMins[i].min && taskMins[i].traverseState == 0)
+			if( (tempMin == (taskMins.min)[i])  && ( (taskMins.traverseState)[i] == 0)  )
 			{
 				if( i == 0)
 				{
 					#ifdef DEBUG
-						printf("analysis center checking task.\n");
+                    printf("analysis center checking task.\n");
 					#endif
-					analysisCenterCheckTask();
-				}else
+
+				}
+				else
 				{
 					#ifdef DEBUG
-						printf("data center checking task.\n");
+                    printf("data center checking task.\n");
 					#endif
-
-                    //pthread_mutex_lock(&downloadMutex);//lock
-					//module_control();
-					//pthread_mutex_unlock(&downloadMutex);//unlock
+                    pthread_mutex_lock(&downloadMutex);//lock
+					time_module_control();
+					pthread_mutex_unlock(&downloadMutex);//unlock
 				}
 
-				taskMins[i].traverseState = 1;
+				(taskMins.traverseState)[i] = 1;
 			}
 
 		}
 
-		/* initialise the traverse state when minute equals to 56,that is to say,
-		* when the last minute point is traversed.
-		*/
-        if( (taskMins[4].traverseState == 1) && (tempMin == (taskMins[4].min + 1) ) )
+		if ((temphour != taskMins.hour) || (tempday != taskMins.day))
 		{
-			//initialise the struct array;
-			for( i=0;i<5;i++)
-			{
-				taskMins[i].traverseState = 0;
-			}
+            taskMins.hour = temphour;
+            taskMins.day = tempday;
+            for( i=0;i<5;i++)
+            {
+                (taskMins.traverseState)[i] = 0;
+            }
 		}
-
 	}
-
-
 }
 
 
@@ -209,22 +213,18 @@ void upload()
 		UploadNode * p,*p1;
 		p =  uploadList->next;//temporary variable always points to uploadList head pointer.
         p1 = uploadList;
-        //display();
+
         delay();
-        //printf(".....upload......\n");
 		//to traverse the upload task list, check whether there are some upload task or not.
 		while( p!= NULL )
 		{
-
-
-
             pthread_mutex_lock(&uploadMutex);//lock
 
             len = strlen(p->filename) + 1;
             filename = malloc(sizeof(char)*len);
             memset(filename,0,len);
             strcpy(filename, p->filename);
-            //printf("filename: %s\n",filename);
+
 
             len = len + strlen(TEMP_SUFFIX) + 1;
 
@@ -384,6 +384,7 @@ void upload()
 
 
                     close(sockfd);
+                    delay();
                 }
             }
             else if((uploadState == UPLOAD_FILE_NONEXIST) || (uploadState == UPLOAD_FILE_UPLOAD_INTIME) || (uploadState == UPLOAD_FILE_UPLOAD_LATE))
@@ -451,17 +452,23 @@ void upload()
 *
 *    history    :   {2013.7.25 wujun} frist create;
 **************************************************************************************************/
+extern FILE *upLogFp;
+extern FILE *dwLogFp;
 void log()
 {
 	initEventLog();
 	while(1)
 	{
+
 		delay();
- //       printf(".....log......\n");
+
 		pthread_mutex_lock(&logMutex);//lock
 		writeEventLog(UPLOAD_LOG_FILE, DOWNLOAD_LOG_FILE);
 		pthread_mutex_unlock(&logMutex);//unlock
 	}
+
+    fclose(dwLogFp);
+	fclose(upLogFp);
 }
 
 
@@ -746,6 +753,7 @@ int config(char *conf)
 
                 //free(station);
                 fclose(fp);
+                delay();
                 k = 0;
             }
         }
@@ -844,8 +852,23 @@ int config(char *conf)
             printf("%s\n",uploadPath->GNSSRemotePathPrefix);
 
         }
+
+        if( !strcmp(name,"downloadInfoFile"))
+        {
+
+            while(buff[i++] !='\n');
+            downloadInfoFile = (char *)malloc(i-j);
+            memset(downloadInfoFile, 0, i-j);
+            strncpy( downloadInfoFile, buff+j, i-j-1);
+            j = i;
+            #ifdef BUG
+            printf("%s\n",downloadInfoFile);
+            #endif
+
+        }
     }
     fclose(fp);
+    delay();
 }
 
 int main()

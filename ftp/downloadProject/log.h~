@@ -32,10 +32,6 @@
 #define	 	L_UPLOAD_LATE                       19
 
 
-
-
-
-
 //record connect,upload,download event unnormal performerce.
 typedef struct eventlog
 {
@@ -43,12 +39,6 @@ typedef struct eventlog
 	char *fileName;//used when upload or download event occured;
 	char startTime[100];
 	char endTime[100];
-	int isRead;
-
 	struct eventlog * next;
-
 } EventLog;
-void log_delay();
-void initEventLog();
-void addEventLog(char eventType, char *con, char * startTime, char *endTime);
-int writeEventLog(char *uploadLog, char *downloadLog);
+

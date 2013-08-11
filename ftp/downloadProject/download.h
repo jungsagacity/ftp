@@ -1,35 +1,33 @@
 #ifndef _DOWNLOAD_H_
+#define _DOWNLOAD_H_ 1
 
-#include "global.h"
 
+#include "ftp.h"
 // read the infomation
 #define     BUF_SIZE            1024
-//#define     DOWN_INFO_PATH      "downloadInfo.txt"  //the path of the download information file
-
-  
 
 //return the file exist or not
 #define	DOWNLOAD_FILE_DEFAULT			1
 #define	DOWNLOAD_FILE_NONEXIST			2
-#define DOWNLOAD_FILE_EXIST			3
-#define	DOWNLOAD_FAILED	                        4
+#define DOWNLOAD_FILE_EXIST			    3
+#define	DOWNLOAD_FAILED	                4
+#define	DOWNLOAD_SUCCESS	            5
 
 
-#define   MAX_size       1000
-#define   R_year         366           //Days of leap year
-#define   P_year         365           //Days of leap year
-#define   Daily          "daily"
-#define   Hourly         "hourly"
-#define   Highrate       "highrate"
-#define   stationame     "ssss"
-#define   yyyy           "/yyyy/"
-#define   ddd            "/ddd/"
-#define   hh             "/hh/"
-#define   mm             "/mm/"
-#define   yyf            "/yyf/"
-#define   extensioname   ".inmp"
-#define   success_extension ".Z"
-
+#define   MAX_SIZE       1000
+#define   R_YEAR         366           //Days of leap year
+#define   P_YEAR         365           //Days of leap year
+#define   DAILY          "daily"
+#define   HOURLY         "hourly"
+#define   HIGHRATE       "highrate"
+#define   STATIONNAME     "ssss"
+#define   YYYY           "/yyyy/"
+#define   DDD            "/ddd/"
+#define   HH             "/hh/"
+#define   MM             "/mm/"
+#define   YYF            "/yyf/"
+#define   Z                ".Z"
+#define   MAX_STATION_FILE_NAME_SIZE   20
 
 typedef struct        //自定义时间数据结构
 {
@@ -40,6 +38,15 @@ typedef struct        //自定义时间数据结构
     int minute;
     int second;
 } MYtime;
+
+
+typedef struct stationlist
+{
+    char *name;
+    char (*station)[5];
+    int  stationNum;
+    struct stationlist * next;
+}StationNode, *StationList;
 
 
 /*
@@ -76,6 +83,8 @@ typedef struct downInfo
     char *localPath;
     struct downInfo * next;
 } DownInfo;
+
+
 
 
 //creat download list

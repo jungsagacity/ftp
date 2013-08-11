@@ -20,7 +20,15 @@ UploadList uploadList;
 extern FtpServer * fs;
 extern UploadPath * uploadPath;
 
-pthread_mutex_t uploadMutex = PTHREAD_MUTEX_INITIALIZER;
+extern pthread_mutex_t uploadMutex ;
+
+
+void up_delay()
+{
+    int b=0,e=0;
+    for(b=0;b<2000;b++)
+    for(e=0;e<2000;e++);
+}
 
 #ifdef DEBUG
 
@@ -75,6 +83,7 @@ void log_checktask(char * name,char * a)
 	fprintf(fp,"%s\t%s\t%s\n",a,name,curtime);
 //	fprintf(fp,"%s\n",a);
 	fclose(fp);
+	up_delay();
 }
 
 #endif
@@ -102,6 +111,8 @@ struct tm * gettime()
 	t=time(NULL);
 	return localtime(&t);
 }
+
+
 
 /**
  *      function    :   initialize the list,create the head node
@@ -534,6 +545,7 @@ void copyfile(char * filename,int type,char * dir)
             #endif
         }
         pclose(pf);
+        up_delay();
     }
 
     free(filepath);
@@ -632,6 +644,7 @@ static void _inotify_event_handler(struct inotify_event *event)
                 #endif
             }
             pclose(pf);
+            up_delay();
 
         }
 

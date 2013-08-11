@@ -19,32 +19,23 @@ struct hostent * server_hostent;
 int socket_control;
 int mode=1;//1--PASV 0--PORT
 
-/*
-1、FTP服务器路径问题，若是windows，则需要进行转换；默认是linux环境；
-2、FTP链接问题，如果没有链接成功，则继续链接三次，每次间隔5秒钟，如果依然连接不成功，则返回网络异常；
-3、下载过程中，本地文件以可读可写的形式存在；上传过程中，本地文件以只读的形式存在；
-4、如果发出了命令但是没有接受到来自FTP服务器的相应消息，则连续读取三次，如果依然没有消息，则认为是网络异常；
-*/
 
 
-/**
+/**************************************************************************************************
+*    function   :   delay some time
+*    para       :   {void}
 *
-* @author: cnscn@163.com
-* @reference: lovesnow1314@http://community.csdn.net/Expert/TopicView3.asp?id=5198221
+*    return     :   {void}
 *
-* 用新子串newstr替换源字符串src中的前len个字符内所包含的oldstr子串
-*
-* @param char* dest 目标串，也就是替换后的新串
-* @param const char* src 源字符串，被替换的字符串
-* @param const char* oldstr 旧的子串，将被替换的子串
-* @param const char* newstr 新的子串
-* @param int len 将要被替换的前len个字符
-*
-* @return char* dest 返回新串的地址
-*
-*/
+*    history    :   {2013.7.25 wujun} frist create;
+**************************************************************************************************/
 
-
+void ftp_delay()
+{
+    int b=0,e=0;
+    for(b=0;b<2000;b++)
+    for(e=0;e<2000;e++);
+}
 
 //***********************************************************************
 
@@ -59,11 +50,12 @@ int mode=1;//1--PASV 0--PORT
 void plog(char * msg)
 {
     time_t timer =time(NULL);
-
     char msgTemp[1000] = {0};
-	memset(msgTemp, 0, 1000);
-	strftime( msgTemp, sizeof(msgTemp), "%Y-%m-%d %T",localtime(&timer) );
 
+    if( (msg == NULL) || (strlen(msg) == 0))
+    return;
+    sprintf(msgTemp, "%s",ctime(&timer));
+    msgTemp[strlen(msgTemp)-1] = 0;
 
 
     char filename[] = "mlog.txt";
@@ -73,12 +65,12 @@ void plog(char * msg)
     {
         fp = fopen( filename ,"wt");
     }
-
     sprintf(msgTemp, "%s\t%s", msgTemp, msg);
     fputs(msgTemp, fp);
     fclose(fp);
-}
+    ftp_delay();
 
+}
 void debuglog(char * msg)
 {
     time_t timer =time(NULL);
@@ -98,6 +90,7 @@ void debuglog(char * msg)
     sprintf(msgTemp, "%s\t%s", msgTemp, msg);
     fputs(msgTemp, fp);
     fclose(fp);
+    ftp_delay();
 }
 
 
@@ -183,11 +176,10 @@ int ftp_send_cmd(const char* s1, const char* s2, int sock_fd)
 int ftp_get_reply(int sock_fd)
 {
     static int reply_code=0,count=0;
-    char rcv_buff[1000];
-    memset(rcv_buff,0,1000);
+    char rcv_buff[512];
 
-    count=read(sock_fd,rcv_buff,999);
-    printf("%s\n", rcv_buff);
+    count=read(sock_fd,rcv_buff,510);
+
     if(count>0)
     {
         reply_code=atoi(rcv_buff);
@@ -200,16 +192,13 @@ int ftp_get_reply(int sock_fd)
 
     while(1)
     {
-        memset(rcv_buff, 0, 1000);
-        count=read(sock_fd,rcv_buff,999);
-		if (count<=0)
+        if (count<=0)
             break;
-
+        rcv_buff[count]='\0';
+        count=read(sock_fd,rcv_buff,510);
         plog(rcv_buff);
 
     }
-
-
     return reply_code;
 }
 
@@ -226,9 +215,10 @@ int ftp_login(int socket_control, char * user, char * password)
 {
     int err;
 
+
     if(ftp_send_cmd("USER ", user, socket_control) < 0)
     {
-        plog("Can not send user message.");
+        plog("Can not send user message.\n");
         return -1;
     }
 
@@ -238,7 +228,7 @@ int ftp_login(int socket_control, char * user, char * password)
 
         if(ftp_send_cmd("PASS ", password, socket_control) < 0)
         {
-            plog("Can not send password message.");
+            plog("Can not send password message.\n");
             return -1;
         }
         else
@@ -248,16 +238,19 @@ int ftp_login(int socket_control, char * user, char * password)
 
         if(err != 230)
         {
-            plog("Password error!");
+            plog("Password error!\n");
             return -1;
         }
         return 0;
     }
-    else
+    else if ( err == 530)
     {
-        plog("User error!");
-        return -1;
+        plog("Already connected.\n");
+        return 0;
     }
+
+    return -1;
+
 
 }
 
@@ -345,8 +338,9 @@ int connectFtpServer(char * server_ip, int port, char * user, char * password)
        error=ftp_login(socket_control, user, password);
 
     }
-
+    #ifdef DEBUG
     printf("socket_control = %d\n",socket_control);
+    #endif
     return socket_control;
 
 }
@@ -598,19 +592,12 @@ int ftp_get(char* src_file, char * dst_file, int socket_control)
         }
     }
 */
-    local_file = open(dst_file, O_RDWR|O_CREAT|O_TRUNC);
-    if(local_file < 0)
-    {
-        #ifdef DEBUG
-        plog("download:creat local file  error!\n");
-        #endif
-        return DOWNLOAD_CREAET_LOCALFILE_ERROR;
-    }
+
     get_sock = xconnect_ftpdata();
     if(get_sock < 0)
     {
         #ifdef DEBUG
-        plog("download:socket error!");
+        plog("download:socket error!\n");
         #endif
         return DOWNLOAD_CONNECT_SOCKET_ERROR;
     }
@@ -648,11 +635,20 @@ int ftp_get(char* src_file, char * dst_file, int socket_control)
 
 		replayId = ftp_get_reply(socket_control);
 		#ifdef DEBUG
-		printf("reply code:%d",replayId);
+		printf("reply code:%d\n",replayId);
         #endif
         if(replayId == 550)//remote file does not exist.
         {
             return DOWNLOAD_REMOTE_FILE_NOEXIST;
+        }
+
+        local_file = open(dst_file, O_RDWR|O_CREAT|O_TRUNC);
+        if(local_file < 0)
+        {
+            #ifdef DEBUG
+            plog("download:creat local file  error!\n");
+            #endif
+            return DOWNLOAD_CREAET_LOCALFILE_ERROR;
         }
 
         while(1)
@@ -661,27 +657,38 @@ int ftp_get(char* src_file, char * dst_file, int socket_control)
             count = read(new_sock, rcv_buf, sizeof(rcv_buf));
             if(count <= 0)
 			{
-				break;
+				close(local_file);
+                close(get_sock);
+                close(new_sock);
+                ftp_delay();
+				return DOWNLOAD_SUCCESS;
 			}
             else
             {
                 write(local_file, rcv_buf, count);
             }
         }
-        close(local_file);
-        close(get_sock);
-        close(new_sock);
+
 
     }
     else
     {
 		replayId = ftp_get_reply(socket_control);
 		#ifdef DEBUG
-		printf("reply code:%d",replayId);
+		printf("reply code:%d\n",replayId);
         #endif
         if(replayId == 550)//remote file does not exist.
         {
             return DOWNLOAD_REMOTE_FILE_NOEXIST;
+        }
+
+        local_file = open(dst_file, O_RDWR|O_CREAT|O_TRUNC);
+        if(local_file < 0)
+        {
+            #ifdef DEBUG
+            plog("download:creat local file  error!\n");
+            #endif
+            return DOWNLOAD_CREAET_LOCALFILE_ERROR;
         }
 
         while(1)
@@ -691,8 +698,10 @@ int ftp_get(char* src_file, char * dst_file, int socket_control)
 
             if(count <= 0)
 			{
-
-				break;
+                close(local_file);
+                close(get_sock);
+                ftp_delay();
+                return DOWNLOAD_SUCCESS;
 			}
             else
             {
@@ -702,12 +711,12 @@ int ftp_get(char* src_file, char * dst_file, int socket_control)
         #ifdef DEBUG
 		plog(" get over.\n");
         #endif
-        close(local_file);
-        close(get_sock);
+
     }
 
-	return DOWNLOAD_SUCCESS;
+
 }
+
 
 
 /**
@@ -802,6 +811,7 @@ int ftp_put(char* src_file, char * dst_file, int socket_control)
         close(local_file);
         close(file_put_sock);
         close(new_sock);
+        ftp_delay();
         return UPLOAD_SUCCESS;
     }else if(mode==1)
     {
@@ -812,22 +822,22 @@ int ftp_put(char* src_file, char * dst_file, int socket_control)
             {
            close(local_file);
         close(file_put_sock);
+        ftp_delay();
         return UPLOAD_SUCCESS;
             }
                 //break;
             else
             {
                 write(file_put_sock,send_buff,count);
-                printf("%s\n",send_buff);
             }
 
-            printf("uping.....\n");
+
         }
 
 
 
     }
-	usleep(100);
+
 
 }
 
@@ -854,7 +864,9 @@ int ftp_rename(char *oldName, char *newName, int socket_control)
     error = ftp_get_reply(socket_control);
     if( error < 0)
     {
-        plog("Can not send user message.");
+        #ifdef DEBUG
+        plog("Can not send user message.\n");
+        #endif
         return -1;
     }
 
@@ -865,7 +877,9 @@ int ftp_rename(char *oldName, char *newName, int socket_control)
         error = ftp_get_reply(socket_control);
         if( error < 0)
         {
-            plog("Can not send user message.");
+            #ifdef DEBUG
+            plog("Can not send user message.\n");
+            #endif
             return -1;
         }
         else
@@ -875,13 +889,17 @@ int ftp_rename(char *oldName, char *newName, int socket_control)
                 return 0;
             }else
 			{
-				plog("RNTO command excuted failed.");
+				#ifdef DEBUG
+				plog("RNTO command excuted failed.\n");
+				#endif
 				return -1;
 			}
         }
     }else
 	{
+		#ifdef DEBUG
 		plog("RNFR command excuted failed.\n");
+		#endif
 		return -1;
 	}
 
@@ -928,8 +946,9 @@ int ftp_mkdir(char *dirName, int socket_control)
             int error = ftp_get_reply(socket_control);
             if( error < 0)
             {
+                #ifdef DEBUG
                 plog("Can not send user message.");
-
+                #endif
                 return -1;
             }
             path[p] = '/';

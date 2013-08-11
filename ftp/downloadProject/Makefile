@@ -1,11 +1,8 @@
-main:main_download.o ftp.o log.o  download.o
-	gcc main_download.o  ftp.o log.o  download.o -o  main -lpthread
+main:main_download.o ftp.o  download.o
+	gcc main_download.o  ftp.o   download.o -o  main -lpthread
 
 ftp.o: ftp.c
 	gcc -c ftp.c -o ftp.o
-
-log.o:log.c
-	gcc -c log.c -o log.o
 
 
 download.o: download.c

@@ -11,7 +11,6 @@ EventLog *elog; //global variable
 EventLog *elogTail;//global variable
 pthread_mutex_t logMutex ;
 
-pthread_mutex_t logMutex = PTHREAD_MUTEX_INITIALIZER;
 /**
 *    function   :   initialise EventLog header
 *    para       :   {void}
@@ -65,6 +64,23 @@ void addEventLog(char eventType, char *fileName, char * startTime, char *endTime
 	newlog -> next = NULL;
 
 }
+
+/**************************************************************************************************
+*    function   :   delay some time
+*    para       :   {void}
+*
+*    return     :   {void}
+*
+*    history    :   {2013.7.25 wujun} frist create;
+**************************************************************************************************/
+
+void log_delay()
+{
+    int b=0,e=0;
+    for(b=0;b<2000;b++)
+    for(e=0;e<2000;e++);
+}
+
 
 
 /**
@@ -164,7 +180,7 @@ int writeEventLog(char *uploadLog, char *downloadLog)
 
 	fclose(dwLogFp);
 	fclose(upLogFp);
-
+    log_delay();
 	return 0;
 }
 

@@ -117,6 +117,7 @@ void log_checktask(char * name,char * a);
 void display();
 #endif
 
+void up_delay();
 struct tm * gettime();
 void initUploadlist();
 void insertlist(UploadNode * p0);

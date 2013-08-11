@@ -31,7 +31,7 @@
 
 
 
-
+void ftp_delay();
 char *strReplace(char *dest, char *src, const char *oldstr, const char *newstr, size_t len);
 void plog(char * msg);
 int fill_host_addr(char *host_ip_addr,struct sockaddr_in *host,int port);
