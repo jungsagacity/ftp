@@ -44,7 +44,7 @@ char * getchartime()
 void display()
 {
     UploadNode *p;
-    p=uploadList->next;
+    p=uploadList;
     while(p!=NULL)
     {
         printf("链表：%s\t%s\t%s\t%d\t%d\n",p->filename,p->analysisCenterPath,p->productCenterPath,p->state,p->type);
@@ -578,12 +578,15 @@ int nodeIsExist(char * name,int type)
             printf("filename:%s\t name:%s\n",filename,name);
             if( (strstr(filename,name)!=0) && (p1->type ==type))
             {
+                printf("0000000000000000\n");
                 pthread_mutex_unlock(&uploadMutex);//unlock
                 return 0;
+
             }
 
             p1=p1->next;
         }
+        printf("111111111111111111\n");
         pthread_mutex_unlock(&uploadMutex);//unlock
         return 1;
 

@@ -17,7 +17,7 @@
 struct sockaddr_in ftp_server,local_host;
 struct hostent * server_hostent;
 int socket_control;
-int mode=1;//1--PASV 0--PORT
+int mode = 1;//1--PASV 0--PORT
 
 /*
 1、FTP服务器路径问题，若是windows，则需要进行转换；默认是linux环境；
@@ -59,11 +59,10 @@ int mode=1;//1--PASV 0--PORT
 void plog(char * msg)
 {
     time_t timer =time(NULL);
-
     char msgTemp[1000] = {0};
-	memset(msgTemp, 0, 1000);
-	strftime( msgTemp, sizeof(msgTemp), "%Y-%m-%d %T",localtime(&timer) );
 
+    sprintf(msgTemp, "%s",ctime(&timer));
+    msgTemp[strlen(msgTemp)-1] = 0;
 
 
     char filename[] = "mlog.txt";
@@ -73,7 +72,6 @@ void plog(char * msg)
     {
         fp = fopen( filename ,"wt");
     }
-
     sprintf(msgTemp, "%s\t%s", msgTemp, msg);
     fputs(msgTemp, fp);
     fclose(fp);
@@ -183,11 +181,11 @@ int ftp_send_cmd(const char* s1, const char* s2, int sock_fd)
 int ftp_get_reply(int sock_fd)
 {
     static int reply_code=0,count=0;
-    char rcv_buff[1000];
-    memset(rcv_buff,0,1000);
+    char rcv_buff[512];
+    memset(rcv_buff, 0, 512);
 
-    count=read(sock_fd,rcv_buff,999);
-    printf("%s\n", rcv_buff);
+    count=read(sock_fd,rcv_buff,510);
+
     if(count>0)
     {
         reply_code=atoi(rcv_buff);
@@ -200,16 +198,13 @@ int ftp_get_reply(int sock_fd)
 
     while(1)
     {
-        memset(rcv_buff, 0, 1000);
-        count=read(sock_fd,rcv_buff,999);
-		if (count<=0)
+        if (count<=0)
             break;
-
+        rcv_buff[count]='\0';
+        count=read(sock_fd,rcv_buff,510);
         plog(rcv_buff);
 
     }
-
-
     return reply_code;
 }
 
@@ -275,7 +270,7 @@ int ftp_login(int socket_control, char * user, char * password)
 int connectFtpServer(char * server_ip, int port, char * user, char * password)
 {
     int error;
-    char log[1000]={0};
+    char log[500]={0};
 
     error=fill_host_addr(server_ip,&ftp_server,port);
     if(error==254)
@@ -327,7 +322,7 @@ int connectFtpServer(char * server_ip, int port, char * user, char * password)
     }
     else
     {
-        memset(log,0,1000);
+        memset(log,0,500);
         sprintf(log,"Successfully connect to server:%s,port:%d\n",inet_ntoa(ftp_server.sin_addr),ntohs(ftp_server.sin_port));
         plog(log);
 
@@ -346,7 +341,6 @@ int connectFtpServer(char * server_ip, int port, char * user, char * password)
 
     }
 
-    printf("socket_control = %d\n",socket_control);
     return socket_control;
 
 }
@@ -759,12 +753,14 @@ int ftp_put(char* src_file, char * dst_file, int socket_control)
         #endif
         return UPLOAD_DATA_SOCKET_ERROR;
     }
+
     ftp_send_cmd("STOR ",dst_file,socket_control);
     ftp_get_reply(socket_control);
-    plog("12\n");
+    ftp_get_reply(socket_control);
+    plog("123\n");
     ftp_send_cmd("TYPE I",NULL,socket_control);
     ftp_get_reply(socket_control);
-    plog("145\n");
+    plog("345\n");
     if(mode==0)
     {
         while(i<3)
@@ -792,44 +788,40 @@ int ftp_put(char* src_file, char * dst_file, int socket_control)
         {
             count=read(local_file,send_buff,sizeof(send_buff));
             if(count<=0)
-                break;
+            {
+                close(new_sock);
+                return UPLOAD_SUCCESS;
+            }
             else
             {
-                write(new_sock,send_buff,sizeof(send_buff));
+                write(new_sock,send_buff,count);
             }
-
         }
-        close(local_file);
-        close(file_put_sock);
-        close(new_sock);
-        return UPLOAD_SUCCESS;
-    }else if(mode==1)
+    }
+    else if(mode==1)
     {
         while(1)
         {
             count=read(local_file,send_buff,sizeof(send_buff));
             if(count<=0)
             {
-           close(local_file);
-        close(file_put_sock);
-        return UPLOAD_SUCCESS;
+                return UPLOAD_SUCCESS;
             }
-                //break;
+
             else
             {
                 write(file_put_sock,send_buff,count);
-                printf("%s\n",send_buff);
+                plog(send_buff);
             }
-
-            printf("uping.....\n");
         }
-
-
-
     }
+    close(local_file);
+    close(file_put_sock);
+
 	usleep(100);
 
 }
+
 
 
 
@@ -849,7 +841,7 @@ int ftp_put(char* src_file, char * dst_file, int socket_control)
 int ftp_rename(char *oldName, char *newName, int socket_control)
 {
     int error;
-    ftp_get_reply(socket_control);
+
     ftp_send_cmd("RNFR ", oldName, socket_control);
     error = ftp_get_reply(socket_control);
     if( error < 0)
@@ -924,9 +916,7 @@ int ftp_mkdir(char *dirName, int socket_control)
             #ifdef DEBUG
             printf("path:%s\n",path);
             #endif
-            ftp_send_cmd("MKD ", path, socket_control);
-            int error = ftp_get_reply(socket_control);
-            if( error < 0)
+            if(ftp_send_cmd("MKD ", path, socket_control) < 0)
             {
                 plog("Can not send user message.");
 
@@ -940,5 +930,4 @@ int ftp_mkdir(char *dirName, int socket_control)
     return 0;
 
 }
-
 

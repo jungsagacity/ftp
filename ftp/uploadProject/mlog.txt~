@@ -1,0 +1,762 @@
+Sun Aug 11 22:06:06 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:06:06 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:06:07 2013	331 Please specify the password.
+Sun Aug 11 22:06:07 2013	230 Login successful.
+Sun Aug 11 22:06:07 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:06:07 2013	553 Could not create file.
+Sun Aug 11 22:06:07 2013	123
+Sun Aug 11 22:06:08 2013	200 Switching to Binary mode.
+Sun Aug 11 22:06:08 2013	345
+Sun Aug 11 22:06:08 2013	550 RNFR command failed.
+Sun Aug 11 22:06:08 2013	RNFR command excuted failed.
+Sun Aug 11 22:06:08 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:06:08 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:06:09 2013	331 Please specify the password.
+Sun Aug 11 22:06:09 2013	230 Login successful.
+Sun Aug 11 22:06:09 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:06:09 2013	553 Could not create file.
+Sun Aug 11 22:06:09 2013	123
+Sun Aug 11 22:06:10 2013	200 Switching to Binary mode.
+Sun Aug 11 22:06:10 2013	345
+Sun Aug 11 22:06:10 2013	550 RNFR command failed.
+Sun Aug 11 22:06:10 2013	RNFR command excuted failed.
+Sun Aug 11 22:06:10 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:06:10 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:06:10 2013	331 Please specify the password.
+Sun Aug 11 22:06:11 2013	230 Login successful.
+Sun Aug 11 22:06:11 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:06:11 2013	553 Could not create file.
+Sun Aug 11 22:06:11 2013	123
+Sun Aug 11 22:06:11 2013	200 Switching to Binary mode.
+Sun Aug 11 22:06:11 2013	345
+Sun Aug 11 22:06:12 2013	550 RNFR command failed.
+Sun Aug 11 22:06:12 2013	RNFR command excuted failed.
+Sun Aug 11 22:06:12 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:06:12 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:06:12 2013	331 Please specify the password.
+Sun Aug 11 22:06:13 2013	230 Login successful.
+Sun Aug 11 22:06:13 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:06:13 2013	553 Could not create file.
+Sun Aug 11 22:06:13 2013	123
+Sun Aug 11 22:06:13 2013	200 Switching to Binary mode.
+Sun Aug 11 22:06:13 2013	345
+Sun Aug 11 22:06:14 2013	550 RNFR command failed.
+Sun Aug 11 22:06:14 2013	RNFR command excuted failed.
+Sun Aug 11 22:06:14 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:06:14 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:06:14 2013	331 Please specify the password.
+Sun Aug 11 22:06:15 2013	230 Login successful.
+Sun Aug 11 22:06:15 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:06:15 2013	553 Could not create file.
+Sun Aug 11 22:06:15 2013	123
+Sun Aug 11 22:06:15 2013	200 Switching to Binary mode.
+Sun Aug 11 22:06:15 2013	345
+Sun Aug 11 22:06:16 2013	550 RNFR command failed.
+Sun Aug 11 22:06:16 2013	RNFR command excuted failed.
+Sun Aug 11 22:06:16 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:06:16 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:06:16 2013	331 Please specify the password.
+Sun Aug 11 22:06:17 2013	230 Login successful.
+Sun Aug 11 22:06:17 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:06:17 2013	553 Could not create file.
+Sun Aug 11 22:06:17 2013	123
+Sun Aug 11 22:06:17 2013	200 Switching to Binary mode.
+Sun Aug 11 22:06:17 2013	345
+Sun Aug 11 22:06:18 2013	550 RNFR command failed.
+Sun Aug 11 22:06:18 2013	RNFR command excuted failed.
+Sun Aug 11 22:11:30 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:11:30 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:11:30 2013	331 Please specify the password.
+Sun Aug 11 22:11:31 2013	230 Login successful.
+Sun Aug 11 22:11:31 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:11:31 2013	 recv no message.
+Sun Aug 11 22:11:31 2013	123
+Sun Aug 11 22:11:31 2013	 recv no message.
+Sun Aug 11 22:11:31 2013	345
+Sun Aug 11 22:11:32 2013	 recv no message.
+Sun Aug 11 22:11:32 2013	RNFR command excuted failed.
+Sun Aug 11 22:11:32 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:11:32 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:11:32 2013	331 Please specify the password.
+Sun Aug 11 22:11:33 2013	230 Login successful.
+Sun Aug 11 22:11:33 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:11:33 2013	 recv no message.
+Sun Aug 11 22:11:33 2013	123
+Sun Aug 11 22:11:33 2013	 recv no message.
+Sun Aug 11 22:11:33 2013	345
+Sun Aug 11 22:11:34 2013	 recv no message.
+Sun Aug 11 22:11:34 2013	RNFR command excuted failed.
+Sun Aug 11 22:11:34 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:11:34 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:11:34 2013	331 Please specify the password.
+Sun Aug 11 22:11:35 2013	230 Login successful.
+Sun Aug 11 22:11:35 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:11:35 2013	 recv no message.
+Sun Aug 11 22:11:35 2013	123
+Sun Aug 11 22:11:35 2013	 recv no message.
+Sun Aug 11 22:11:35 2013	345
+Sun Aug 11 22:11:36 2013	 recv no message.
+Sun Aug 11 22:11:36 2013	RNFR command excuted failed.
+Sun Aug 11 22:11:36 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:11:36 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:11:36 2013	331 Please specify the password.
+Sun Aug 11 22:11:37 2013	230 Login successful.
+Sun Aug 11 22:11:37 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:11:37 2013	 recv no message.
+Sun Aug 11 22:11:37 2013	123
+Sun Aug 11 22:11:37 2013	 recv no message.
+Sun Aug 11 22:11:37 2013	345
+Sun Aug 11 22:11:37 2013	 recv no message.
+Sun Aug 11 22:11:37 2013	RNFR command excuted failed.
+Sun Aug 11 22:11:37 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:11:38 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:11:38 2013	331 Please specify the password.
+Sun Aug 11 22:11:39 2013	230 Login successful.
+Sun Aug 11 22:11:39 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:11:39 2013	 recv no message.
+Sun Aug 11 22:11:39 2013	123
+Sun Aug 11 22:11:39 2013	 recv no message.
+Sun Aug 11 22:11:39 2013	345
+Sun Aug 11 22:11:39 2013	 recv no message.
+Sun Aug 11 22:11:39 2013	RNFR command excuted failed.
+Sun Aug 11 22:11:39 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:11:40 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:11:40 2013	331 Please specify the password.
+Sun Aug 11 22:11:40 2013	230 Login successful.
+Sun Aug 11 22:11:40 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:11:41 2013	 recv no message.
+Sun Aug 11 22:11:41 2013	123
+Sun Aug 11 22:11:41 2013	 recv no message.
+Sun Aug 11 22:11:41 2013	345
+Sun Aug 11 22:11:41 2013	 recv no message.
+Sun Aug 11 22:11:41 2013	RNFR command excuted failed.
+Sun Aug 11 22:20:16 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:20:16 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:20:17 2013	331 Please specify the password.
+Sun Aug 11 22:20:17 2013	230 Login successful.
+Sun Aug 11 22:20:17 2013	xxxxxx
+Sun Aug 11 22:20:17 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:20:18 2013	 recv no message.
+Sun Aug 11 22:20:18 2013	123
+Sun Aug 11 22:20:18 2013	 recv no message.
+Sun Aug 11 22:20:18 2013	345
+Sun Aug 11 22:20:18 2013	 recv no message.
+Sun Aug 11 22:20:18 2013	RNFR command excuted failed.
+Sun Aug 11 22:20:18 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:20:19 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:20:19 2013	331 Please specify the password.
+Sun Aug 11 22:20:19 2013	230 Login successful.
+Sun Aug 11 22:20:19 2013	xxxxxx
+Sun Aug 11 22:20:19 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:20:20 2013	 recv no message.
+Sun Aug 11 22:20:20 2013	123
+Sun Aug 11 22:20:20 2013	 recv no message.
+Sun Aug 11 22:20:20 2013	345
+Sun Aug 11 22:20:20 2013	 recv no message.
+Sun Aug 11 22:20:20 2013	RNFR command excuted failed.
+Sun Aug 11 22:20:20 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:20:21 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:20:21 2013	331 Please specify the password.
+Sun Aug 11 22:20:21 2013	230 Login successful.
+Sun Aug 11 22:20:21 2013	xxxxxx
+Sun Aug 11 22:20:21 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:20:22 2013	 recv no message.
+Sun Aug 11 22:20:22 2013	123
+Sun Aug 11 22:20:22 2013	 recv no message.
+Sun Aug 11 22:20:22 2013	345
+Sun Aug 11 22:20:22 2013	 recv no message.
+Sun Aug 11 22:20:22 2013	RNFR command excuted failed.
+Sun Aug 11 22:20:22 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:20:23 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:20:23 2013	331 Please specify the password.
+Sun Aug 11 22:20:23 2013	230 Login successful.
+Sun Aug 11 22:20:23 2013	xxxxxx
+Sun Aug 11 22:20:23 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:20:24 2013	 recv no message.
+Sun Aug 11 22:20:24 2013	123
+Sun Aug 11 22:20:24 2013	 recv no message.
+Sun Aug 11 22:20:24 2013	345
+Sun Aug 11 22:20:24 2013	 recv no message.
+Sun Aug 11 22:20:24 2013	RNFR command excuted failed.
+Sun Aug 11 22:20:24 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:20:25 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:20:25 2013	331 Please specify the password.
+Sun Aug 11 22:20:25 2013	230 Login successful.
+Sun Aug 11 22:20:25 2013	xxxxxx
+Sun Aug 11 22:20:25 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:20:26 2013	 recv no message.
+Sun Aug 11 22:20:26 2013	123
+Sun Aug 11 22:20:26 2013	 recv no message.
+Sun Aug 11 22:20:26 2013	345
+Sun Aug 11 22:20:26 2013	 recv no message.
+Sun Aug 11 22:20:26 2013	RNFR command excuted failed.
+Sun Aug 11 22:20:26 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:20:26 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:20:27 2013	331 Please specify the password.
+Sun Aug 11 22:20:27 2013	230 Login successful.
+Sun Aug 11 22:20:27 2013	xxxxxx
+Sun Aug 11 22:20:27 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:20:28 2013	227 Entering Passive Mode (192,168,1,106,95,252).
+Sun Aug 11 22:20:28 2013	123
+Sun Aug 11 22:20:28 2013	 recv no message.
+Sun Aug 11 22:20:28 2013	345
+Sun Aug 11 22:20:28 2013	 recv no message.
+Sun Aug 11 22:20:28 2013	RNFR command excuted failed.
+Sun Aug 11 22:26:03 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:26:03 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:26:03 2013	331 Please specify the password.
+Sun Aug 11 22:26:04 2013	230 Login successful.
+Sun Aug 11 22:26:04 2013	xxxxxx
+Sun Aug 11 22:26:04 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:26:04 2013	 recv no message.
+Sun Aug 11 22:26:04 2013	123
+Sun Aug 11 22:26:04 2013	 recv no message.
+Sun Aug 11 22:26:04 2013	345
+Sun Aug 11 22:26:04 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:26:05 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:26:05 2013	331 Please specify the password.
+Sun Aug 11 22:26:05 2013	230 Login successful.
+Sun Aug 11 22:26:05 2013	xxxxxx
+Sun Aug 11 22:26:05 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:26:06 2013	 recv no message.
+Sun Aug 11 22:26:06 2013	123
+Sun Aug 11 22:26:06 2013	 recv no message.
+Sun Aug 11 22:26:06 2013	345
+Sun Aug 11 22:26:06 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:26:06 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:26:06 2013	331 Please specify the password.
+Sun Aug 11 22:26:07 2013	230 Login successful.
+Sun Aug 11 22:26:07 2013	xxxxxx
+Sun Aug 11 22:26:07 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:26:07 2013	 recv no message.
+Sun Aug 11 22:26:07 2013	123
+Sun Aug 11 22:26:08 2013	 recv no message.
+Sun Aug 11 22:26:08 2013	345
+Sun Aug 11 22:26:08 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:26:08 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:26:08 2013	331 Please specify the password.
+Sun Aug 11 22:26:09 2013	230 Login successful.
+Sun Aug 11 22:26:09 2013	xxxxxx
+Sun Aug 11 22:26:09 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:26:09 2013	 recv no message.
+Sun Aug 11 22:26:09 2013	123
+Sun Aug 11 22:26:09 2013	 recv no message.
+Sun Aug 11 22:26:09 2013	345
+Sun Aug 11 22:26:09 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:26:09 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:26:10 2013	331 Please specify the password.
+Sun Aug 11 22:26:10 2013	230 Login successful.
+Sun Aug 11 22:26:10 2013	xxxxxx
+Sun Aug 11 22:26:10 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:26:10 2013	 recv no message.
+Sun Aug 11 22:26:10 2013	123
+Sun Aug 11 22:26:11 2013	 recv no message.
+Sun Aug 11 22:26:11 2013	345
+Sun Aug 11 22:26:11 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:26:11 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:26:11 2013	331 Please specify the password.
+Sun Aug 11 22:26:12 2013	230 Login successful.
+Sun Aug 11 22:26:12 2013	xxxxxx
+Sun Aug 11 22:26:12 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:26:12 2013	 recv no message.
+Sun Aug 11 22:26:12 2013	123
+Sun Aug 11 22:26:12 2013	 recv no message.
+Sun Aug 11 22:26:12 2013	345
+Sun Aug 11 22:30:57 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:30:57 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:30:57 2013	331 Please specify the password.
+Sun Aug 11 22:30:58 2013	230 Login successful.
+Sun Aug 11 22:30:58 2013	xxxxxx
+Sun Aug 11 22:30:58 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:30:58 2013	 recv no message.
+Sun Aug 11 22:30:58 2013	123
+Sun Aug 11 22:30:58 2013	 recv no message.
+Sun Aug 11 22:30:58 2013	345
+Sun Aug 11 22:30:58 2013	附: FTP 数字代码的意义
+110 重新启动标记应答。
+120 服务在多久时间内ready。
+125 数据链路埠开启，准备传送。
+150 文件状态正常，开启数据连接端口。
+200 命令执行成功。
+202 命令执行失败。
+211 系统状态或是系统求助响应。
+Sun Aug 11 22:30:58 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:30:59 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:30:59 2013	331 Please specify the password.
+Sun Aug 11 22:30:59 2013	230 Login successful.
+Sun Aug 11 22:30:59 2013	xxxxxx
+Sun Aug 11 22:30:59 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:31:00 2013	 recv no message.
+Sun Aug 11 22:31:00 2013	123
+Sun Aug 11 22:31:00 2013	 recv no message.
+Sun Aug 11 22:31:00 2013	345
+Sun Aug 11 22:31:00 2013	附: FTP 数字代码的意义
+110 重新启动标记应答。
+120 服务在多久时间内ready。
+125 数据链路埠开启，准备传送。
+150 文件状态正常，开启数据连接端口。
+200 命令执行成功。
+202 命令执行失败。
+211 系统状态或是系统求助响应。
+Sun Aug 11 22:31:00 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:31:00 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:31:01 2013	331 Please specify the password.
+Sun Aug 11 22:31:01 2013	230 Login successful.
+Sun Aug 11 22:31:01 2013	xxxxxx
+Sun Aug 11 22:31:01 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:31:01 2013	 recv no message.
+Sun Aug 11 22:31:01 2013	123
+Sun Aug 11 22:31:02 2013	 recv no message.
+Sun Aug 11 22:31:02 2013	345
+Sun Aug 11 22:31:02 2013	附: FTP 数字代码的意义
+110 重新启动标记应答。
+120 服务在多久时间内ready。
+125 数据链路埠开启，准备传送。
+150 文件状态正常，开启数据连接端口。
+200 命令执行成功。
+202 命令执行失败。
+211 系统状态或是系统求助响应。
+Sun Aug 11 22:31:02 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:31:02 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:31:03 2013	331 Please specify the password.
+Sun Aug 11 22:31:03 2013	230 Login successful.
+Sun Aug 11 22:31:03 2013	xxxxxx
+Sun Aug 11 22:31:03 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:31:03 2013	 recv no message.
+Sun Aug 11 22:31:03 2013	123
+Sun Aug 11 22:31:04 2013	 recv no message.
+Sun Aug 11 22:31:04 2013	345
+Sun Aug 11 22:31:04 2013	附: FTP 数字代码的意义
+110 重新启动标记应答。
+120 服务在多久时间内ready。
+125 数据链路埠开启，准备传送。
+150 文件状态正常，开启数据连接端口。
+200 命令执行成功。
+202 命令执行失败。
+211 系统状态或是系统求助响应。
+Sun Aug 11 22:31:04 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:31:04 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:31:04 2013	331 Please specify the password.
+Sun Aug 11 22:31:05 2013	230 Login successful.
+Sun Aug 11 22:31:05 2013	xxxxxx
+Sun Aug 11 22:31:05 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:31:05 2013	 recv no message.
+Sun Aug 11 22:31:05 2013	123
+Sun Aug 11 22:31:05 2013	 recv no message.
+Sun Aug 11 22:31:05 2013	345
+Sun Aug 11 22:31:05 2013	附: FTP 数字代码的意义
+110 重新启动标记应答。
+120 服务在多久时间内ready。
+125 数据链路埠开启，准备传送。
+150 文件状态正常，开启数据连接端口。
+200 命令执行成功。
+202 命令执行失败。
+211 系统状态或是系统求助响应。
+Sun Aug 11 22:31:05 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:31:05 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:31:06 2013	331 Please specify the password.
+Sun Aug 11 22:31:06 2013	230 Login successful.
+Sun Aug 11 22:31:06 2013	xxxxxx
+Sun Aug 11 22:31:06 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:31:07 2013	 recv no message.
+Sun Aug 11 22:31:07 2013	123
+Sun Aug 11 22:31:07 2013	 recv no message.
+Sun Aug 11 22:31:07 2013	345
+Sun Aug 11 22:31:07 2013	附: FTP 数字代码的意义
+110 重新启动标记应答。
+120 服务在多久时间内ready。
+125 数据链路埠开启，准备传送。
+150 文件状态正常，开启数据连接端口。
+200 命令执行成功。
+202 命令执行失败。
+211 系统状态或是系统求助响应。
+Sun Aug 11 22:54:01 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:54:02 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:54:02 2013	331 Please specify the password.
+Sun Aug 11 22:54:03 2013	230 Login successful.
+Sun Aug 11 22:54:03 2013	xxxxxx
+Sun Aug 11 22:54:03 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:54:03 2013	 recv no message.
+Sun Aug 11 22:54:03 2013	 recv no message.
+Sun Aug 11 22:54:03 2013	123
+Sun Aug 11 22:54:03 2013	 recv no message.
+Sun Aug 11 22:54:03 2013	345
+Sun Aug 11 22:54:03 2013	附: FTP 数字代码的意义
+110 重新启动标记应答。
+120 服务在多久时间内ready。
+125 数据链路埠开启，准备传送。
+150 文件状态正常，开启数据连接端口。
+200 命令执行成功。
+202 命令执行失败。
+211 系统状态或是系统求助响应。
+Sun Aug 11 22:54:03 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:54:04 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:54:04 2013	331 Please specify the password.
+Sun Aug 11 22:54:04 2013	230 Login successful.
+Sun Aug 11 22:54:04 2013	xxxxxx
+Sun Aug 11 22:54:04 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:54:05 2013	 recv no message.
+Sun Aug 11 22:54:05 2013	 recv no message.
+Sun Aug 11 22:54:05 2013	123
+Sun Aug 11 22:54:05 2013	 recv no message.
+Sun Aug 11 22:54:05 2013	345
+Sun Aug 11 22:54:05 2013	附: FTP 数字代码的意义
+110 重新启动标记应答。
+120 服务在多久时间内ready。
+125 数据链路埠开启，准备传送。
+150 文件状态正常，开启数据连接端口。
+200 命令执行成功。
+202 命令执行失败。
+211 系统状态或是系统求助响应。
+Sun Aug 11 22:54:05 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:54:06 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:54:06 2013	331 Please specify the password.
+Sun Aug 11 22:54:06 2013	230 Login successful.
+Sun Aug 11 22:54:06 2013	xxxxxx
+Sun Aug 11 22:54:06 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:54:07 2013	 recv no message.
+Sun Aug 11 22:54:07 2013	 recv no message.
+Sun Aug 11 22:54:07 2013	123
+Sun Aug 11 22:54:07 2013	 recv no message.
+Sun Aug 11 22:54:07 2013	345
+Sun Aug 11 22:54:07 2013	附: FTP 数字代码的意义
+110 重新启动标记应答。
+120 服务在多久时间内ready。
+125 数据链路埠开启，准备传送。
+150 文件状态正常，开启数据连接端口。
+200 命令执行成功。
+202 命令执行失败。
+211 系统状态或是系统求助响应。
+Sun Aug 11 22:54:07 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:54:08 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:54:08 2013	331 Please specify the password.
+Sun Aug 11 22:54:08 2013	230 Login successful.
+Sun Aug 11 22:54:08 2013	xxxxxx
+Sun Aug 11 22:54:08 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:54:09 2013	 recv no message.
+Sun Aug 11 22:54:09 2013	 recv no message.
+Sun Aug 11 22:54:09 2013	123
+Sun Aug 11 22:54:09 2013	 recv no message.
+Sun Aug 11 22:54:09 2013	345
+Sun Aug 11 22:54:09 2013	附: FTP 数字代码的意义
+110 重新启动标记应答。
+120 服务在多久时间内ready。
+125 数据链路埠开启，准备传送。
+150 文件状态正常，开启数据连接端口。
+200 命令执行成功。
+202 命令执行失败。
+211 系统状态或是系统求助响应。
+Sun Aug 11 22:54:09 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:54:10 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:54:10 2013	331 Please specify the password.
+Sun Aug 11 22:54:10 2013	230 Login successful.
+Sun Aug 11 22:54:10 2013	xxxxxx
+Sun Aug 11 22:54:10 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:54:11 2013	 recv no message.
+Sun Aug 11 22:54:11 2013	 recv no message.
+Sun Aug 11 22:54:11 2013	123
+Sun Aug 11 22:54:11 2013	 recv no message.
+Sun Aug 11 22:54:11 2013	345
+Sun Aug 11 22:54:11 2013	附: FTP 数字代码的意义
+110 重新启动标记应答。
+120 服务在多久时间内ready。
+125 数据链路埠开启，准备传送。
+150 文件状态正常，开启数据连接端口。
+200 命令执行成功。
+202 命令执行失败。
+211 系统状态或是系统求助响应。
+Sun Aug 11 22:54:11 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:54:11 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 22:54:12 2013	331 Please specify the password.
+Sun Aug 11 22:54:12 2013	230 Login successful.
+Sun Aug 11 22:54:12 2013	xxxxxx
+Sun Aug 11 22:54:12 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 22:54:12 2013	 recv no message.
+Sun Aug 11 22:54:13 2013	 recv no message.
+Sun Aug 11 22:54:13 2013	123
+Sun Aug 11 22:54:13 2013	 recv no message.
+Sun Aug 11 22:54:13 2013	345
+Sun Aug 11 22:54:13 2013	附: FTP 数字代码的意义
+110 重新启动标记应答。
+120 服务在多久时间内ready。
+125 数据链路埠开启，准备传送。
+150 文件状态正常，开启数据连接端口。
+200 命令执行成功。
+202 命令执行失败。
+211 系统状态或是系统求助响应。
+Sun Aug 11 23:30:32 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 23:30:32 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 23:30:33 2013	331 Please specify the password.
+Sun Aug 11 23:30:33 2013	230 Login successful.
+Sun Aug 11 23:30:33 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 23:30:34 2013	 recv no message.
+Sun Aug 11 23:30:34 2013	 recv no message.
+Sun Aug 11 23:30:34 2013	123
+Sun Aug 11 23:30:34 2013	 recv no message.
+Sun Aug 11 23:30:34 2013	345
+Sun Aug 11 23:30:34 2013	附: FTP 数字代码的意义
+110 重新启动标记应答。
+120 服务在多久时间内ready。
+125 数据链路埠开启，准备传送。
+150 文件状态正常，开启数据连接端口。
+200 命令执行成功。
+202 命令执行失败。
+211 系统状态或是系统求助响应。
+Sun Aug 11 23:30:34 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 23:30:34 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 23:30:35 2013	331 Please specify the password.
+Sun Aug 11 23:30:35 2013	230 Login successful.
+Sun Aug 11 23:30:35 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 23:30:35 2013	 recv no message.
+Sun Aug 11 23:30:36 2013	 recv no message.
+Sun Aug 11 23:30:36 2013	123
+Sun Aug 11 23:30:36 2013	 recv no message.
+Sun Aug 11 23:30:36 2013	345
+Sun Aug 11 23:30:36 2013	附: FTP 数字代码的意义
+110 重新启动标记应答。
+120 服务在多久时间内ready。
+125 数据链路埠开启，准备传送。
+150 文件状态正常，开启数据连接端口。
+200 命令执行成功。
+202 命令执行失败。
+211 系统状态或是系统求助响应。
+Sun Aug 11 23:30:36 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 23:30:36 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 23:30:37 2013	331 Please specify the password.
+Sun Aug 11 23:30:37 2013	230 Login successful.
+Sun Aug 11 23:30:37 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 23:30:37 2013	 recv no message.
+Sun Aug 11 23:30:38 2013	 recv no message.
+Sun Aug 11 23:30:38 2013	123
+Sun Aug 11 23:30:38 2013	 recv no message.
+Sun Aug 11 23:30:38 2013	345
+Sun Aug 11 23:30:38 2013	附: FTP 数字代码的意义
+110 重新启动标记应答。
+120 服务在多久时间内ready。
+125 数据链路埠开启，准备传送。
+150 文件状态正常，开启数据连接端口。
+200 命令执行成功。
+202 命令执行失败。
+211 系统状态或是系统求助响应。
+Sun Aug 11 23:30:38 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 23:30:38 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 23:30:39 2013	331 Please specify the password.
+Sun Aug 11 23:30:39 2013	230 Login successful.
+Sun Aug 11 23:30:39 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 23:30:39 2013	 recv no message.
+Sun Aug 11 23:30:40 2013	 recv no message.
+Sun Aug 11 23:30:40 2013	123
+Sun Aug 11 23:30:40 2013	 recv no message.
+Sun Aug 11 23:30:40 2013	345
+Sun Aug 11 23:30:40 2013	附: FTP 数字代码的意义
+110 重新启动标记应答。
+120 服务在多久时间内ready。
+125 数据链路埠开启，准备传送。
+150 文件状态正常，开启数据连接端口。
+200 命令执行成功。
+202 命令执行失败。
+211 系统状态或是系统求助响应。
+Sun Aug 11 23:30:40 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 23:30:40 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 23:30:41 2013	331 Please specify the password.
+Sun Aug 11 23:30:41 2013	230 Login successful.
+Sun Aug 11 23:30:41 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 23:30:41 2013	 recv no message.
+Sun Aug 11 23:30:42 2013	 recv no message.
+Sun Aug 11 23:30:42 2013	123
+Sun Aug 11 23:30:42 2013	 recv no message.
+Sun Aug 11 23:30:42 2013	345
+Sun Aug 11 23:30:42 2013	附: FTP 数字代码的意义
+110 重新启动标记应答。
+120 服务在多久时间内ready。
+125 数据链路埠开启，准备传送。
+150 文件状态正常，开启数据连接端口。
+200 命令执行成功。
+202 命令执行失败。
+211 系统状态或是系统求助响应。
+Sun Aug 11 23:30:42 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 23:30:42 2013	220 (vsFTPd 3.0.2)
+Sun Aug 11 23:30:42 2013	331 Please specify the password.
+Sun Aug 11 23:30:43 2013	230 Login successful.
+Sun Aug 11 23:30:43 2013	Successfully connect to server:192.168.1.106,port:21
+Sun Aug 11 23:30:43 2013	 recv no message.
+Sun Aug 11 23:30:44 2013	 recv no message.
+Sun Aug 11 23:30:44 2013	123
+Sun Aug 11 23:30:44 2013	 recv no message.
+Sun Aug 11 23:30:44 2013	345
+Sun Aug 11 23:30:44 2013	附: FTP 数字代码的意义
+110 重新启动标记应答。
+120 服务在多久时间内ready。
+125 数据链路埠开启，准备传送。
+150 文件状态正常，开启数据连接端口。
+200 命令执行成功。
+202 命令执行失败。
+211 系统状态或是系统求助响应。
+2013-08-11 23:33:08	Successfully connect to server:192.168.1.106,port:21
+2013-08-11 23:33:09	Successfully connect to server:192.168.1.106,port:21
+2013-08-11 23:33:10	 recv no message2013-08-11 23:33:10	12
+2013-08-11 23:33:10	 recv no message2013-08-11 23:33:10	145
+2013-08-11 23:33:10	Successfully connect to server:192.168.1.106,port:21
+2013-08-11 23:33:11	Successfully connect to server:192.168.1.106,port:21
+2013-08-11 23:33:11	 recv no message2013-08-11 23:33:11	12
+2013-08-11 23:33:11	 recv no message2013-08-11 23:33:11	145
+2013-08-11 23:33:11	Successfully connect to server:192.168.1.106,port:21
+2013-08-11 23:33:13	Successfully connect to server:192.168.1.106,port:21
+2013-08-11 23:33:13	 recv no message2013-08-11 23:33:13	12
+2013-08-11 23:33:13	 recv no message2013-08-11 23:33:13	145
+2013-08-11 23:33:13	Successfully connect to server:192.168.1.106,port:21
+2013-08-11 23:33:14	Successfully connect to server:192.168.1.106,port:21
+2013-08-11 23:33:14	 recv no message2013-08-11 23:33:14	12
+2013-08-11 23:33:15	 recv no message2013-08-11 23:33:15	145
+2013-08-11 23:33:15	Successfully connect to server:192.168.1.106,port:21
+2013-08-11 23:33:16	Successfully connect to server:192.168.1.106,port:21
+2013-08-11 23:33:16	 recv no message2013-08-11 23:33:16	12
+2013-08-11 23:33:16	 recv no message2013-08-11 23:33:16	145
+2013-08-11 23:33:16	Successfully connect to server:192.168.1.106,port:21
+2013-08-11 23:33:17	Successfully connect to server:192.168.1.106,port:21
+2013-08-11 23:33:18	12
+2013-08-11 23:33:18	 recv no message2013-08-11 23:33:18	145
+2013-08-11 23:34:30	Successfully connect to server:192.168.1.106,port:21
+2013-08-11 23:34:32	Successfully connect to server:192.168.1.106,port:59750
+2013-08-11 23:34:32	 recv no message2013-08-11 23:34:32	12
+2013-08-11 23:34:32	 recv no message2013-08-11 23:34:32	145
+2013-08-11 23:34:32	Successfully connect to server:192.168.1.106,port:21
+2013-08-11 23:34:33	Successfully connect to server:192.168.1.106,port:38771
+2013-08-11 23:34:33	 recv no message2013-08-11 23:34:33	12
+2013-08-11 23:34:34	 recv no message2013-08-11 23:34:34	145
+2013-08-11 23:34:34	Successfully connect to server:192.168.1.106,port:21
+2013-08-11 23:34:35	Successfully connect to server:192.168.1.106,port:5417
+2013-08-11 23:34:35	 recv no message2013-08-11 23:34:35	12
+2013-08-11 23:34:35	 recv no message2013-08-11 23:34:35	145
+2013-08-11 23:34:35	Successfully connect to server:192.168.1.106,port:21
+2013-08-11 23:34:36	Successfully connect to server:192.168.1.106,port:28050
+2013-08-11 23:34:37	 recv no message2013-08-11 23:34:37	12
+2013-08-11 23:34:37	 recv no message2013-08-11 23:34:37	145
+2013-08-11 23:34:37	Successfully connect to server:192.168.1.106,port:21
+2013-08-11 23:34:38	Successfully connect to server:192.168.1.106,port:8150
+2013-08-11 23:34:38	 recv no message2013-08-11 23:34:38	12
+2013-08-11 23:34:39	 recv no message2013-08-11 23:34:39	145
+2013-08-11 23:34:39	Successfully connect to server:192.168.1.106,port:21
+2013-08-11 23:34:40	Successfully connect to server:192.168.1.106,port:56618
+2013-08-11 23:34:40	 recv no message2013-08-11 23:34:40	12
+2013-08-11 23:34:40	 recv no message2013-08-11 23:34:40	145
+2013-08-11 23:46:52	Successfully connect to server:127.0.0.1,port:21
+2013-08-11 23:46:53	Successfully connect to server:127.0.0.1,port:53605
+2013-08-11 23:46:53	12
+2013-08-11 23:46:53	 recv no message.
+2013-08-11 23:46:53	145
+2013-08-11 23:46:53	Successfully connect to server:127.0.0.1,port:21
+2013-08-11 23:46:54	Successfully connect to server:127.0.0.1,port:11682
+2013-08-11 23:46:55	12
+2013-08-11 23:46:55	 recv no message.
+2013-08-11 23:46:55	145
+2013-08-11 23:46:55	Successfully connect to server:127.0.0.1,port:21
+2013-08-11 23:46:56	Successfully connect to server:127.0.0.1,port:15731
+2013-08-11 23:46:56	12
+2013-08-11 23:46:57	 recv no message.
+2013-08-11 23:46:57	145
+2013-08-11 23:46:57	Successfully connect to server:127.0.0.1,port:21
+2013-08-11 23:46:58	Successfully connect to server:127.0.0.1,port:42266
+2013-08-11 23:46:58	12
+2013-08-11 23:46:58	 recv no message.
+2013-08-11 23:46:58	145
+2013-08-11 23:46:58	Successfully connect to server:127.0.0.1,port:21
+2013-08-11 23:46:59	Successfully connect to server:127.0.0.1,port:11240
+2013-08-11 23:47:00	12
+2013-08-11 23:47:00	 recv no message.
+2013-08-11 23:47:00	145
+2013-08-11 23:47:00	Successfully connect to server:127.0.0.1,port:21
+2013-08-11 23:47:01	Successfully connect to server:127.0.0.1,port:13848
+2013-08-11 23:47:01	12
+2013-08-11 23:47:02	 recv no message.
+2013-08-11 23:47:02	145
+2013-08-11 23:47:38	Successfully connect to server:127.0.0.1,port:21
+2013-08-11 23:47:39	Successfully connect to server:127.0.0.1,port:35500
+2013-08-11 23:47:39	12
+2013-08-11 23:47:39	 recv no message.
+2013-08-11 23:47:39	145
+2013-08-11 23:47:39	Successfully connect to server:127.0.0.1,port:21
+2013-08-11 23:47:40	Successfully connect to server:127.0.0.1,port:61502
+2013-08-11 23:47:41	12
+2013-08-11 23:47:41	 recv no message.
+2013-08-11 23:47:41	145
+2013-08-11 23:47:41	Successfully connect to server:127.0.0.1,port:21
+2013-08-11 23:47:42	Successfully connect to server:127.0.0.1,port:14677
+2013-08-11 23:47:42	12
+2013-08-11 23:47:43	 recv no message.
+2013-08-11 23:47:43	145
+2013-08-11 23:47:43	Successfully connect to server:127.0.0.1,port:21
+2013-08-11 23:47:44	Successfully connect to server:127.0.0.1,port:52660
+2013-08-11 23:47:44	12
+2013-08-11 23:47:44	 recv no message.
+2013-08-11 23:47:44	145
+2013-08-11 23:47:44	Successfully connect to server:127.0.0.1,port:21
+2013-08-11 23:47:45	Successfully connect to server:127.0.0.1,port:48939
+2013-08-11 23:47:46	12
+2013-08-11 23:47:46	 recv no message.
+2013-08-11 23:47:46	145
+2013-08-11 23:47:46	Successfully connect to server:127.0.0.1,port:21
+2013-08-11 23:47:47	Successfully connect to server:127.0.0.1,port:25410
+2013-08-11 23:47:48	12
+2013-08-11 23:47:48	 recv no message.
+2013-08-11 23:47:48	145
+2013-08-11 23:48:27	Successfully connect to server:127.0.0.1,port:21
+2013-08-11 23:48:28	Successfully connect to server:127.0.0.1,port:58712
+2013-08-11 23:48:28	12
+2013-08-11 23:48:28	 recv no message.
+2013-08-11 23:48:28	145
+2013-08-11 23:48:28	Successfully connect to server:127.0.0.1,port:21
+2013-08-11 23:48:29	Successfully connect to server:127.0.0.1,port:20694
+2013-08-11 23:48:30	12
+2013-08-11 23:48:30	 recv no message.
+2013-08-11 23:48:30	145
+2013-08-11 23:48:30	Successfully connect to server:127.0.0.1,port:21
+2013-08-11 23:48:31	Successfully connect to server:127.0.0.1,port:42573
+2013-08-11 23:48:31	12
+2013-08-11 23:48:32	 recv no message.
+2013-08-11 23:48:32	145
+2013-08-11 23:48:32	Successfully connect to server:127.0.0.1,port:21
+2013-08-11 23:48:33	Successfully connect to server:127.0.0.1,port:53819
+2013-08-11 23:48:33	12
+2013-08-11 23:48:33	 recv no message.
+2013-08-11 23:48:33	145
+2013-08-11 23:48:33	Successfully connect to server:127.0.0.1,port:21
+2013-08-11 23:48:34	Successfully connect to server:127.0.0.1,port:58139
+2013-08-11 23:48:35	12
+2013-08-11 23:48:35	 recv no message.
+2013-08-11 23:48:35	145
+2013-08-11 23:48:35	Successfully connect to server:127.0.0.1,port:21
+2013-08-11 23:48:36	Successfully connect to server:127.0.0.1,port:60557
+2013-08-11 23:48:36	12
+2013-08-11 23:48:37	 recv no message.
+2013-08-11 23:48:37	145
+2013-08-11 23:52:34	Successfully connect to server:127.0.0.1,port:21
+2013-08-11 23:52:35	Successfully connect to server:127.0.0.1,port:33457
+2013-08-11 23:52:35	12
+2013-08-11 23:52:35	 recv no message.
+2013-08-11 23:52:35	145
+2013-08-11 23:52:36	Successfully connect to server:127.0.0.1,port:21
+2013-08-11 23:52:37	Successfully connect to server:127.0.0.1,port:7022
+2013-08-11 23:52:37	12
+2013-08-11 23:52:38	 recv no message.
+2013-08-11 23:52:38	145
+2013-08-11 23:52:38	Successfully connect to server:127.0.0.1,port:21
+2013-08-11 23:52:39	Successfully connect to server:127.0.0.1,port:19199
+2013-08-11 23:52:40	12
+2013-08-11 23:52:40	 recv no message.
+2013-08-11 23:52:40	145
+2013-08-11 23:52:41	Successfully connect to server:127.0.0.1,port:21
+2013-08-11 23:52:42	Successfully connect to server:127.0.0.1,port:42304
+2013-08-11 23:52:42	12
+2013-08-11 23:52:42	 recv no message.
+2013-08-11 23:52:42	145
+2013-08-11 23:52:43	Successfully connect to server:127.0.0.1,port:21
+2013-08-11 23:52:44	Successfully connect to server:127.0.0.1,port:36474
+2013-08-11 23:52:44	12
+2013-08-11 23:52:45	 recv no message.
+2013-08-11 23:52:45	145
+2013-08-11 23:52:45	Successfully connect to server:127.0.0.1,port:21
+2013-08-11 23:52:46	Successfully connect to server:127.0.0.1,port:31479
+2013-08-11 23:52:47	12
+2013-08-11 23:52:47	 recv no message.
+2013-08-11 23:52:47	145

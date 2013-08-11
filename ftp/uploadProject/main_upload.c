@@ -209,7 +209,7 @@ void upload()
 		UploadNode * p,*p1;
 		p =  uploadList->next;//temporary variable always points to uploadList head pointer.
         p1 = uploadList;
-        display();
+        //display();
         delay();
         //printf(".....upload......\n");
 		//to traverse the upload task list, check whether there are some upload task or not.
@@ -224,20 +224,20 @@ void upload()
             filename = malloc(sizeof(char)*len);
             memset(filename,0,len);
             strcpy(filename, p->filename);
-            printf("filename: %s\n",filename);
+            //printf("filename: %s\n",filename);
 
             len = len + strlen(TEMP_SUFFIX) + 1;
-            printf("len = %d\n", len);
+
             tempFilename = malloc(sizeof(char)*len);
             memset(tempFilename,0,len);
             sprintf(tempFilename,"%s%s",p->filename, TEMP_SUFFIX);
-            printf("tempFilename: %s\n",tempFilename);
+            //printf("tempFilename: %s\n",tempFilename);
 
             len = strlen(filename) + strlen(p->analysisCenterPath) + 1;
             analysisCenterPath = malloc(sizeof(char)*len);
             memset(analysisCenterPath,0,len);
             sprintf(analysisCenterPath,"%s%s",p->analysisCenterPath,filename);
-            printf("analysisCenterPath: %s\n",analysisCenterPath);
+            //printf("analysisCenterPath: %s\n",analysisCenterPath);
 
 
             len = strlen(p->filename) + strlen(p->productCenterPath) + 1;
@@ -264,7 +264,8 @@ void upload()
                 //pthread_mutex_unlock(&uploadMutex);//unlock
 				//we have three times to try to connect to ftp server ,if failed. Otherwise send network error.
 				int conncectTimes = 0;
-				while((sockfd = connectFtpServer(p->server->ip, p->server->port, p->server->username, p->server->passwd)) <= FTP_CONNECT_FAILED_FLAG)
+				//while((sockfd = connectFtpServer(p->server->ip, p->server->port, p->server->username, p->server->passwd)) <= FTP_CONNECT_FAILED_FLAG)
+				while( (sockfd = connectFtpServer("127.0.0.1", 21, "ftpuser", "123456")) <= 0)
 				{
 					if( MAX_CONNECT_TIMES <= ++conncectTimes )
 					{
@@ -294,7 +295,7 @@ void upload()
                     p->state = UPLOAD_FILE_UPLOADING;//uploading state
                     pthread_mutex_unlock(&uploadMutex);//unlock
                     #ifdef DEBUG
-                    printf("filename = %s,\nprefix%s\n",filename,analysisCenterPath);
+                    printf("filename = %s,\tpath:%s\n",filename,analysisCenterPath);
                     #endif
 
                     // record starting-upload time
@@ -308,8 +309,12 @@ void upload()
                     *   3.else, make dir and then upload the file;
                     *   4.rename the file if upload it completely.
                     */
+                    //printf("%s,\t%s\n",analysisCenterPath,tempProductCenterPath);
                     ftp_mkdir(productCenterdir, sockfd);//make sure the dir exists.
                     ftperror = ftp_put(analysisCenterPath, tempProductCenterPath, sockfd);
+                    //ftperror = ftp_put("/home/jung/2.txt", "upload/fsda.txt", sockfd);
+                    //delay();
+                    //break;
 
                     // record end-upload time
                     timer =time(NULL);
@@ -342,7 +347,14 @@ void upload()
                             pthread_mutex_unlock(&logMutex);//unlock
 
                             pthread_mutex_lock(&uploadMutex);//lock
-                            p->state = UPLOAD_FILE_UPLOAD_FAILED;
+
+                            if(p->state == UPLOAD_FILE_UNKNOWN)
+                            {
+                                freeUploadNode(p);//free(p);
+                                p=p1;
+                            }
+                            else
+                                p->state = UPLOAD_FILE_UPLOAD_FAILED;
                             pthread_mutex_unlock(&uploadMutex);//unlock
 
                             break;
@@ -356,7 +368,13 @@ void upload()
                             pthread_mutex_unlock(&logMutex);//unlock
 
                             pthread_mutex_lock(&uploadMutex);//lock
-                            p->state = UPLOAD_FILE_UPLOAD_SUCCESS;
+                            if(p->state == UPLOAD_FILE_UNKNOWN)
+                            {
+                                freeUploadNode(p);//free(p);
+                                p=p1;
+                            }
+                            else
+                                p->state = UPLOAD_FILE_UPLOAD_SUCCESS;
                             pthread_mutex_unlock(&uploadMutex);//unlock
 
                             break;

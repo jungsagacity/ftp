@@ -12,7 +12,7 @@
 #include<stdio.h>
 
 
-#include "ftp.h"
+#include "ftp1.h"
 
 struct sockaddr_in ftp_server,local_host;
 struct hostent * server_hostent;
@@ -194,7 +194,7 @@ int ftp_get_reply(int sock_fd)
     }
     else
     {
-        plog(" recv no message.\n");
+        plog(" recv no message");
         return 0;
     }
 
@@ -209,7 +209,7 @@ int ftp_get_reply(int sock_fd)
 
     }
 
-
+	printf("rc :%d\n",reply_code);
     return reply_code;
 }
 
@@ -849,7 +849,7 @@ int ftp_put(char* src_file, char * dst_file, int socket_control)
 int ftp_rename(char *oldName, char *newName, int socket_control)
 {
     int error;
-    ftp_get_reply(socket_control);
+
     ftp_send_cmd("RNFR ", oldName, socket_control);
     error = ftp_get_reply(socket_control);
     if( error < 0)
@@ -924,9 +924,7 @@ int ftp_mkdir(char *dirName, int socket_control)
             #ifdef DEBUG
             printf("path:%s\n",path);
             #endif
-            ftp_send_cmd("MKD ", path, socket_control);
-            int error = ftp_get_reply(socket_control);
-            if( error < 0)
+            if(ftp_send_cmd("MKD ", path, socket_control) < 0)
             {
                 plog("Can not send user message.");
 
