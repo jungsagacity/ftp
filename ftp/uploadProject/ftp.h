@@ -19,7 +19,7 @@
 #define     DOWNLOAD_CONNECT_SOCKET_ERROR       5
 #define     DOWNLOAD_PORT_MODE_ERROR            6
 #define     DOWNLOAD_REMOTE_FILE_NOEXIST        7
-#define	 	DOWNLOAD_SUCCESS			        8
+#define	 	FTP_DOWNLOAD_SUCCESS			    8
 
 #define     UPLOAD_CONNNET_FAILED               9
 #define     UPLOAD_LOCAL_FILENAME_NULL          10
@@ -29,11 +29,23 @@
 #define     UPLOAD_SUCCESS                      14
 
 
+#define DEBUG 0
+typedef struct ftpserver
+{
+    char    *ip;
+    int     port;
+    char    *username;
+    char    *passwd;
+    struct  ftpserver * next;
+}FtpServer;
+
+#define MAX_CONNECT_TIMES 3
 
 
+int dirIsExist(char *filePath);
 void ftp_delay();
 char *strReplace(char *dest, char *src, const char *oldstr, const char *newstr, size_t len);
-void plog(char * msg);
+int plog(char *format,...);
 int fill_host_addr(char *host_ip_addr,struct sockaddr_in *host,int port);
 int ftp_send_cmd(const char* s1, const char* s2, int sock_fd);
 int ftp_get_reply(int sock_fd);
