@@ -1,0 +1,520 @@
+Sat Mar 30 15:10:05 2013	Successfully connect to server:128.183.20.84,port:21
+Sat Mar 30 15:10:05 2013	220-
+********************************************************************
+220-                 Welcome to the CDDIS Anonymous FTP Archive
+220-
+Sat Mar 30 15:10:05 2013	220-This U.S. Government resource is for authorized use only.
+220-
+220-If not authorized to access this resource, disconnect now.
+220-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+220-
+220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey NSat Mar 30 15:10:05 2013	oll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+20-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+220-
+220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey NSat Mar 30 15:10:05 2013	oll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+Sat Mar 30 15:10:06 2013	331 Please specify the password.
+Sat Mar 30 15:10:06 2013	230 Login successful.
+Sat Mar 30 15:10:07 2013	Successfully connect to server:128.183.20.84,port:18224
+Sat Mar 30 15:10:08 2013	200 Switching to Binary mode.
+Sat Mar 30 15:10:08 2013	550 Failed to open file.
+Sat Mar 30 15:10:08 2013	Successfully connect to server:128.183.20.84,port:21
+Sat Mar 30 15:10:09 2013	220-                 Welcome to the CDDIS Anonymous FTP Archive
+220-
+220-
+Sat Mar 30 15:10:09 2013	220-This U.S. Government resource is for authorized use only.
+220-
+220-If not authorized to access this resource, disconnect now.
+220-Unauthorized use of, or access to this resource may subject you to
+Sat Mar 30 15:10:09 2013	220-disciplinary action or criminal prosecution.
+220-
+220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+Sat Mar 30 15:10:09 2013	220-disciplinary action or criminal prosecution.
+220-
+220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+Sat Mar 30 15:10:09 2013	331 Please specify the password.
+Sat Mar 30 15:10:10 2013	230 Login successful.
+Sat Mar 30 15:10:10 2013	Successfully connect to server:128.183.20.84,port:6441
+Sat Mar 30 15:10:11 2013	200 Switching to Binary mode.
+Sat Mar 30 15:10:12 2013	550 Failed to open file.
+Sat Mar 30 15:10:12 2013	Successfully connect to server:128.183.20.84,port:21
+Sat Mar 30 15:10:12 2013	220-
+220-This U.S. Government resource is for authorized use only.
+220-
+220-If not authorized to access this resource, disconnect now.
+
+220-
+Sat Mar 30 15:10:12 2013	220-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+220-
+nect now.
+Sat Mar 30 15:10:12 2013	220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+Sat Mar 30 15:10:12 2013	220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+Sat Mar 30 15:10:13 2013	331 Please specify the password.
+Sat Mar 30 15:10:13 2013	230 Login successful.
+Sat Mar 30 15:10:14 2013	Successfully connect to server:128.183.20.84,port:37351
+Sat Mar 30 15:10:15 2013	200 Switching to Binary mode.
+Sat Mar 30 15:10:15 2013	550 Failed to open file.
+Sat Mar 30 15:10:15 2013	Successfully connect to server:128.183.20.84,port:21
+Sat Mar 30 15:10:16 2013	220-This U.S. Government resource is for authorized use only.
+220-
+220-If not authorized to access this resource, disconnect now.
+rchive
+220-
+220-
+Sat Mar 30 15:10:16 2013	220-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+220-
+ow.
+Sat Mar 30 15:10:16 2013	220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+Sat Mar 30 15:10:16 2013	220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+Sat Mar 30 15:10:16 2013	331 Please specify the password.
+Sat Mar 30 15:10:17 2013	230 Login successful.
+Sat Mar 30 15:10:17 2013	Successfully connect to server:128.183.20.84,port:9159
+Sat Mar 30 15:10:18 2013	200 Switching to Binary mode.
+Sat Mar 30 15:10:19 2013	550 Failed to open file.
+Sat Mar 30 15:10:19 2013	Successfully connect to server:128.183.20.84,port:21
+Sat Mar 30 15:10:19 2013	220-
+220-
+220-This U.S. Government resource is for authorized use only.
+220-
+220-If not authorized to access this resource, disconnect now.
+220-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+220-
+220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-ConSat Mar 30 15:10:19 2013	tact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+20-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+220-
+220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-ConSat Mar 30 15:10:19 2013	tact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+Sat Mar 30 15:10:20 2013	331 Please specify the password.
+Sat Mar 30 15:10:20 2013	230 Login successful.
+Sat Mar 30 15:10:21 2013	Successfully connect to server:128.183.20.84,port:7912
+Sat Mar 30 15:10:22 2013	200 Switching to Binary mode.
+Sat Mar 30 15:10:22 2013	550 Failed to open file.
+Sat Mar 30 15:10:22 2013	Successfully connect to server:128.183.20.84,port:21
+Sat Mar 30 15:10:23 2013	ding or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+20-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+220-
+220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recorSat Mar 30 15:10:23 2013	ding or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+Sat Mar 30 15:10:23 2013	331 Please specify the password.
+Sat Mar 30 15:10:24 2013	230 Login successful.
+Sat Mar 30 15:10:25 2013	Successfully connect to server:128.183.20.84,port:41852
+Sat Mar 30 15:10:25 2013	200 Switching to Binary mode.
+Sat Mar 30 15:10:26 2013	550 Failed to open file.
+Sat Mar 30 15:10:26 2013	Successfully connect to server:128.183.20.84,port:21
+Sat Mar 30 15:10:26 2013	220-                 Welcome to the CDDIS Anonymous FTP Archive
+*********
+Sat Mar 30 15:10:26 2013	220-
+220-
+220-This U.S. Government resource is for authorized use only.
+
+Sat Mar 30 15:10:26 2013	220-
+220-If not authorized to access this resource, disconnect now.
+ly.
+Sat Mar 30 15:10:26 2013	220-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+Sat Mar 30 15:10:26 2013	220-
+authorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+Sat Mar 30 15:10:26 2013	220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+Sat Mar 30 15:10:26 2013	220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+Sat Mar 30 15:10:27 2013	331 Please specify the password.
+Sat Mar 30 15:10:27 2013	230 Login successful.
+Sat Mar 30 15:10:28 2013	Successfully connect to server:128.183.20.84,port:30030
+Sat Mar 30 15:10:29 2013	200 Switching to Binary mode.
+Sat Mar 30 15:10:29 2013	550 Failed to open file.
+Sat Mar 30 15:10:29 2013	Successfully connect to server:128.183.20.84,port:21
+Sat Mar 30 15:10:30 2013	220-This U.S. Government resource is for authorized use only.
+220-
+*****
+220-                 Welcome to the CDDIS Anonymous FTP Archive
+220-
+220-
+Sat Mar 30 15:10:30 2013	220-If not authorized to access this resource, disconnect now.
+220-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+220-
+Sat Mar 30 15:10:30 2013	220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+Sat Mar 30 15:10:30 2013	220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+Sat Mar 30 15:10:30 2013	331 Please specify the password.
+Sat Mar 30 15:10:31 2013	230 Login successful.
+Sat Mar 30 15:10:31 2013	Successfully connect to server:128.183.20.84,port:20494
+Sat Mar 30 15:10:32 2013	200 Switching to Binary mode.
+Sat Mar 30 15:10:33 2013	550 Failed to open file.
+Sat Mar 30 15:10:33 2013	Successfully connect to server:128.183.20.84,port:21
+Sat Mar 30 15:10:33 2013	220-                 Welcome to the CDDIS Anonymous FTP Archive
+220-
+220-
+220-This U.S. Government resource is for authorized use only.
+Sat Mar 30 15:10:33 2013	220-
+               Welcome to the CDDIS Anonymous FTP Archive
+220-
+220-
+220-This U.S. Government resource is for authorized use only.
+Sat Mar 30 15:10:33 2013	220-If not authorized to access this resource, disconnect now.
+
+220-
+220-
+220-This U.S. Government resource is for authorized use only.
+Sat Mar 30 15:10:33 2013	220-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+220-
+ use only.
+Sat Mar 30 15:10:33 2013	220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+Sat Mar 30 15:10:33 2013	220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+Sat Mar 30 15:10:34 2013	331 Please specify the password.
+Sat Mar 30 15:10:34 2013	230 Login successful.
+Sat Mar 30 15:10:35 2013	Successfully connect to server:128.183.20.84,port:28941
+Sat Mar 30 15:10:35 2013	200 Switching to Binary mode.
+Sat Mar 30 15:10:36 2013	550 Failed to open file.
+Sat Mar 30 15:10:36 2013	Successfully connect to server:128.183.20.84,port:21
+Sat Mar 30 15:10:37 2013	220-This U.S. Government resource is for authorized use only.
+220-
+*****
+220-                 Welcome to the CDDIS Anonymous FTP Archive
+220-
+220-
+Sat Mar 30 15:10:37 2013	220-If not authorized to access this resource, disconnect now.
+220-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+220-
+Sat Mar 30 15:10:37 2013	220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+Sat Mar 30 15:10:37 2013	220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+Sat Mar 30 15:10:37 2013	331 Please specify the password.
+Sat Mar 30 15:10:38 2013	230 Login successful.
+Sat Mar 30 15:10:38 2013	Successfully connect to server:128.183.20.84,port:7710
+Sat Mar 30 15:10:39 2013	200 Switching to Binary mode.
+Sat Mar 30 15:10:40 2013	550 Failed to open file.
+Sat Mar 30 15:10:40 2013	Successfully connect to server:128.183.20.84,port:21
+Sat Mar 30 15:10:40 2013	220-
+220-
+**************************************************************
+220-                 Welcome to the CDDIS Anonymous FTP Archive
+Sat Mar 30 15:10:40 2013	220-This U.S. Government resource is for authorized use only.
+220-
+220-If not authorized to access this resource, disconnect now.
+220-Unauthorized use of, or access to this resource may subject you to
+Sat Mar 30 15:10:40 2013	220-disciplinary action or criminal prosecution.
+220-
+only.
+220-
+220-If not authorized to access this resource, disconnect now.
+220-Unauthorized use of, or access to this resource may subject you to
+Sat Mar 30 15:10:40 2013	220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+Sat Mar 30 15:10:40 2013	220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+Sat Mar 30 15:10:41 2013	331 Please specify the password.
+Sat Mar 30 15:10:41 2013	230 Login successful.
+Sat Mar 30 15:10:42 2013	Successfully connect to server:128.183.20.84,port:23018
+Sat Mar 30 15:10:42 2013	200 Switching to Binary mode.
+Sat Mar 30 15:10:43 2013	550 Failed to open file.
+Sat Mar 30 15:10:43 2013	Successfully connect to server:192.168.1.106,port:21
+Sat Mar 30 15:10:43 2013	220 (vsFTPd 3.0.2)
+Sat Mar 30 15:10:44 2013	331 Please specify the password.
+Sat Mar 30 15:10:44 2013	230 Login successful.
+Sat Mar 30 15:10:44 2013	Successfully connect to server:192.168.1.106,port:43609
+Sat Mar 30 15:10:45 2013	200 Switching to Binary mode.
+Sat Mar 30 15:10:45 2013	550 Failed to open file.
+Sat Mar 30 15:10:45 2013	Successfully connect to server:192.168.1.106,port:21
+Sat Mar 30 15:10:45 2013	220 (vsFTPd 3.0.2)
+Sat Mar 30 15:10:45 2013	331 Please specify the password.
+Sat Mar 30 15:10:46 2013	230 Login successful.
+Sat Mar 30 15:10:46 2013	Successfully connect to server:192.168.1.106,port:16521
+Sat Mar 30 15:10:46 2013	200 Switching to Binary mode.
+Sat Mar 30 15:10:46 2013	550 Failed to open file.
+Sat Mar 30 15:10:46 2013	Successfully connect to server:192.168.1.106,port:21
+Sat Mar 30 15:10:47 2013	220 (vsFTPd 3.0.2)
+Sat Mar 30 15:10:47 2013	331 Please specify the password.
+Sat Mar 30 15:10:48 2013	230 Login successful.
+Sat Mar 30 15:10:48 2013	Successfully connect to server:192.168.1.106,port:9768
+Sat Mar 30 15:10:48 2013	200 Switching to Binary mode.
+Sat Mar 30 15:10:48 2013	550 Failed to open file.
+Sat Mar 30 15:10:48 2013	Successfully connect to server:192.168.1.106,port:21
+Sat Mar 30 15:10:48 2013	220 (vsFTPd 3.0.2)
+Sat Mar 30 15:10:49 2013	331 Please specify the password.
+Sat Mar 30 15:10:49 2013	230 Login successful.
+Sat Mar 30 15:10:49 2013	Successfully connect to server:192.168.1.106,port:64583
+Sat Mar 30 15:10:50 2013	200 Switching to Binary mode.
+Sat Mar 30 15:10:50 2013	550 Failed to open file.
+Sat Mar 30 15:10:50 2013	Successfully connect to server:192.168.1.106,port:21
+Sat Mar 30 15:10:50 2013	220 (vsFTPd 3.0.2)
+Sat Mar 30 15:10:50 2013	331 Please specify the password.
+Sat Mar 30 15:10:51 2013	230 Login successful.
+Sat Mar 30 15:10:51 2013	Successfully connect to server:192.168.1.106,port:54613
+Sat Mar 30 15:10:51 2013	200 Switching to Binary mode.
+Sat Mar 30 15:10:51 2013	550 Failed to open file.
+Sat Mar 30 15:10:51 2013	Successfully connect to server:192.168.1.106,port:21
+Sat Mar 30 15:10:52 2013	220 (vsFTPd 3.0.2)
+Sat Mar 30 15:10:52 2013	331 Please specify the password.
+Sat Mar 30 15:10:52 2013	230 Login successful.
+Sat Mar 30 15:10:52 2013	Successfully connect to server:192.168.1.106,port:35995
+Sat Mar 30 15:10:53 2013	200 Switching to Binary mode.
+Sat Mar 30 15:10:53 2013	550 Failed to open file.
+Sat Mar 30 15:10:53 2013	Successfully connect to server:192.168.1.106,port:21
+Sat Mar 30 15:10:53 2013	220 (vsFTPd 3.0.2)
+Sat Mar 30 15:10:54 2013	331 Please specify the password.
+Sat Mar 30 15:10:54 2013	230 Login successful.
+Sat Mar 30 15:10:54 2013	Successfully connect to server:192.168.1.106,port:21718
+Sat Mar 30 15:10:54 2013	200 Switching to Binary mode.
+Sat Mar 30 15:10:55 2013	550 Failed to open file.
+Sat Mar 30 15:10:55 2013	Successfully connect to server:192.168.1.106,port:21
+Sat Mar 30 15:10:55 2013	220 (vsFTPd 3.0.2)
+Sat Mar 30 15:10:55 2013	331 Please specify the password.
+Sat Mar 30 15:10:56 2013	230 Login successful.
+Sat Mar 30 15:10:56 2013	Successfully connect to server:192.168.1.106,port:8759
+Sat Mar 30 15:10:56 2013	200 Switching to Binary mode.
+Sat Mar 30 15:10:56 2013	550 Failed to open file.
+Sat Mar 30 15:10:56 2013	Successfully connect to server:192.168.1.106,port:21
+Sat Mar 30 15:10:57 2013	220 (vsFTPd 3.0.2)
+Sat Mar 30 15:10:57 2013	331 Please specify the password.
+Sat Mar 30 15:10:57 2013	230 Login successful.
+Sat Mar 30 15:10:57 2013	Successfully connect to server:192.168.1.106,port:6824
+Sat Mar 30 15:10:58 2013	200 Switching to Binary mode.
+Sat Mar 30 15:10:58 2013	550 Failed to open file.
+Sat Mar 30 15:10:58 2013	Successfully connect to server:192.168.1.106,port:21
+Sat Mar 30 15:10:58 2013	220 (vsFTPd 3.0.2)
+Sat Mar 30 15:10:59 2013	331 Please specify the password.
+Sat Mar 30 15:10:59 2013	230 Login successful.
+Sat Mar 30 15:10:59 2013	Successfully connect to server:192.168.1.106,port:24643
+Sat Mar 30 15:10:59 2013	200 Switching to Binary mode.
+Sat Mar 30 15:11:00 2013	550 Failed to open file.
+Sat Mar 30 15:11:00 2013	Successfully connect to server:192.168.1.106,port:21
+Sat Mar 30 15:11:00 2013	220 (vsFTPd 3.0.2)
+Sat Mar 30 15:11:00 2013	331 Please specify the password.
+Sat Mar 30 15:11:01 2013	230 Login successful.
+Sat Mar 30 15:11:01 2013	Successfully connect to server:192.168.1.106,port:53183
+Sat Mar 30 15:11:01 2013	200 Switching to Binary mode.
+Sat Mar 30 15:11:01 2013	550 Failed to open file.
+Sat Mar 30 15:11:01 2013	Successfully connect to server:192.168.1.106,port:21
+Sat Mar 30 15:11:02 2013	220 (vsFTPd 3.0.2)
+Sat Mar 30 15:11:02 2013	331 Please specify the password.
+Sat Mar 30 15:11:02 2013	230 Login successful.
+Sat Mar 30 15:11:02 2013	Successfully connect to server:192.168.1.106,port:17407
+Sat Mar 30 15:11:03 2013	200 Switching to Binary mode.
+Sat Mar 30 15:11:03 2013	550 Failed to open file.
+Sat Mar 30 15:11:03 2013	Successfully connect to server:192.168.1.106,port:21
+Sat Mar 30 15:11:03 2013	220 (vsFTPd 3.0.2)
+Sat Mar 30 15:11:04 2013	331 Please specify the password.
+Sat Mar 30 15:11:04 2013	230 Login successful.
+Sat Mar 30 15:11:04 2013	Successfully connect to server:192.168.1.106,port:48993
+Sat Mar 30 15:11:04 2013	200 Switching to Binary mode.
+Sat Mar 30 15:11:05 2013	550 Failed to open file.
+Sat Mar 30 15:11:05 2013	Successfully connect to server:192.168.1.106,port:21
+Sat Mar 30 15:11:05 2013	220 (vsFTPd 3.0.2)
+Sat Mar 30 15:11:05 2013	331 Please specify the password.
+Sat Mar 30 15:11:06 2013	230 Login successful.
+Sat Mar 30 15:11:06 2013	Successfully connect to server:192.168.1.106,port:61576
+Sat Mar 30 15:11:06 2013	200 Switching to Binary mode.
+Sat Mar 30 15:11:06 2013	550 Failed to open file.
+Sat Mar 30 15:11:06 2013	Successfully connect to server:192.168.1.106,port:21
+Sat Mar 30 15:11:07 2013	220 (vsFTPd 3.0.2)
+Sat Mar 30 15:11:07 2013	331 Please specify the password.
+Sat Mar 30 15:11:07 2013	230 Login successful.
+Sat Mar 30 15:11:07 2013	Successfully connect to server:192.168.1.106,port:12603
+Sat Mar 30 15:11:08 2013	200 Switching to Binary mode.
+Sat Mar 30 15:11:08 2013	550 Failed to open file.
+Sat Mar 30 15:11:08 2013	Successfully connect to server:192.168.1.106,port:21
+Sat Mar 30 15:11:08 2013	220 (vsFTPd 3.0.2)
+Sat Mar 30 15:11:08 2013	331 Please specify the password.
+Sat Mar 30 15:11:09 2013	230 Login successful.
+Sat Mar 30 15:11:09 2013	Successfully connect to server:192.168.1.106,port:56512
+Sat Mar 30 15:11:09 2013	200 Switching to Binary mode.
+Sat Mar 30 15:11:09 2013	550 Failed to open file.
+Sat Mar 30 15:11:09 2013	Successfully connect to server:192.168.1.106,port:21
+Sat Mar 30 15:11:10 2013	220 (vsFTPd 3.0.2)
+Sat Mar 30 15:11:10 2013	331 Please specify the password.
+Sat Mar 30 15:11:11 2013	230 Login successful.
+Sat Mar 30 15:11:11 2013	Successfully connect to server:192.168.1.106,port:13667
+Sat Mar 30 15:11:11 2013	200 Switching to Binary mode.
+Sat Mar 30 15:11:11 2013	550 Failed to open file.
+Sat Mar 30 15:11:11 2013	Successfully connect to server:192.168.1.106,port:21
+Sat Mar 30 15:11:11 2013	220 (vsFTPd 3.0.2)
+Sat Mar 30 15:11:12 2013	331 Please specify the password.
+Sat Mar 30 15:11:12 2013	230 Login successful.
+Sat Mar 30 15:11:12 2013	Successfully connect to server:192.168.1.106,port:64849
+Sat Mar 30 15:11:12 2013	200 Switching to Binary mode.
+Sat Mar 30 15:11:13 2013	550 Failed to open file.
+Sat Mar 30 15:11:13 2013	Successfully connect to server:192.168.1.106,port:21
+Sat Mar 30 15:11:13 2013	220 (vsFTPd 3.0.2)
+Sat Mar 30 15:11:13 2013	331 Please specify the password.
+Sat Mar 30 15:11:14 2013	230 Login successful.
+Sat Mar 30 15:11:14 2013	Successfully connect to server:192.168.1.106,port:29203
+Sat Mar 30 15:11:14 2013	200 Switching to Binary mode.
+Sat Mar 30 15:11:14 2013	550 Failed to open file.

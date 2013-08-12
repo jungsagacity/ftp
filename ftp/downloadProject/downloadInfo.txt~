@@ -1,0 +1,2 @@
+#序号	数据源	时间类型	文件类型	站点列表文件	下载服务器	数据中心文件路径格式	数据中心文件路径范例	分析中心存放根目录	分析中心文件路径范例	说明
+1	GPS+GLONASS12 hourly  D   igu.sta cddis.gsfc.nasa.gov pub/gps/data/hourly/yyyy/ddd/hh/    (case:/pub/gps/data/hourly/2013/212/22/abmf212w.13d.Z)  GNSS/yyyy/ddd/hourly/hh/    (case: GNSS/2013/212/hourly/22/abmf212w.13d.Z)	english
