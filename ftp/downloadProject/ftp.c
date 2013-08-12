@@ -395,24 +395,33 @@ int connectFtpServer(char * server_ip, int port, char * user, char * password)
     }
 
 	error=ftp_get_reply(socket_control);
-    if( error!=220 && error!=0)
-    {
+	if( error == 421 )//There are too many connections from your internet address.
+	{
+        return socket_control;
+	}
+	else if( error == 220 || error == 0 )//Successfully connect
+	{
+        int maxConnectTimes = 0 ;
+        while ( (error=ftp_login(socket_control, user, password)) == -1 )
+        {
+            if( (++maxConnectTimes) < 3 )
+            {
+                error=ftp_login(socket_control, user, password);
+            }else
+            {
+                return -1;
+            }
+
+        }
+        plog("socket_control = %d\n",socket_control);
+
+        return socket_control;
+	}
+	else
+	{
         plog("%s", "Connect error!\n");
         return -1;
-    }
-
-    int maxConnectTimes = 0 ;
-    while ( (error=ftp_login(socket_control, user, password)) == -1 )
-    {
-        if( (++maxConnectTimes) <3 )
-        {
-            error=ftp_login(socket_control, user, password);
-        }
-        return -1;
-    }
-    plog("socket_control = %d\n",socket_control);
-
-    return socket_control;
+	}
 
 }
 

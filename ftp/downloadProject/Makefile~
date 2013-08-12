@@ -1,5 +1,5 @@
 main:main_download.o ftp.o  download.o
-	gcc  -g main_download.o  ftp.o   download.o -o  main -lpthread
+	gcc  main_download.o  ftp.o   download.o -o  main -lpthread
 
 ftp.o: ftp.c
 	gcc -g -c ftp.c -o ftp.o

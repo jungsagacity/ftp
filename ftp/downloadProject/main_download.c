@@ -267,8 +267,8 @@ int writeLog(char *format,...)
     char logFile[100] ;
     memset(logFile, 0, 100);
 
-    sprintf(logFile, "log/%04d%02d%02d.log", year, month, day);
-    dirIsExist("log/");
+    sprintf(logFile, "log/%04d%02d%02d.log", year, month, day);printf("logFile %s\n",logFile);
+    dirIsExist("log/");printf("logFile %s\n",logFile);
     FILE *dwLogFp;
     if( (dwLogFp=fopen( logFile ,"at") ) == NULL )
     {
@@ -288,7 +288,7 @@ int writeLog(char *format,...)
     va_end(arg_ptr);
 
     fclose(dwLogFp);
-
+printf("logFile %s\n",logFile);
 }
 
 /**************************************************************************************************
@@ -401,6 +401,18 @@ int singleDownload(DownloadNode *dwNode, int nodeid)
                     #endif
                     return -1;
                 }
+
+                if( strlen( (dwNode->station)[nodeid] ) < 4 )
+                {
+                    #ifdef DEBUG
+                    printf("Fun(singleDownload): (dwNode->station)[%d] error.\n",nodeid);
+                    #endif
+                    return -1;
+                }
+                #ifdef DEBUG
+                printf("(dwNode->station)[%d] = %s\n",nodeid,(dwNode->station)[nodeid]);
+                #endif
+
                 realFilename[i] = (dwNode->station)[nodeid][i];//replace ssss
 
             }
@@ -508,10 +520,11 @@ int singleDownload(DownloadNode *dwNode, int nodeid)
                 //to recod failed connnection time
                 timer =time(NULL);
                 memset(startTime, 0, 100);
-                strftime( startTime, sizeof(startTime), "%Y-%m-%d %T",localtime(&timer) );
-                writeLog("%s\t%s\t%s/%s\t%s\n",startTime, "DOWNLOAD_CONNNET_FAILED", ftpServerIP,remoteFullPath, "");
+                strftime( startTime, sizeof(startTime), "%Y-%m-%d %T",localtime(&timer) );printf("strftime.\n");
+                writeLog("%s\t%s\t%s/%s\t%s\n",startTime, "DOWNLOAD_CONNNET_FAILED", ftpServerIP,remoteFullPath, " ");
+                printf("writeLog.\n");
 
-                break;
+                return -1;
             }
             //delay some time and connect ftp again.
             delay();
@@ -645,7 +658,7 @@ void download()
         DownloadNode * p,*pLast;
 		pthread_mutex_lock(&downloadMutex);//lock
 		p = downloadList->next;//temporary variable always points to uploadList head pointer.
-printf("789\n");
+
         pthread_mutex_unlock(&downloadMutex);//unlock
 
 		//travers daily task arry which max size is smaller than 1000;
@@ -660,10 +673,10 @@ printf("789\n");
                     //if file does not exist, then start up download process.
                     if((p->state)[i] == DOWNLOAD_FILE_NONEXIST)
                     {
-                       printf("%s%s\n",p->remotePath,p->filename);
+                       printf("file not exist: %s%s\n",p->remotePath,p->filename);
                        if ( singleDownload(p, i) == -1)
                        {
-                            printf("112\n");break;
+                            printf("112\n");
                        }
 printf("113\n");
                     }
