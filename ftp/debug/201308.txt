@@ -1,0 +1,508 @@
+文件创建	AAC06057.sp3.Z	Sun Aug 11 22:06:05 2013
+
+文件创建	AAC06057.clk.Z	Sun Aug 11 22:06:05 2013
+
+文件创建	AAC06057.snx.Z	Sun Aug 11 22:06:05 2013
+
+文件创建	AAC06057.sp3.Z	Sun Aug 11 22:06:05 2013
+
+文件创建	AAC06057.clk.Z	Sun Aug 11 22:06:05 2013
+
+文件创建	AAC06057.snx.Z	Sun Aug 11 22:06:05 2013
+
+文件创建	AAC11297.sp3.Z	Sun Aug 11 22:11:29 2013
+
+文件创建	AAC11297.clk.Z	Sun Aug 11 22:11:29 2013
+
+文件创建	AAC11297.snx.Z	Sun Aug 11 22:11:29 2013
+
+文件创建	AAC11297.sp3.Z	Sun Aug 11 22:11:29 2013
+
+文件创建	AAC11297.clk.Z	Sun Aug 11 22:11:29 2013
+
+文件创建	AAC11297.snx.Z	Sun Aug 11 22:11:29 2013
+
+文件创建	AAC20167.sp3.Z	Sun Aug 11 22:20:16 2013
+
+文件创建	AAC20167.clk.Z	Sun Aug 11 22:20:16 2013
+
+文件创建	AAC20167.snx.Z	Sun Aug 11 22:20:16 2013
+
+文件创建	AAC20167.sp3.Z	Sun Aug 11 22:20:16 2013
+
+文件创建	AAC20167.clk.Z	Sun Aug 11 22:20:16 2013
+
+文件创建	AAC20167.snx.Z	Sun Aug 11 22:20:16 2013
+
+文件创建	AAC26027.sp3.Z	Sun Aug 11 22:26:02 2013
+
+文件创建	AAC26027.clk.Z	Sun Aug 11 22:26:02 2013
+
+文件创建	AAC26027.snx.Z	Sun Aug 11 22:26:02 2013
+
+文件创建	AAC26027.sp3.Z	Sun Aug 11 22:26:02 2013
+
+文件创建	AAC26027.clk.Z	Sun Aug 11 22:26:02 2013
+
+文件创建	AAC26027.snx.Z	Sun Aug 11 22:26:02 2013
+
+文件创建	AAC30567.sp3.Z	Sun Aug 11 22:30:56 2013
+
+文件创建	AAC30567.clk.Z	Sun Aug 11 22:30:56 2013
+
+文件创建	AAC30567.snx.Z	Sun Aug 11 22:30:56 2013
+
+文件创建	AAC30567.sp3.Z	Sun Aug 11 22:30:56 2013
+
+文件创建	AAC30567.clk.Z	Sun Aug 11 22:30:56 2013
+
+文件创建	AAC30567.snx.Z	Sun Aug 11 22:30:56 2013
+
+文件创建	AAC54017.sp3.Z	Sun Aug 11 22:54:01 2013
+
+文件创建	AAC54017.clk.Z	Sun Aug 11 22:54:01 2013
+
+文件创建	AAC54017.snx.Z	Sun Aug 11 22:54:01 2013
+
+文件创建	AAC54017.sp3.Z	Sun Aug 11 22:54:01 2013
+
+文件创建	AAC54017.clk.Z	Sun Aug 11 22:54:01 2013
+
+文件创建	AAC54017.snx.Z	Sun Aug 11 22:54:01 2013
+
+文件创建	AAC30317.sp3.Z	Sun Aug 11 23:30:32 2013
+
+文件创建	AAC30317.clk.Z	Sun Aug 11 23:30:32 2013
+
+文件创建	AAC30317.snx.Z	Sun Aug 11 23:30:32 2013
+
+文件创建	AAC30317.sp3.Z	Sun Aug 11 23:30:32 2013
+
+文件创建	AAC30317.clk.Z	Sun Aug 11 23:30:32 2013
+
+文件创建	AAC30317.snx.Z	Sun Aug 11 23:30:32 2013
+
+文件创建	AAC33077.sp3.Z	Sun Aug 11 23:33:07 2013
+
+文件创建	AAC33077.clk.Z	Sun Aug 11 23:33:07 2013
+
+文件创建	AAC33077.snx.Z	Sun Aug 11 23:33:08 2013
+
+文件创建	AAC33077.sp3.Z	Sun Aug 11 23:33:08 2013
+
+文件创建	AAC33077.clk.Z	Sun Aug 11 23:33:08 2013
+
+文件创建	AAC33077.snx.Z	Sun Aug 11 23:33:08 2013
+
+文件创建	AAC34307.sp3.Z	Sun Aug 11 23:34:30 2013
+
+文件创建	AAC34307.clk.Z	Sun Aug 11 23:34:30 2013
+
+文件创建	AAC34307.snx.Z	Sun Aug 11 23:34:30 2013
+
+文件创建	AAC34307.sp3.Z	Sun Aug 11 23:34:30 2013
+
+文件创建	AAC34307.clk.Z	Sun Aug 11 23:34:30 2013
+
+文件创建	AAC34307.snx.Z	Sun Aug 11 23:34:30 2013
+
+文件创建	AAC46517.sp3.Z	Sun Aug 11 23:46:51 2013
+
+文件创建	AAC46517.clk.Z	Sun Aug 11 23:46:51 2013
+
+文件创建	AAC46517.snx.Z	Sun Aug 11 23:46:51 2013
+
+文件创建	AAC46517.sp3.Z	Sun Aug 11 23:46:51 2013
+
+文件创建	AAC46517.clk.Z	Sun Aug 11 23:46:51 2013
+
+文件创建	AAC46517.snx.Z	Sun Aug 11 23:46:51 2013
+
+文件创建	AAC47377.sp3.Z	Sun Aug 11 23:47:37 2013
+
+文件创建	AAC47377.clk.Z	Sun Aug 11 23:47:37 2013
+
+文件创建	AAC47377.snx.Z	Sun Aug 11 23:47:37 2013
+
+文件创建	AAC47377.sp3.Z	Sun Aug 11 23:47:37 2013
+
+文件创建	AAC47377.clk.Z	Sun Aug 11 23:47:37 2013
+
+文件创建	AAC47377.snx.Z	Sun Aug 11 23:47:37 2013
+
+文件创建	AAC48267.sp3.Z	Sun Aug 11 23:48:26 2013
+
+文件创建	AAC48267.clk.Z	Sun Aug 11 23:48:26 2013
+
+文件创建	AAC48267.snx.Z	Sun Aug 11 23:48:26 2013
+
+文件创建	AAC48267.sp3.Z	Sun Aug 11 23:48:26 2013
+
+文件创建	AAC48267.clk.Z	Sun Aug 11 23:48:26 2013
+
+文件创建	AAC48267.snx.Z	Sun Aug 11 23:48:26 2013
+
+文件创建	AAC52337.sp3.Z	Sun Aug 11 23:52:33 2013
+
+文件创建	AAC52337.clk.Z	Sun Aug 11 23:52:33 2013
+
+文件创建	AAC52337.snx.Z	Sun Aug 11 23:52:33 2013
+
+文件创建	AAC52337.sp3.Z	Sun Aug 11 23:52:33 2013
+
+文件创建	AAC52337.clk.Z	Sun Aug 11 23:52:33 2013
+
+文件创建	AAC52337.snx.Z	Sun Aug 11 23:52:33 2013
+
+文件创建	AAC54097.sp3.Z	Sun Aug 11 23:54:09 2013
+
+文件创建	AAC54097.clk.Z	Sun Aug 11 23:54:09 2013
+
+文件创建	AAC54097.snx.Z	Sun Aug 11 23:54:09 2013
+
+文件创建	AAC54097.sp3.Z	Sun Aug 11 23:54:09 2013
+
+文件创建	AAC54097.clk.Z	Sun Aug 11 23:54:09 2013
+
+文件创建	AAC54097.snx.Z	Sun Aug 11 23:54:09 2013
+
+文件创建	AAC54597.sp3.Z	Sun Aug 11 23:54:59 2013
+
+文件创建	AAC54597.clk.Z	Sun Aug 11 23:54:59 2013
+
+文件创建	AAC54597.snx.Z	Sun Aug 11 23:54:59 2013
+
+文件创建	AAC54597.sp3.Z	Sun Aug 11 23:54:59 2013
+
+文件创建	AAC54597.clk.Z	Sun Aug 11 23:54:59 2013
+
+文件创建	AAC54597.snx.Z	Sun Aug 11 23:54:59 2013
+
+文件创建	AAC55487.sp3.Z	Sun Aug 11 23:55:48 2013
+
+文件创建	AAC55487.clk.Z	Sun Aug 11 23:55:48 2013
+
+文件创建	AAC55487.snx.Z	Sun Aug 11 23:55:48 2013
+
+文件创建	AAC55487.sp3.Z	Sun Aug 11 23:55:48 2013
+
+文件创建	AAC55487.clk.Z	Sun Aug 11 23:55:48 2013
+
+文件创建	AAC55487.snx.Z	Sun Aug 11 23:55:48 2013
+
+文件创建	AAC58347.sp3.Z	Sun Aug 11 23:58:35 2013
+
+文件创建	AAC58347.clk.Z	Sun Aug 11 23:58:35 2013
+
+文件创建	AAC58347.snx.Z	Sun Aug 11 23:58:35 2013
+
+文件创建	AAC58347.sp3.Z	Sun Aug 11 23:58:35 2013
+
+文件创建	AAC58347.clk.Z	Sun Aug 11 23:58:35 2013
+
+文件创建	AAC58347.snx.Z	Sun Aug 11 23:58:35 2013
+
+文件创建	AAC02147.sp3.Z	Mon Aug 12 00:02:14 2013
+
+文件创建	AAC02147.clk.Z	Mon Aug 12 00:02:14 2013
+
+文件创建	AAC02147.snx.Z	Mon Aug 12 00:02:14 2013
+
+文件创建	AAC02147.sp3.Z	Mon Aug 12 00:02:14 2013
+
+文件创建	AAC02147.clk.Z	Mon Aug 12 00:02:14 2013
+
+文件创建	AAC02147.snx.Z	Mon Aug 12 00:02:14 2013
+
+文件创建	AAC06427.sp3.Z	Mon Aug 12 00:06:42 2013
+
+文件创建	AAC06427.clk.Z	Mon Aug 12 00:06:42 2013
+
+文件创建	AAC06427.snx.Z	Mon Aug 12 00:06:42 2013
+
+文件创建	AAC06427.sp3.Z	Mon Aug 12 00:06:42 2013
+
+文件创建	AAC06427.clk.Z	Mon Aug 12 00:06:42 2013
+
+文件创建	AAC06427.snx.Z	Mon Aug 12 00:06:42 2013
+
+文件创建	AAC07397.sp3.Z	Mon Aug 12 00:07:39 2013
+
+文件创建	AAC07397.clk.Z	Mon Aug 12 00:07:39 2013
+
+文件创建	AAC07397.snx.Z	Mon Aug 12 00:07:39 2013
+
+文件创建	AAC07397.sp3.Z	Mon Aug 12 00:07:39 2013
+
+文件创建	AAC07397.clk.Z	Mon Aug 12 00:07:39 2013
+
+文件创建	AAC07397.snx.Z	Mon Aug 12 00:07:39 2013
+
+文件未创建	ACI03981_02.irt.Z	Mon Aug 12 03:00:06 2013
+
+文件未创建	ACI03981_03.irt.Z	Mon Aug 12 04:00:05 2013
+
+文件未创建	ACI03981_04.irt.Z	Mon Aug 12 05:00:06 2013
+
+文件未创建	ACI03981_05.irt.Z	Mon Aug 12 06:00:05 2013
+
+文件未创建	ACI03981_06.irt.Z	Mon Aug 12 07:00:05 2013
+
+文件未创建	ACU03981_06.sp3.Z	Mon Aug 12 08:00:00 2013
+
+文件未创建	ACI03981_07.irt.Z	Mon Aug 12 08:00:05 2013
+
+文件创建	AAC19207.sp3.Z	Mon Aug 12 08:19:20 2013
+
+文件创建	AAC19207.clk.Z	Mon Aug 12 08:19:20 2013
+
+文件创建	AAC19207.snx.Z	Mon Aug 12 08:19:21 2013
+
+文件创建	AAC19207.sp3.Z	Mon Aug 12 08:19:21 2013
+
+文件创建	AAC19207.clk.Z	Mon Aug 12 08:19:21 2013
+
+文件创建	AAC19207.snx.Z	Mon Aug 12 08:19:21 2013
+
+文件创建	AAC19237.sp3.Z	Mon Aug 12 08:19:23 2013
+
+文件创建	AAC19237.clk.Z	Mon Aug 12 08:19:23 2013
+
+文件创建	AAC19237.snx.Z	Mon Aug 12 08:19:24 2013
+
+文件创建	AAC19237.sp3.Z	Mon Aug 12 08:19:24 2013
+
+文件创建	AAC19237.clk.Z	Mon Aug 12 08:19:24 2013
+
+文件创建	AAC19237.snx.Z	Mon Aug 12 08:19:24 2013
+
+文件创建	AAC19267.sp3.Z	Mon Aug 12 08:19:26 2013
+
+文件创建	AAC19267.clk.Z	Mon Aug 12 08:19:26 2013
+
+文件创建	AAC19267.snx.Z	Mon Aug 12 08:19:26 2013
+
+文件创建	AAC19267.sp3.Z	Mon Aug 12 08:19:27 2013
+
+文件创建	AAC19267.clk.Z	Mon Aug 12 08:19:27 2013
+
+文件创建	AAC19267.snx.Z	Mon Aug 12 08:19:27 2013
+
+文件创建	AAC19297.sp3.Z	Mon Aug 12 08:19:29 2013
+
+文件创建	AAC19297.clk.Z	Mon Aug 12 08:19:29 2013
+
+文件创建	AAC19297.snx.Z	Mon Aug 12 08:19:29 2013
+
+文件创建	AAC19297.sp3.Z	Mon Aug 12 08:19:29 2013
+
+文件创建	AAC19297.clk.Z	Mon Aug 12 08:19:29 2013
+
+文件创建	AAC19297.snx.Z	Mon Aug 12 08:19:29 2013
+
+文件创建	AAC19327.sp3.Z	Mon Aug 12 08:19:32 2013
+
+文件创建	AAC19327.clk.Z	Mon Aug 12 08:19:32 2013
+
+文件创建	AAC19327.snx.Z	Mon Aug 12 08:19:32 2013
+
+文件创建	AAC19327.sp3.Z	Mon Aug 12 08:19:32 2013
+
+文件创建	AAC19327.clk.Z	Mon Aug 12 08:19:33 2013
+
+文件创建	AAC19327.snx.Z	Mon Aug 12 08:19:33 2013
+
+文件创建	AAC19357.sp3.Z	Mon Aug 12 08:19:35 2013
+
+文件创建	AAC19357.clk.Z	Mon Aug 12 08:19:35 2013
+
+文件创建	AAC19357.snx.Z	Mon Aug 12 08:19:35 2013
+
+文件创建	AAC19357.sp3.Z	Mon Aug 12 08:19:36 2013
+
+文件创建	AAC19357.clk.Z	Mon Aug 12 08:19:36 2013
+
+文件创建	AAC19357.snx.Z	Mon Aug 12 08:19:36 2013
+
+文件创建	AAC19387.sp3.Z	Mon Aug 12 08:19:38 2013
+
+文件创建	AAC19387.clk.Z	Mon Aug 12 08:19:38 2013
+
+文件创建	AAC19387.snx.Z	Mon Aug 12 08:19:39 2013
+
+文件创建	AAC19387.sp3.Z	Mon Aug 12 08:19:39 2013
+
+文件创建	AAC19387.clk.Z	Mon Aug 12 08:19:39 2013
+
+文件创建	AAC19387.snx.Z	Mon Aug 12 08:19:39 2013
+
+文件创建	AAC19417.sp3.Z	Mon Aug 12 08:19:41 2013
+
+文件创建	AAC19417.clk.Z	Mon Aug 12 08:19:41 2013
+
+文件创建	AAC19417.snx.Z	Mon Aug 12 08:19:41 2013
+
+文件创建	AAC19417.sp3.Z	Mon Aug 12 08:19:41 2013
+
+文件创建	AAC19417.clk.Z	Mon Aug 12 08:19:41 2013
+
+文件创建	AAC19417.snx.Z	Mon Aug 12 08:19:41 2013
+
+文件创建	AAC19447.sp3.Z	Mon Aug 12 08:19:44 2013
+
+文件创建	AAC19447.clk.Z	Mon Aug 12 08:19:44 2013
+
+文件创建	AAC19447.snx.Z	Mon Aug 12 08:19:45 2013
+
+文件创建	AAC19447.sp3.Z	Mon Aug 12 08:19:45 2013
+
+文件创建	AAC19447.clk.Z	Mon Aug 12 08:19:45 2013
+
+文件创建	AAC19447.snx.Z	Mon Aug 12 08:19:45 2013
+
+文件创建	AAC19477.sp3.Z	Mon Aug 12 08:19:48 2013
+
+文件创建	AAC19477.clk.Z	Mon Aug 12 08:19:48 2013
+
+文件创建	AAC19477.snx.Z	Mon Aug 12 08:19:48 2013
+
+文件创建	AAC19477.sp3.Z	Mon Aug 12 08:19:48 2013
+
+文件创建	AAC19477.clk.Z	Mon Aug 12 08:19:48 2013
+
+文件创建	AAC19477.snx.Z	Mon Aug 12 08:19:48 2013
+
+文件创建	AAC19507.sp3.Z	Mon Aug 12 08:19:50 2013
+
+文件创建	AAC19507.clk.Z	Mon Aug 12 08:19:51 2013
+
+文件创建	AAC19507.snx.Z	Mon Aug 12 08:19:51 2013
+
+文件创建	AAC19507.sp3.Z	Mon Aug 12 08:19:51 2013
+
+文件创建	AAC19507.clk.Z	Mon Aug 12 08:19:51 2013
+
+文件创建	AAC19507.snx.Z	Mon Aug 12 08:19:51 2013
+
+文件创建	AAC19537.sp3.Z	Mon Aug 12 08:19:53 2013
+
+文件创建	AAC19537.clk.Z	Mon Aug 12 08:19:53 2013
+
+文件创建	AAC19537.snx.Z	Mon Aug 12 08:19:54 2013
+
+文件创建	AAC19537.sp3.Z	Mon Aug 12 08:19:54 2013
+
+文件创建	AAC19537.clk.Z	Mon Aug 12 08:19:54 2013
+
+文件创建	AAC19537.snx.Z	Mon Aug 12 08:19:54 2013
+
+文件创建	AAC19567.sp3.Z	Mon Aug 12 08:19:56 2013
+
+文件创建	AAC19567.clk.Z	Mon Aug 12 08:19:57 2013
+
+文件创建	AAC19567.snx.Z	Mon Aug 12 08:19:57 2013
+
+文件创建	AAC19567.sp3.Z	Mon Aug 12 08:19:57 2013
+
+文件创建	AAC19567.clk.Z	Mon Aug 12 08:19:57 2013
+
+文件创建	AAC19567.snx.Z	Mon Aug 12 08:19:57 2013
+
+文件创建	AAC19597.sp3.Z	Mon Aug 12 08:20:00 2013
+
+文件创建	AAC19597.clk.Z	Mon Aug 12 08:20:00 2013
+
+文件创建	AAC19597.snx.Z	Mon Aug 12 08:20:00 2013
+
+文件创建	AAC19597.sp3.Z	Mon Aug 12 08:20:00 2013
+
+文件创建	AAC19597.clk.Z	Mon Aug 12 08:20:00 2013
+
+文件创建	AAC19597.snx.Z	Mon Aug 12 08:20:00 2013
+
+文件创建	AAC20027.sp3.Z	Mon Aug 12 08:20:02 2013
+
+文件创建	AAC20027.clk.Z	Mon Aug 12 08:20:02 2013
+
+文件创建	AAC20027.snx.Z	Mon Aug 12 08:20:02 2013
+
+文件创建	AAC20027.sp3.Z	Mon Aug 12 08:20:03 2013
+
+文件创建	AAC20027.clk.Z	Mon Aug 12 08:20:03 2013
+
+文件创建	AAC20027.snx.Z	Mon Aug 12 08:20:03 2013
+
+文件创建	AAC20057.sp3.Z	Mon Aug 12 08:20:05 2013
+
+文件创建	AAC20057.clk.Z	Mon Aug 12 08:20:05 2013
+
+文件创建	AAC20057.snx.Z	Mon Aug 12 08:20:05 2013
+
+文件创建	AAC20057.sp3.Z	Mon Aug 12 08:20:05 2013
+
+文件创建	AAC20057.clk.Z	Mon Aug 12 08:20:05 2013
+
+文件创建	AAC20057.snx.Z	Mon Aug 12 08:20:05 2013
+
+文件创建	AAC20087.sp3.Z	Mon Aug 12 08:20:08 2013
+
+文件创建	AAC20087.clk.Z	Mon Aug 12 08:20:08 2013
+
+文件创建	AAC20087.snx.Z	Mon Aug 12 08:20:09 2013
+
+文件创建	AAC20087.sp3.Z	Mon Aug 12 08:20:09 2013
+
+文件创建	AAC20087.clk.Z	Mon Aug 12 08:20:09 2013
+
+文件创建	AAC20087.snx.Z	Mon Aug 12 08:20:09 2013
+
+文件创建	AAC25547.sp3.Z	Mon Aug 12 10:25:56 2013
+
+文件创建	AAC25547.clk.Z	Mon Aug 12 10:25:58 2013
+
+文件创建	AAC25547.snx.Z	Mon Aug 12 10:26:00 2013
+
+文件创建	AAC25547.sp3.Z	Mon Aug 12 10:26:02 2013
+
+文件创建	AAC25547.clk.Z	Mon Aug 12 10:26:04 2013
+
+文件创建	AAC26447.sp3.Z	Mon Aug 12 10:26:46 2013
+
+文件创建	AAC26447.clk.Z	Mon Aug 12 10:26:48 2013
+
+文件创建	AAC26447.snx.Z	Mon Aug 12 10:26:50 2013
+
+文件创建	AAC26447.sp3.Z	Mon Aug 12 10:26:52 2013
+
+文件创建	AAC26447.clk.Z	Mon Aug 12 10:26:54 2013
+
+文件创建	AAC29567.sp3.Z	Mon Aug 12 10:29:58 2013
+
+文件创建	AAC29567.clk.Z	Mon Aug 12 10:30:00 2013
+
+文件创建	AAC29567.snx.Z	Mon Aug 12 10:30:02 2013
+
+文件创建	AAC29567.sp3.Z	Mon Aug 12 10:30:04 2013
+
+文件创建	AAC29567.clk.Z	Mon Aug 12 10:30:06 2013
+
+文件创建	AAC31147.sp3.Z	Mon Aug 12 10:31:16 2013
+
+文件创建	AAC31147.clk.Z	Mon Aug 12 10:31:18 2013
+
+文件创建	AAC31147.snx.Z	Mon Aug 12 10:31:20 2013
+
+文件创建	AAC31147.sp3.Z	Mon Aug 12 10:31:22 2013
+
+文件创建	AAC31147.clk.Z	Mon Aug 12 10:31:24 2013
+
+文件创建	AAC34227.sp3.Z	Mon Aug 12 10:34:24 2013
+
+文件创建	AAC34227.clk.Z	Mon Aug 12 10:34:26 2013
+
+文件创建	AAC34227.snx.Z	Mon Aug 12 10:34:28 2013
+
+文件创建	AAC34227.sp3.Z	Mon Aug 12 10:34:30 2013
+
+文件创建	AAC34227.clk.Z	Mon Aug 12 10:34:32 2013
+

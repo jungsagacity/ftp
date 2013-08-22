@@ -9,17 +9,15 @@
 #include <time.h>
 #include <pthread.h>
 
-#include "global.h"
 #include "upload.h"
 
 
 
 /********  GLOBAL VARIBALES  ********/
-UploadList uploadList;
-//head of the uploadlist
+
 extern FtpServer * fs;
 extern UploadPath * uploadPath;
-
+UploadList uploadList;
 pthread_mutex_t uploadMutex = PTHREAD_MUTEX_INITIALIZER;
 
 

@@ -8,13 +8,24 @@
 #include <stdarg.h>
 
 #include "ftp.h"
+#include "utility.h"
+#include "upload.h"
+#include "download.h"
 
 /******************************************************************************************
 *                                   global variables                                      *
 ******************************************************************************************/
 FtpServer   *fs;//store all ftp server info in system.ini file
 UploadPath  *uploadPath;//stor upload path info in sysytem.ini file
+DownInfo    *downInfoList;// all download task recorded in the list.
+StationList sl;//download station list info in system.ini  file.
+char        *tempDownloadFileSuffix;//
+char        *tempUploadFileSuffix;
+char        *downloadInfoFile;
+int         maxDownloadTaskNum;
 
+extern  UploadList uploadList;
+extern  DownloadList downloadList;
 
 
 /************************************************************************************************
@@ -143,6 +154,11 @@ int loadSystem(char *conf)
     FtpServer  *fsNode;
 
     uploadPath = (UploadPath*)malloc(sizeof(UploadPath));
+    if( uploadPath == NULL )
+    {
+        printf("Fun(loadSystem): malloc 'uploadPath' error.\n");
+        return -1;
+    }
     memset(uploadPath, 0, sizeof(UploadPath));
 
     char buff[1000];
@@ -902,6 +918,9 @@ int initList()
     }
     memset(downloadList, 0, sizeof(DownloadNode));
     downloadList->next = NULL;
+
+    uploadList = (UploadNode*)malloc(sizeof(UploadNode));
+    memset(uploadList, 0, sizeof(UploadNode));
 
 }
 

@@ -48,7 +48,8 @@ char *strReplace(char *dest, char *src, const char *oldstr, const char *newstr, 
 int plog(char *format,...);
 int fill_host_addr(char *host_ip_addr,struct sockaddr_in *host,int port);
 int ftp_send_cmd(const char* s1, const char* s2, int sock_fd);
-int ftp_get_reply(int sock_fd);
+//int ftp_get_reply(int sock_fd);
+int ftp_get_reply(int sock_fd, char* buff);
 int ftp_login(int socket_control, char * user, char * password);
 int connectFtpServer(char * server_ip, int port, char * user, char * password);
 int rand_local_port();

@@ -3,6 +3,7 @@
 #include <signal.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <sys/select.h>
 #include <sys/fcntl.h>
 #include <netdb.h>
 #include <errno.h>
@@ -18,7 +19,6 @@
 
 struct sockaddr_in ftp_server,local_host;
 struct hostent * server_hostent;
-int socket_control;
 int mode=1;//1--PASV 0--PORT
 
 
@@ -106,7 +106,7 @@ void ftp_delay()
 *
 *    history    :   {2013.7.18 wujun} frist create;
 **************************************************************************************************/
-
+int giLogLine = -1;
 int plog(char *format,...)
 {
    	if( format == NULL)
@@ -124,18 +124,16 @@ int plog(char *format,...)
     t = time(NULL);
     st = localtime(&t);//get current datetime
 
-    int day = st->tm_mday + 1;
+    int day = st->tm_mday;
     int month = st->tm_mon + 1;
     int year = st->tm_year + 1990;
-
-    strftime( startTime, sizeof(startTime), "%Y-%m-%d %T",localtime(&t) );
-    startTime[strlen(startTime)-1] = 0;
+    sprintf(startTime,"%d-%d-%d %d:%d:%d", year, month, day, st->tm_hour, st->tm_min, st->tm_sec);
 
     char logFile[100] ;
     memset(logFile, 0, 100);
 
-    sprintf(logFile, "log2/ftp/%04d%02d%02d.log", year, month, day);
-    dirIsExist("log2/ftp/");
+    sprintf(logFile, "log/ftp/%04d%02d%02d_%03d.log", year, month, day, (int)(giLogLine/1000) );
+    dirIsExist("log/ftp/");
 
     FILE *dwLogFp;
     if( (dwLogFp=fopen( logFile ,"at") ) == NULL )
@@ -143,7 +141,7 @@ int plog(char *format,...)
         dwLogFp = fopen( logFile ,"wt");
         if( dwLogFp == NULL )
         {
-            plog("%s\n","Fun(plog):create file %s error.\n ",logFile);
+            printf("%s\n","Fun(plog):create file %s error.\n ",logFile);
             return -1;
         }
     }
@@ -217,7 +215,8 @@ int fill_host_addr(char *host_ip_addr,struct sockaddr_in *host,int port)
 int ftp_send_cmd(const char* s1, const char* s2, int sock_fd)
 {
     char send_buf[256];
-    int send_err,len;
+    memset(send_buf, 0, 256);
+    int send_err = 0,len;
     if(s1)//si is not null
     {
         strcpy(send_buf,s1);
@@ -239,49 +238,67 @@ int ftp_send_cmd(const char* s1, const char* s2, int sock_fd)
         }
         else
         {
+            plog("%s","Fun(ftp_send_cmd): send error.\n");
             return -1;//return error
         }
+
+
     }
 
+    plog("%s","Fun(ftp_send_cmd): parameter s1 is null.\n");
     return -1;//retrun error
 }
 
 /**************************************************************************************************
  *      function    :   get reply from ftp server;
- *      para        :   {int socket_control} socket file description
+ *      para        :   {int sock_fd} socket file description
  *
  *
  *      return      :   {int} error code, like 0: ok, -1:error ;
  *      history     :   {2013.7.18 wujun} fristly be created
 **************************************************************************************************/
-int ftp_get_reply(int sock_fd)
+int ftp_get_reply(int sock_fd, char* buff )
 {
-    static int reply_code=0,count=0;
-    char rcv_buff[512];
-    memset( rcv_buff, 0, 512);
-    count = read( sock_fd, rcv_buff, 510 );
 
-    if( count > 0 )
+    int reply_code=0,count=0;
+    char rcv_buff[2048];
+    memset( rcv_buff, 0, 2048);
+    struct timeval timeout = {20,0};
+    int ret;
+    fd_set rfds;
+
+    FD_ZERO(&rfds);  /* 清空集合 */
+    FD_SET(sock_fd, &rfds);  /* 将fp添加到集合，后面的FD_ISSET和FD_SET没有必然关系，这里是添加检测 */
+
+    ret=select(sock_fd+1, &rfds, NULL, NULL, &timeout);
+
+    if(0 > ret)
     {
-        reply_code=atoi(rcv_buff);
-        plog("%s\t", rcv_buff);
+        return -1;
+    }
+    else if(0 == ret)
+    {
+        return -1;
     }
     else
     {
-        plog("%s", "Fun(ftp_get_reply) :recv no message.\n");
-        return 0;
-    }
-
-    while(1)
-    {
-        memset( rcv_buff, 0, 512);
-        count = read( sock_fd,rcv_buff, 510);
-        if ( count <= 0 )
+        if(FD_ISSET(sock_fd,&rfds))  /* 这里检测的是fp在集合中是否状态变化，即可以操作。 */
         {
-            break;
+            memset (rcv_buff,0,2048);
+            ftp_delay();
+            count = recv(sock_fd, rcv_buff, 2047, 0);
+            if(buff != NULL) strcpy(buff,rcv_buff);
+            if(0 == count)
+            {
+                plog("%s\n","Fun(ftp_get_reply):recv no message.");
+                return -1;    /* 此处需要检测！否则ftp发送数据时，后面会循环接收到0字节数据 */
+            }else
+            {
+                reply_code=atoi(rcv_buff);
+                plog("%s", rcv_buff);
+
+            }
         }
-        rcv_buff[count]='\0';
-        plog("%s", rcv_buff);
     }
 
     return reply_code;
@@ -306,7 +323,7 @@ int ftp_login(int socket_control, char * user, char * password)
         return -1;
     }
 
-    err = ftp_get_reply(socket_control);
+    err = ftp_get_reply(socket_control, NULL);
     if(err == 331)
     {
 
@@ -315,10 +332,9 @@ int ftp_login(int socket_control, char * user, char * password)
             plog("%s", "Fun(ftp_login):send command 'PASS' error.\n");
             return -1;
         }
-        else
-        {
-            err = ftp_get_reply(socket_control);
-        }
+
+        err = ftp_get_reply(socket_control, NULL);
+
 
         if(err != 230)
         {
@@ -335,7 +351,7 @@ int ftp_login(int socket_control, char * user, char * password)
     else if ( err == 530)
     {
         plog("%s", "Fun(ftp_login): Already connected.\n");
-        return 0;
+        return -1;
     }
     else
     {
@@ -343,6 +359,7 @@ int ftp_login(int socket_control, char * user, char * password)
         return -1;
     }
 }
+
 
 
 /**************************************************************************************************
@@ -357,9 +374,11 @@ int ftp_login(int socket_control, char * user, char * password)
 
 int connectFtpServer(char * server_ip, int port, char * user, char * password)
 {
+    int socket_control;
+    giLogLine++;
     if( server_ip == NULL || user == NULL)
     {
-        plog( "%s", "Fun(connectFtpServer): server_ip or user is NULL.\n" )
+        plog( "%s\n\n", "Fun(connectFtpServer): server_ip or user is NULL." );
         return -1;
     }
 
@@ -369,13 +388,13 @@ int connectFtpServer(char * server_ip, int port, char * user, char * password)
     error = fill_host_addr( server_ip, &ftp_server, port );
     if( error == 254 )
     {
-        plog("%s", "Fun(connectFtpServer): Invalid port!\n");
+        plog("%s\n\n", "Fun(connectFtpServer): Invalid port!");
         return -1;
     }
 
     if( error == 253 )
     {
-        plog("%s", "Fun(connectFtpServer): Invalid address!\n");
+        plog("%s\n\n", "Fun(connectFtpServer): Invalid address!");
         return -1;
     }
 
@@ -384,24 +403,28 @@ int connectFtpServer(char * server_ip, int port, char * user, char * password)
     socket_control = socket( AF_INET,SOCK_STREAM, 0 );
     if( socket_control < 0 )
     {
-        plog("%s", "Fun(connectFtpServer): Creat socket error.\n");
+        plog("%s\n\n", "Fun(connectFtpServer): Creat socket error.");
         return -1;
     }
 
     if( type == 1 )
     {
-        outtime.tv_sec = 0;
-        outtime.tv_usec = 300000;
+        outtime.tv_sec = 10;
+        outtime.tv_usec = 0;// 300000;
     }
     else
     {
         outtime.tv_sec = 5;
         outtime.tv_usec = 0;
     }
-    set = setsockopt( socket_control, SOL_SOCKET, SO_RCVTIMEO, &outtime, sizeof(outtime) );
+
+    //fcntl(socket_control ,F_SETFL, ~O_NONBLOCK);
+    //set = setsockopt( socket_control, SOL_SOCKET, SO_RCVTIMEO, &outtime, sizeof(outtime) );
+
     if( set != 0 )
     {
-        plog("%s", "Fun(connectFtpServer): set socket error.\n");
+        plog("%s\n\n", "Fun(connectFtpServer): set socket error.");
+        close(socket_control);
         return -1;
     }
 
@@ -409,38 +432,33 @@ int connectFtpServer(char * server_ip, int port, char * user, char * password)
     if(connect( socket_control, (struct sockaddr *) &ftp_server, sizeof(struct sockaddr_in) ) <0 )
     {
         memset( log, 0, 1000 );
-        sprintf(log,"Fun(connectFtpServer): Can't connet to the server:%s,port:%d\n",inet_ntoa(ftp_server.sin_addr),ntohs(ftp_server.sin_port));
+        sprintf(log,"Fun(connectFtpServer): Can't connet to the server:%s,port:%d\n\n",inet_ntoa(ftp_server.sin_addr),ntohs(ftp_server.sin_port));
         plog( "%s", log );
+        close(socket_control);
         return -1;
     }
     else
     {
         memset( log, 0, 1000 );
+
         sprintf( log, "Fun(connectFtpServer): Successfully connect to server:%s,port:%d\n",inet_ntoa(ftp_server.sin_addr),ntohs(ftp_server.sin_port));
         plog( "%s", log );
 
     }
-
-	error = ftp_get_reply( socket_control );
+	error = ftp_get_reply( socket_control, NULL );
 	if( error == 421 )//There are too many connections from your internet address.
 	{
-        plog("%s\n","Fun(connectFtpServer): 421 too many connections.");
+        plog("%s\n\n","Fun(connectFtpServer): 421 too many connections.");
+        close(socket_control);
         return -1;
 	}
-	else if( error == 220 || error == 0 )//Successfully connect
+	else if( error == 220)//Successfully connect
 	{
-        int maxConnectTimes = 0 ;
-        while ( (error=ftp_login(socket_control, user, password)) == -1 )
+        if( (error = ftp_login(socket_control, user, password)) == -1 )
         {
-            if( (++maxConnectTimes) < 3 )//repeat connnection 3 times.
-            {
-                continue;
-            }else
-            {
-                plog("%s", "Fun(connectFtpServer): user or password error.\n");
-                return -1;
-            }
-
+            plog("%s\n\n", "Fun(connectFtpServer): user or password error.");
+            close(socket_control);
+            return -1;
         }
 
         plog("Fun(connectFtpServer): socket_control = %d\n",socket_control);
@@ -448,7 +466,8 @@ int connectFtpServer(char * server_ip, int port, char * user, char * password)
 	}
 	else
 	{
-        plog("%s", "Fun(connectFtpServer): Connect error!\n");
+        plog("%s\n\n", "Fun(connectFtpServer): Connect error!");
+        close(socket_control);
         return -1;
 	}
 
@@ -492,13 +511,13 @@ int xconnect(struct sockaddr_in *s_addr,int type)
     if( s < 0 )
     {
         plog("%s", "Fun(xconnect): Creat socket error.\n");
-        return 249;
+        return -1;
     }
 
     if(type==1)
     {
-        outtime.tv_sec=0;
-        outtime.tv_usec=300000;
+        outtime.tv_sec = 1;
+        outtime.tv_usec = 0;
     }
     else
     {
@@ -506,6 +525,7 @@ int xconnect(struct sockaddr_in *s_addr,int type)
         outtime.tv_usec=0;
     }
     set = setsockopt( s, SOL_SOCKET, SO_RCVTIMEO, &outtime, sizeof(outtime) );
+
     if( set != 0 )
     {
         plog("%s", "Fun(xconnect): set socket error.\n");
@@ -513,12 +533,12 @@ int xconnect(struct sockaddr_in *s_addr,int type)
     }
 
     //connect to the server
-    if(connect(s,(struct sockaddr *)s_addr,sizeof(struct sockaddr_in))<0)
+    if( connect( s, (struct sockaddr *)s_addr, sizeof(struct sockaddr_in) ) < 0 )
     {
         memset(log, 0 ,500);
         sprintf(log,"Fun(xconnect): Can't connet to the server:%s,port:%d\n",inet_ntoa(s_addr->sin_addr),ntohs(ftp_server.sin_port));
         plog("%s", log);
-        return 252;
+        return -1;
     }
     else
     {
@@ -537,26 +557,29 @@ int xconnect(struct sockaddr_in *s_addr,int type)
  *      return      :   {int } port
  *      history     :   {2013.7.18 wujun} fristly be created
 **************************************************************************************************/
-int get_port()
+int get_port(int socket_control)
 {
-    char port_respond[512];
+    char port_respond[2048];
     char *temp;
     int count,port_num;
 
-    if( ftp_send_cmd("PASV",NULL,socket_control) < 0)
+    int error = ftp_send_cmd("PASV",NULL,socket_control);
+    if(  error < 0)
     {
-        plog("%s","Send 'PASV' command error.\n");
-        return -1;//è¿å¥è¢«å¨æ¨¡å¼
+        plog("%s","Fun(get_port) : Send 'PASV' command error.\n");
+        return 0;//è¿å¥è¢«å¨æ¨¡å¼
     }
 
-    count=read(socket_control,port_respond,510);
-    if(count<=0)
+	memset(port_respond, 0, 2048);
+    //count = recv(socket_control,port_respond,510, MSG_WAITALL);
+    count =  ftp_get_reply(socket_control, port_respond);
+    if( count <= 0 )
     {
         plog("%s", "Fun(get_port): recv no message or other error.\n");
-        return -1;
+        return 0;
     }
 
-    port_respond[count]='\0';
+   	plog("Fun(get_port): %s.", port_respond);
     if( atoi( port_respond ) == 227 )//ç¡®å®è¿å¥è¢«å¨æ¨¡å¼
     {
         temp = strrchr( port_respond, ',' );//å¨ä¸²ä¸­æå®å­ç¬¦çæåä¸ä¸ªåºç°ä½ç½®ä»¥æ¾åºn6
@@ -578,13 +601,16 @@ int get_port()
  *      return      :   {int} error code;
  *      history     :   {2013.7.18 wujun} fristly be created
 **************************************************************************************************/
-int xconnect_ftpdata()
+int xconnect_ftpdata(int socket_control)
 {
     if(mode)
     {
-        int data_port = get_port();
-        if(data_port != 0)
+        int data_port = get_port(socket_control);
+        if( data_port != 0 )
+        {
             ftp_server.sin_port=htons(data_port);
+        }
+
         return(xconnect(&ftp_server, 0));
     }
     else
@@ -606,10 +632,10 @@ int xconnect_ftpdata()
         }
 
         //set outtime for the data socket
-        outtime.tv_sec = 7;
+        outtime.tv_sec = 1;
         outtime.tv_usec = 0;
         opt = SO_REUSEADDR;
-        set = setsockopt(get_sock, SOL_SOCKET,SO_RCVTIMEO, &outtime,sizeof(outtime));
+        //set = setsockopt(get_sock, SOL_SOCKET,SO_RCVTIMEO, &outtime,sizeof(outtime));
         if(set !=0)
         {
             memset(log, 0, 500);
@@ -672,10 +698,10 @@ int xconnect_ftpdata()
             if( ftp_send_cmd( cmd_buf, NULL, socket_control ) < 0 )
             {
                 plog("%s", "Fun(xconnect_ftpdata):send 'PORT' command error.\n");
-                return -1
+                return -1;
             }
 
-            if(ftp_get_reply(socket_control) != 200)
+            if(ftp_get_reply(socket_control, NULL) != 200)
             {
                 plog("%s","Fun(xconnect_ftpdata):Can not use PORT mode!Please use \"mode\" change to PASV mode.\n");
                 return -1;
@@ -717,20 +743,20 @@ int ftp_get(char* src_file, char * dst_file, int socket_control)
 
     if( src_file == NULL || dst_file == NULL)
     {
-        plog("%s","file path is invalid.\n");
+        plog("%s","Fun(ftp_get) : file path is invalid.\n\n");
 		return DOWNLOAD_LOCAL_FILENAME_NULL;
     }
 
 	if( strlen(src_file) == 0 )
 	{
-		plog("%s","download: local file path is invalid.\n");
+		plog("%s","Fun(ftp_get) : local file path is invalid.\n\n");
 		return DOWNLOAD_LOCAL_FILENAME_NULL;
 	}
 
 	if( strlen(dst_file) == 0 )
 	{
 
-		plog("%s","download: remote file path is invalid.\n");
+		plog("%s","Fun(ftp_get) : remote file path is invalid.\n\n");
 		return DOWNLOAD_REMOTE_FILENAME_NULL;
 	}
 
@@ -749,10 +775,10 @@ int ftp_get(char* src_file, char * dst_file, int socket_control)
     }
 */
 
-    get_sock = xconnect_ftpdata();
+    get_sock = xconnect_ftpdata(socket_control);
     if(get_sock < 0)
     {
-        plog("%s","download:socket error!\n");
+        plog("%s","Fun(ftp_get) :socket error!\n\n");
         return DOWNLOAD_CONNECT_SOCKET_ERROR;
     }
 
@@ -760,18 +786,18 @@ int ftp_get(char* src_file, char * dst_file, int socket_control)
 
     if( ftp_send_cmd("TYPE I", NULL, socket_control) < 0 )
     {
-        plog("%s", "send 'TYPE I' command error.\n");
+        plog("%s", "Fun(ftp_get) :send 'TYPE I' command error.\n\n");
         return -1;
     }
-    if( ftp_get_reply(socket_control) <= 0 )
+    if( ftp_get_reply(socket_control, NULL) <= 0 )
     {
-        plog("%s", "recv no message or network error.\n");
+        plog("%s", "Fun(ftp_get) :'TYPE I' recv no message.\n");
         return -1;
     }
 
     if( ftp_send_cmd("RETR ", src_file, socket_control) < 0)
     {
-        plog("%s", "send 'RETR' command error.\n");
+        plog("%s", "Fun(ftp_get) :send 'RETR' command error.\n\n");
         return -1;
     }
 
@@ -782,7 +808,7 @@ int ftp_get(char* src_file, char * dst_file, int socket_control)
             new_sock = accept(get_sock, (struct sockaddr *)&local_host, (socklen_t *)&set);
             if(new_sock == -1)
             {
-                plog("%s","download:accept  errno.\n");
+                plog("%s","Fun(ftp_get) :accept  errno.\n");
                 i++;
                 continue;
             }
@@ -793,13 +819,13 @@ int ftp_get(char* src_file, char * dst_file, int socket_control)
         }
         if( new_sock == -1 )
         {
-            plog("%s","download:Sorry, you can't use PORT mode. \n");
+            plog("%s","Fun(ftp_get) :Sorry, you can't use PORT mode. \n\n");
             return DOWNLOAD_PORT_MODE_ERROR;
         }
 
-        if( ( replayId=ftp_get_reply(socket_control) ) <= 0 )
+        if( ( replayId=ftp_get_reply(socket_control, NULL ) ) <= 0 )
         {
-            plog("%s", "recv no message or network error.\n");
+            plog("%s", "Fun(ftp_get) :recv no message or network error.\n\n");
             return -1;
         }
 
@@ -812,20 +838,21 @@ int ftp_get(char* src_file, char * dst_file, int socket_control)
         local_file = open(dst_file, O_RDWR|O_CREAT|O_TRUNC);
         if(local_file < 0)
         {
-            plog("%s","download:creat local file  error!\n");
+            plog("%s","Fun(ftp_get) :creat local file  error!\n\n");
             return DOWNLOAD_CREAET_LOCALFILE_ERROR;
         }
 
         while(1)
         {
 
-            count = read(new_sock, rcv_buf, sizeof(rcv_buf));
+            count = recv(new_sock, rcv_buf, sizeof(rcv_buf),MSG_WAITALL);
             if(count <= 0)
 			{
 				close(local_file);
                 close(get_sock);
                 close(new_sock);
                 ftp_delay();
+				plog("%s\t%s",src_file," download successfully.\n\n\n");
 				return FTP_DOWNLOAD_SUCCESS;
 			}
             else
@@ -836,35 +863,36 @@ int ftp_get(char* src_file, char * dst_file, int socket_control)
     }
     else
     {
-        if( ( replayId=ftp_get_reply(socket_control) ) <= 0 )
+        if( ( replayId=ftp_get_reply(socket_control, NULL) ) <= 0 )
         {
-            plog("%s", "recv no message or network error.\n");
+            plog("%s", "Fun(ftp_get) :'RETR' recv no message.\n\n");
             return -1;
         }
 
         if(replayId == 550)//remote file does not exist.
         {
-            plog("%s%s", src_file, "does not exsit.\n");
+            plog("%s%s", src_file, " does not exsit.\n");
             return DOWNLOAD_REMOTE_FILE_NOEXIST;
         }
 
         local_file = open(dst_file, O_RDWR|O_CREAT|O_TRUNC);
         if(local_file < 0)
         {
-            plog("%s","download:creat local file  error!\n");
+            plog("%s","Fun(ftp_get) :creat local file  error!\n\n");
             return DOWNLOAD_CREAET_LOCALFILE_ERROR;
         }
 
         while(1)
         {
             memset(rcv_buf,0,512);
-            count = read(get_sock, rcv_buf, 512);
+            count = recv(get_sock, rcv_buf, 512, MSG_WAITALL);
 
             if(count <= 0)
 			{
                 close(local_file);
                 close(get_sock);
                 ftp_delay();
+				plog("%s\t%s",src_file," download successfully.\n\n");
                 return FTP_DOWNLOAD_SUCCESS;
 			}
             else
@@ -903,7 +931,7 @@ int ftp_put(char* src_file, char * dst_file, int socket_control)
     if( stat( src_file, &file_info ) < 0 )
     {
         memset( log, 0, 500 );
-        sprintf( log, "Fun(ftp_put):upload:local file %s doesn't exist!\n", src_file );
+        sprintf( log, "Fun(ftp_put):upload:local file %s doesn't exist!\n\n", src_file );
         plog( "%s", log );
 
         return UPLOAD_LOCAL_FILENAME_NULL;
@@ -912,37 +940,37 @@ int ftp_put(char* src_file, char * dst_file, int socket_control)
     local_file = open( src_file, O_RDONLY );
     if( local_file < 0 )
     {
-        plog("%s","Fun(ftp_put): Open file error.\n");
+        plog("%s","Fun(ftp_put): Open file error.\n\n");
         return UPLOAD_LOCAL_OPEN_ERROR;
     }
 
-    file_put_sock = xconnect_ftpdata( );
+    file_put_sock = xconnect_ftpdata( socket_control);
     if( file_put_sock < 0 )
     {
-        ftp_get_reply( socket_control );
-        plog("%s", "Fun(ftp_put):Creat data socket error.\n");
+        ftp_get_reply( socket_control, NULL );
+        plog("%s", "Fun(ftp_put):Creat data socket error.\n\n");
         return UPLOAD_DATA_SOCKET_ERROR;
     }
 
     if( ftp_send_cmd("STOR " , dst_file,socket_control ) < 0 )
     {
-        plog("%s", "Fun(ftp_put):send 'STOR' command error.\n");
+        plog("%s", "Fun(ftp_put):send 'STOR' command error.\n\n");
         return -1;
     }
-    if( ftp_get_reply(socket_control) == 0)
+    if( ftp_get_reply(socket_control, NULL) == 0)
     {
-        plog("%s", "Fun(ftp_put):recv no message after sending 'STOR' command.\n");
+        plog("%s", "Fun(ftp_put):recv no message after sending 'STOR' command.\n\n");
         return -1;
     }
 
     if( ftp_send_cmd("TYPE I",NULL,socket_control) < 0)
     {
-        plog("%s", "Fun(ftp_put):send 'TYPE I' command error.\n");
+        plog("%s", "Fun(ftp_put):send 'TYPE I' command error.\n\n");
         return -1;
     }
-    if( ftp_get_reply(socket_control) == 0)
+    if( ftp_get_reply(socket_control, NULL) == 0)
     {
-        plog("%s", "Fun(ftp_put):recv no message after sending 'TYPE I' command.\n");
+        plog("%s", "Fun(ftp_put):recv no message after sending 'TYPE I' command.\n\n");
         return -1;
     }
 
@@ -953,7 +981,7 @@ int ftp_put(char* src_file, char * dst_file, int socket_control)
             new_sock=accept(file_put_sock,(struct sockaddr *)&local_host,(socklen_t*)&set);
             if(new_sock==-1)
             {
-                plog("%s","Fun(ftp_put):error create new_sock in put port.\n");
+                plog("%s","Fun(ftp_put):error create new_sock in put port.\n\n");
                 i++;
                 continue ;
             }
@@ -962,22 +990,21 @@ int ftp_put(char* src_file, char * dst_file, int socket_control)
         }
         if(new_sock==-1)
         {
-            plog("%s","Fun(ftp_put):The PORT mode won't work.\n");
+            plog("%s","Fun(ftp_put):The PORT mode won't work.\n\n");
             return UPLOAD_PORT_MODE_ERROR;
         }
         while(1)
         {
-            count=read(local_file,send_buff,sizeof(send_buff));
+            count=recv(local_file,send_buff,sizeof(send_buff), MSG_WAITALL);
             if(count<=0)
             {
                 close(local_file);
                 close(file_put_sock);
                 close(new_sock);
-                plog("%s%s", src_file, "Fun(ftp_put):upload over.\n");
+                plog("%s%s", src_file, "Fun(ftp_put):upload over.\n\n");
                 ftp_delay();
                 return UPLOAD_SUCCESS;
             }
-                break;
             else
             {
                 write(new_sock,send_buff,sizeof(send_buff));
@@ -985,19 +1012,19 @@ int ftp_put(char* src_file, char * dst_file, int socket_control)
         }
 
     }
-    else if(mode==1)
+    else if( mode == 1 )
     {
         while( 1 )
         {
-            count = read( local_file, send_buff, sizeof( send_buff ) );
+            count = recv( local_file, send_buff, sizeof( send_buff ), MSG_WAITALL);
             if( count <= 0 )
             {
                 close( local_file );
                 close( file_put_sock );
                 ftp_delay( );
-                plog("%s%s", src_file, "Fun(ftp_put):upload over.\n");
+                plog("%s%s", src_file, "Fun(ftp_put):upload over.\n\n");
                 return UPLOAD_SUCCESS;
-            }                //break;
+            }
             else
             {
                 write( file_put_sock, send_buff, count );
@@ -1028,7 +1055,7 @@ int ftp_rename(char *oldName, char *newName, int socket_control)
         plog("%s%s", oldName, " :send 'RNFR' command error.\n");
         return -1;
     }
-    if(  (error = ftp_get_reply(socket_control)) <= 0 )
+    if(  (error = ftp_get_reply(socket_control, NULL)) <= 0 )
     {
         plog("%s","Fun(ftp_rename):recv no message 1.\n");
         return -1;
@@ -1042,7 +1069,7 @@ int ftp_rename(char *oldName, char *newName, int socket_control)
             plog("%s", "Fun(ftp_rename): send command 'RNTO' error.\n");
             return -1;
         }
-        if( ( error = ftp_get_reply(socket_control) ) <= 0 )
+        if( ( error = ftp_get_reply(socket_control, NULL) ) <= 0 )
         {
             plog("%s","Fun(ftp_rename):recv no message 2.\n");
             return -1;
@@ -1118,7 +1145,7 @@ int ftp_mkdir(char *dirName, int socket_control)
             {
                 plog("%s", "Fun(ftp_mkdir) : send command MKD error.\n");
             }
-            if(  ftp_get_reply(socket_control) <= 0 )
+            if(  ftp_get_reply(socket_control, NULL) <= 0 )
             {
                 plog("%s","Fun(ftp_mkdir) :recv no message 3 or network error.\n");
                 return -1;

@@ -267,18 +267,24 @@ void add_Info(DownloadNode *s,DownInfo *p,int year,int day,int hour,int minute)
         char *tmp1 = ( char* )malloc( sizeof(char) * MAX_SIZE );
         memset( tmp1, 0, sizeof(char) * MAX_SIZE );
         strcpy( tmp1, s->filename );
-        char *tmp2 = replace( tmp1, Z, tempDownloadFileSuffix );
+        //char *tmp2 = replace( tmp1, Z, tempDownloadFileSuffix );
 
         char *filepath2 = ( char* ) malloc( sizeof(char) * MAX_SIZE );
         memset( filepath2, 0, MAX_SIZE );
-        strcpy( filepath2, s->localPath );
-        strcat( filepath2, tmp2 );
+        strcpy( filepath2, filepath1 );
+        strcat( filepath2, tempDownloadFileSuffix );
         char *check2 = replace( filepath2, STATIONNAME, (s->station)[i] );
         #ifdef  DEBUG
         printf("check2=%s\n",check2);
         #endif
 
         //add state
+		if( strcmp("210.72.144.2", s->server->ip ) == 0)
+        {
+            check1[strlen(check1)-3] -= 32;
+            check2[strlen(check1)-8] -= 32;
+        }
+
         if( (Search_file(check1)==DOWNLOAD_FILE_EXIST) || (Search_file(check2)==DOWNLOAD_FILE_EXIST))
         {
             (s->state)[i]=DOWNLOAD_FILE_EXIST;
@@ -289,7 +295,6 @@ void add_Info(DownloadNode *s,DownInfo *p,int year,int day,int hour,int minute)
 
             k++;
         }
-
         i++;
     }
 

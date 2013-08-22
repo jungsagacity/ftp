@@ -6,29 +6,15 @@
 #include <sys/time.h>
 #include <pthread.h>
 
-
 #include "ftp.h"
 #include "upload.h"
-#include "global.h"
 #include "utility.h"
-
-
-
 
 /*-----------------------------global variable in other .c file-------------------------------
 *
 *--------------------------------------------------------------------------------------------*/
 extern  UploadList uploadList;//upload.c, file list periodically created by product center.
 extern  pthread_mutex_t uploadMutex;//upload.c
-extern char *tempDownloadFileSuffix;//utility.c
-extern char *tempUploadFileSuffix;//utility.c
-extern char *downloadInfoFile;//utility.c
-extern      FtpServer   *fs;//utility.c
-extern      UploadPath *uploadPath;//utility.c
-
-
-
-
 
 
 /*************************************************************************************************
@@ -98,6 +84,7 @@ void timingTask()
 					#ifdef DEBUG
                     printf("analysis center checking task.\n");
 					#endif
+					analysisCenterCheckTask();
 
 				}
 				else
@@ -105,9 +92,7 @@ void timingTask()
 					#ifdef DEBUG
                     printf("data center checking task.\n");
 					#endif
-                    pthread_mutex_lock(&downloadMutex);//lock
-					time_module_control();
-					pthread_mutex_unlock(&downloadMutex);//unlock
+
 				}
 
 				(taskMins.traverseState)[i] = 1;
@@ -140,10 +125,10 @@ void upload()
 {
 	int     i,j;
 
-    char    *filename,*tempFilename;
-    char    *analysisCenterPath;
-	char    *productCenterPath, *tempProductCenterPath;
-	char    *productCenterdir;
+    char    filename[100],tempFilename[100];
+    char    analysisCenterPath[1000];
+	char    productCenterPath[1000], tempProductCenterPath[1000];
+	char    productCenterdir[1000];
     int     uploadState = 0;
 
 	int     ftperror = 0;//ftp relative error code
@@ -157,7 +142,7 @@ void upload()
 
 	while(1)
 	{
-		UploadNode * p,*p1;
+		UploadNode *p,*p1;
 		p =  uploadList->next;//temporary variable always points to uploadList head pointer.
         p1 = uploadList;
 
@@ -167,43 +152,27 @@ void upload()
 		{
             pthread_mutex_lock(&uploadMutex);//lock
 
-            len = strlen(p->filename) + 1;
-            filename = malloc(sizeof(char)*len);
-            memset(filename,0,len);
+            memset(filename,0,100);
             strcpy(filename, p->filename);
 
-
-            len = len + strlen(TEMP_SUFFIX) + 1;
-
-            tempFilename = malloc(sizeof(char)*len);
-            memset(tempFilename,0,len);
+            memset(tempFilename,0,100);
             sprintf(tempFilename,"%s%s",p->filename, TEMP_SUFFIX);
             //printf("tempFilename: %s\n",tempFilename);
 
-            len = strlen(filename) + strlen(p->analysisCenterPath) + 1;
-            analysisCenterPath = malloc(sizeof(char)*len);
-            memset(analysisCenterPath,0,len);
+            memset(analysisCenterPath,0,1000);
             sprintf(analysisCenterPath,"%s%s",p->analysisCenterPath,filename);
             //printf("analysisCenterPath: %s\n",analysisCenterPath);
 
-
-            len = strlen(p->filename) + strlen(p->productCenterPath) + 1;
-            productCenterPath = malloc(sizeof(char)*len);
-            memset(productCenterPath,0,len);
+            memset(productCenterPath,0,1000);
             sprintf(productCenterPath,"%s%s",p->productCenterPath,p->filename);
 
-            len = strlen(p->productCenterPath) + 1;
-            productCenterdir = malloc(sizeof(char)*len);
-            memset(productCenterdir,0,len);
+            memset(productCenterdir,0,1000);
             strcpy(productCenterdir, p->productCenterPath);
 
-            len = strlen(tempFilename) + strlen(p->productCenterPath) + 1;
-            tempProductCenterPath = malloc(sizeof(char)*len);
-            memset(tempProductCenterPath,0,len);
+            memset(tempProductCenterPath,0,1000);
             sprintf(tempProductCenterPath,"%s%s",p->productCenterPath,tempFilename);
 
             uploadState = p->state;
-
             pthread_mutex_unlock(&uploadMutex);//unlock
 
             if( (uploadState == UPLOAD_FILE_EXIST) || (uploadState == UPLOAD_FILE_UNKNOWN) )
@@ -222,16 +191,12 @@ void upload()
 						strftime( startTime, sizeof(startTime), "%Y-%m-%d %T",localtime(&timer) );
 
 						//add event log;
-						pthread_mutex_lock(&logMutex);//lock
-						addEventLog(UPLOAD_CONNNET_FAILED, filename, startTime,"");
-						pthread_mutex_unlock(&logMutex);//unlock
-
+						writeLog("%s\t%s\t%s/%s\t%s", startTime, "UPLOAD_CONNNET_FAILED", p->analysisCenterPath, p->filename, "");
                         #ifdef DEBUG
                         printf("connect error.\n");
                         #endif
 						break;
 					}
-
 					//delay some time and connect ftp again.
                     delay();
                 }
@@ -256,27 +221,23 @@ void upload()
                     *   3.else, make dir and then upload the file;
                     *   4.rename the file if upload it completely.
                     */
-                    //printf("%s,\t%s\n",analysisCenterPath,tempProductCenterPath);
+
                     ftp_mkdir(productCenterdir, sockfd);//make sure the dir exists.
                     ftperror = ftp_put(analysisCenterPath, tempProductCenterPath, sockfd);
-                    //ftperror = ftp_put("/home/jung/2.txt", "upload/fsda.txt", sockfd);
-                    //delay();
-                    //break;
 
                     // record end-upload time
                     timer =time(NULL);
                     memset(endTime, 0, 100);
                     strftime( endTime, sizeof(endTime), "%Y-%m-%d %T",localtime(&timer) );
 
-                    //add log
-
                     switch(ftperror)
                     {
                         case UPLOAD_CONNNET_FAILED:
                         {
-                            pthread_mutex_lock(&logMutex);//lock
-                            addEventLog(L_UPLOAD_CONNNET_FAILED, filename, startTime,endTime);
-                            pthread_mutex_unlock(&logMutex);//unlock
+                            writeLog("%s\t%s\t%s/%s\t%s", startTime, "UPLOAD_CONNNET_FAILED", p->analysisCenterPath, p->filename, "");
+                            #ifdef DEBUG
+                            printf("%s\t%s\t%s/%s\t%s", startTime, "UPLOAD_CONNNET_FAILED", p->analysisCenterPath, p->filename, "");
+                            #endif
 
                             pthread_mutex_lock(&uploadMutex);//lock
                             p->state = UPLOAD_FILE_UPLOAD_FAILED;
@@ -289,9 +250,10 @@ void upload()
                         case UPLOAD_DATA_SOCKET_ERROR:
                         case UPLOAD_PORT_MODE_ERROR:
                         {
-                            pthread_mutex_lock(&logMutex);//lock
-                            addEventLog(L_UPLOAD_FAILED, filename, startTime,endTime);
-                            pthread_mutex_unlock(&logMutex);//unlock
+                            writeLog("%s\t%s\t%s/%s\t%s", startTime, "UPLOAD_FAILED", p->analysisCenterPath, p->filename, endTime);
+                            #ifdef DEBUG
+                            printf("%s\t%s\t%s/%s\t%s", startTime, "UPLOAD_FAILED", p->analysisCenterPath, p->filename, endTime);
+                            #endif
 
                             pthread_mutex_lock(&uploadMutex);//lock
 
@@ -310,9 +272,10 @@ void upload()
                         {
                             ftp_rename(tempProductCenterPath,productCenterPath, sockfd);//if upload succsessfull, then rename the temporary file
 
-                            pthread_mutex_lock(&logMutex);//lock
-                            addEventLog(L_UPLOAD_SUCCESS, filename, startTime,endTime);
-                            pthread_mutex_unlock(&logMutex);//unlock
+                            writeLog("%s\t%s\t%s/%s\t%s", startTime, "UPLOAD_SUCCESS", p->analysisCenterPath, p->filename, endTime);
+                            #ifdef DEBUG
+                            printf("%s\t%s\t%s/%s\t%s", startTime, "UPLOAD_SUCCESS", p->analysisCenterPath, p->filename, endTime);
+                            #endif
 
                             pthread_mutex_lock(&uploadMutex);//lock
                             if(p->state == UPLOAD_FILE_UNKNOWN)
@@ -345,32 +308,32 @@ void upload()
                 {
                     case UPLOAD_FILE_NONEXIST:
                     {
-                        pthread_mutex_lock(&logMutex);//lock
-                        addEventLog(L_UPLOAD_FILE_NOEXIST, filename, endTime,endTime);
-                        pthread_mutex_unlock(&logMutex);//unlock
+                        writeLog("%s\t%s\t%s/%s\t%s", startTime, "UPLOAD_FILE_NONEXIST", p->analysisCenterPath, p->filename, endTime);
+                        #ifdef DEBUG
+                        printf("%s\t%s\t%s/%s\t%s", startTime, "UPLOAD_FILE_NONEXIST", p->analysisCenterPath, p->filename, endTime);
+                        #endif
                         break;
                     }
                     case UPLOAD_FILE_UPLOAD_INTIME:
                     {
-                        pthread_mutex_lock(&logMutex);//lock
-                        addEventLog(L_UPLOAD_INTIME, filename, endTime,endTime);
-                        pthread_mutex_unlock(&logMutex);//unlock
+                        writeLog("%s\t%s\t%s/%s\t%s", startTime, "UPLOAD_FILE_UPLOAD_INTIME", p->analysisCenterPath, p->filename, endTime);
+                        #ifdef DEBUG
+                        printf("%s\t%s\t%s/%s\t%s", startTime, "UPLOAD_FILE_UPLOAD_INTIME", p->analysisCenterPath, p->filename, endTime);
+                        #endif
                         break;
                     }
                     case UPLOAD_FILE_UPLOAD_LATE:
                     {
-                        pthread_mutex_lock(&logMutex);//lock
-                        addEventLog(L_UPLOAD_LATE, filename, endTime,endTime);
-                        pthread_mutex_unlock(&logMutex);//unlock
+                        writeLog("%s\t%s\t%s/%s\t%s", startTime, "UPLOAD_FILE_UPLOAD_LATE", p->analysisCenterPath, p->filename, endTime);
+                        #ifdef DEBUG
+                        printf("%s\t%s\t%s/%s\t%s", startTime, "UPLOAD_FILE_UPLOAD_LATE", p->analysisCenterPath, p->filename, endTime);
+                        #endif
                         break;
                     }
                     default:break;
-
                 }
 
-
                 pthread_mutex_lock(&uploadMutex);//lock
-                //p1->next=p->next;
                 freeUploadNode(p);//free(p);
                 p=p1;
                 pthread_mutex_unlock(&uploadMutex);//unlock
@@ -380,7 +343,6 @@ void upload()
             p1=p;
             p=p->next;
             pthread_mutex_unlock(&uploadMutex);//unlock
-
         }
 
     }
@@ -399,9 +361,12 @@ int main()
 
 	pthread_t timingTaskTread;
 
-    config("system.ini");
-    //traverseList();
-    initUploadlist();
+    initList();
+    if ( loadSystem("conf/system.ini") == -1)
+    {
+        printf( "load system.ini error.\n" );
+    }
+    printf("1\n");
 
     //create the thread analysis Center   Monitor
     pthread_create(&analysisCenterMonitorTread,NULL,analysisCenterMonitor,(void *)NULL);
@@ -411,6 +376,7 @@ int main()
 
     //create the thread timing task
     pthread_create(&timingTaskTread,NULL,timingTask,(void *)NULL);
+    printf("2\n");
 
 
 	while(1);

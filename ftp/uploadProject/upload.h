@@ -3,16 +3,8 @@
 
 #include <stdio.h>
 #include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/select.h>
-#include <errno.h>
-#include <sys/inotify.h>
-#include <malloc.h>
-#include <time.h>
-#include <pthread.h>
 
-#include "global.h"
+#include "utility.h"
 
 /********  MACRO DEFINITION  ********/
 #define     TEMP_SUFFIX             ".inmp"
