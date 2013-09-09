@@ -33,9 +33,67 @@ void dw_delay()
 }
 
 
+/**************************************************************************************************
+*    function   :   write download task node information to file
+*    para       :   {char *filename} file name
+*                   {DownloadNode *p} download task node
+*    return     :   {void}
+*
+*    history    :   {2013.7.25 wujun} frist create;
+**************************************************************************************************/
+void downloadListToFile(char *filename, DownloadNode *p)
+{
+    if( filename == NULL)
+    {
+        printf("file name is NULL.\n");
+        return ;
+    }
+
+    FILE *fp;
+    fp = fopen( filename ,"a");
+    if( fp == NULL )
+    {
+        #ifdef DEBUG
+        printf("create file %s error.\n ",filename);
+        #endif
+        return -1;
+    }
+
+    fprintf( fp, "%s\t%s\t%s\t%s\t%s\t%s\t%d\n", p->filename, p->localPath, p->remotePath, p->server->ip, p->stationList->name, p->state, p->taskNum );
+    downloadList->next = p->next;
+
+    freeDownloadNode(p);
+
+    fclose(fp);
+    delay();
+
+}
+
+/**************************************************************************************************
+*    function   :   free memory allocated for download task node
+*    para       :   {DownloadNode *p} download task node
+*
+*    return     :   {void}
+*
+*    history    :   {2013.7.25 wujun} frist create;
+**************************************************************************************************/
+void freeDownloadNode(DownloadNode *p)
+{
+    if(p == NULL) return;
+
+    free(p->filename);
+    free(p->localPath);
+    free(p->remotePath);
+    free(p->state);
+
+    free(p);
+}
+
+
+
 /******************************************************************************************
-*    function   :
-*    para       :
+*    function   :   excute task when time is on.
+*    para       :   {MYtime tmp_time} get current time.
 *
 *    return     :
 *    history    :   {2013.7.27 yangyang} create;
@@ -50,24 +108,6 @@ void time_module_control(MYtime tmp_time)
     get_currentime(pmt,tmp_time);    //get current time
     if(mt.minute==10||mt.minute==25||mt.minute==40||mt.minute==55)//the condition to check the file whether exist
     {
-        if(mt.minute==25&&mt.hour==0)//at the begin of a day ,init the DownloadNode;
-        {
-            /*DownloadNode *p, *q;
-            p = downloadList->next;
-
-            while( p != NULL )
-            {
-                q = p->next;
-                free(p->filename);
-                free(p->localPath);
-                free(p->remotePath);
-                free(p->state);
-
-                free(p);
-                p=q;
-            }*/
-        }
-
         //mt store the check time and then get the time that the file begin to transport
         int year, day, hour, minute;
         minute = mt.minute - 10;
@@ -77,7 +117,7 @@ void time_module_control(MYtime tmp_time)
             {
                 year = mt.year - 1;
                 hour = 24;     //when deal with the time 00:00 ,transfer to 4:00
-                if( ( year%4 == 0 ) && ( year%100 !=0 ) )
+                if((year%400==0) ||(year%4==0&& year%100!=0))
                     day = R_YEAR;
                 else
                     day = P_YEAR;
@@ -101,21 +141,37 @@ void time_module_control(MYtime tmp_time)
             day = mt.day;
             hour = mt.hour;
         }
-        #ifdef DEBUG
-        printf("the file transport time is:%d %d %d:%d\n",year,day,hour,minute);
-        #endif
+
         if( minute % 15 == 0 )
         {
             creat_list(year,day,hour,minute,downInfoList);
-            #ifdef DEBUG
-            if(downloadList->next != NULL)
-                printf("add new task: %s\t%s\n", downloadList->next->filename,downloadList->next->localPath);
-            #endif
         }
 
     }
 
 }
+
+
+/******************************************************************************************
+*    function   :   add new node to downloadList
+*    para       :   {DownloadNode *s}
+*
+*    return     :   void
+*    history    :   {2013.8.9 yangyang} frist create;
+******************************************************************************************/
+void addNode(DownloadNode *s)
+{
+    DownloadNode *p = downloadList;
+    while(p->next != NULL)
+    {
+        p = p->next;
+    }
+
+    p->next = s;
+    s->next = NULL;
+
+}
+
 
 
 /******************************************************************************************
@@ -146,8 +202,8 @@ void creat_list(int year,int day,int hour,int minute,DownInfo *DI)
 
                 memset(s, 0, sizeof( DownloadNode ));
                 add_Info( s, p, year, day, hour, minute );
-                s->next = downloadList->next;
-                downloadList->next = s;
+                addNode(s);
+                downloadListToFile("fileList.log", s);
             }
             p = p->next;
         }
@@ -169,10 +225,9 @@ void creat_list(int year,int day,int hour,int minute,DownInfo *DI)
                 memset( s, 0, sizeof(DownloadNode) );
 
                 add_Info( s, p, year, day, hour, minute );
-                s->next = downloadList -> next;
-                downloadList -> next = s;
+                addNode(s);
+                downloadListToFile("fileList.log", s);
             }
-
             //insert the node at the head
             p = p -> next;
         }
@@ -192,9 +247,8 @@ void creat_list(int year,int day,int hour,int minute,DownInfo *DI)
 
                 memset(s, 0, sizeof(DownloadNode));
                 add_Info( s, p, year, day, hour, minute );
-                s->next = downloadList -> next;
-
-                downloadList -> next = s;
+                addNode(s);
+                downloadListToFile("fileList.log", s);
             }
             //insert the node at the head
 
@@ -202,6 +256,34 @@ void creat_list(int year,int day,int hour,int minute,DownInfo *DI)
         }
 
 
+    }
+}
+
+/******************************************************************************************
+*    function   :   transform to capital
+*    para       :   {char *src} source string
+*                   {char *des} destination string
+*    return     :   {void}
+*    history    :   {2013.8.10 yangyang} frist create
+******************************************************************************************/
+void toCapital(char *src, char *des)
+{
+    if( src == NULL || des == NULL || sizeof(src) > sizeof(des) )
+    {
+        #ifdef DEBUG
+        printf("%s\n","Fun(toCapital): parameter is error.\n");
+        #endif
+
+        return -1;
+    }
+    strcpy(des, src );
+    int ci = 0;
+    for(ci = 0; ci < strlen(des); ci++)
+    {
+        if( des[ci] >= 'a' && des[ci] <= 'z')
+        {
+           des[ci] -= 32;
+        }
     }
 }
 
@@ -226,6 +308,7 @@ void add_Info(DownloadNode *s,DownInfo *p,int year,int day,int hour,int minute)
     s->remotePath = replace_path( p->dataCenterPath, year, day, hour, minute, p->fileType );
     s->localPath = replace_path( p->localPath, year, day, hour, minute, p->fileType );
     s->isHandled = HANDLE_NO;
+
     //add ftpserver
     FtpServer *f = fs->next;
 
@@ -247,45 +330,45 @@ void add_Info(DownloadNode *s,DownInfo *p,int year,int day,int hour,int minute)
         w = w->next;
     }
 
-    s->station = w->station;
-
+    //s->station = w->station;
+    s->stationList = w;
     int i = 0;
     int k = 0;
-    s->state = ( char* )malloc( sizeof(char) * (w->stationNum + 1 )); //sizeof(char)*
-    memset( s->state, 0, (w->stationNum+1) );
+    s->state = ( char* )malloc( sizeof(char) * ( w->stationNum + 1 )); //sizeof(char)*
+    memset( s->state, 0, ( w->stationNum + 1 ) );
+
+    char *filepath1 = ( char* ) malloc( sizeof(char) * MAX_SIZE );
+    char *filepath2 = ( char* ) malloc( sizeof(char) * MAX_SIZE );
 
     while(i < w->stationNum )
     {
-        char *filepath1 = ( char* )malloc( sizeof(char) * MAX_SIZE );
         memset( filepath1, 0, sizeof(char)*MAX_SIZE );
         strcpy( filepath1, s->localPath );
-        strcat( filepath1, s->filename );
-        char *check1 = replace( filepath1, STATIONNAME, (s->station)[i] );
-        #ifdef  DEBUG
-        printf("check1=%s\n",check1);
-        #endif
-        char *tmp1 = ( char* )malloc( sizeof(char) * MAX_SIZE );
-        memset( tmp1, 0, sizeof(char) * MAX_SIZE );
-        strcpy( tmp1, s->filename );
-        //char *tmp2 = replace( tmp1, Z, tempDownloadFileSuffix );
+/*
+        char capitalFileName[MAX_SIZE];
+        memset(capitalFileName, 0, MAX_SIZE);
+        toCapital( s->filename, capitalFileName );
+        strcat( filepath1, capitalFileName );
 
-        char *filepath2 = ( char* ) malloc( sizeof(char) * MAX_SIZE );
+        memset(capitalFileName, 0, MAX_SIZE);
+        toCapital( (s->stationList->station)[i], capitalFileName );
+        replace( filepath1, STATIONNAME, capitalFileName);
+*/
+		strcat( filepath1, s->filename );
+		replace( filepath1, STATIONNAME, (s->stationList->station)[i]);
+
         memset( filepath2, 0, MAX_SIZE );
         strcpy( filepath2, filepath1 );
         strcat( filepath2, tempDownloadFileSuffix );
-        char *check2 = replace( filepath2, STATIONNAME, (s->station)[i] );
-        #ifdef  DEBUG
-        printf("check2=%s\n",check2);
-        #endif
 
-
+		
 		//add state
 		if( strcmp("210.72.144.2", s->server->ip ) == 0)
         {
-            check1[strlen(check1)-3] -= 32;
-            check2[strlen(check1)-3] -= 32;
+            filepath1[strlen(filepath1)-3] -= 32;
+            filepath2[strlen(filepath2)-3] -= 32;
         }
-        if( (Search_file(check1)==DOWNLOAD_FILE_EXIST) || (Search_file(check2)==DOWNLOAD_FILE_EXIST))
+        if( (Search_file(filepath1)==DOWNLOAD_FILE_EXIST) || (Search_file(filepath2)==DOWNLOAD_FILE_EXIST))
         {
             (s->state)[i]=DOWNLOAD_FILE_EXIST;
         }
@@ -297,7 +380,11 @@ void add_Info(DownloadNode *s,DownInfo *p,int year,int day,int hour,int minute)
         }
 
         i++;
+
     }
+
+    free(filepath1);
+    free(filepath2);
 
     //add  taskNum
     s->taskNum=k;
@@ -315,16 +402,22 @@ void add_Info(DownloadNode *s,DownInfo *p,int year,int day,int hour,int minute)
 ******************************************************************************************/
 char *replace(char *str1,char *str2,char *str3)
 {
+
     char *p;
-    p=strstr(str1,str2);
-    int k=p-str1+1;
+    p = strstr( str1, str2 );
+    int k = p - str1 + 1;
     char *q;
-    q=(char*)malloc(sizeof(char)*MAX_SIZE);
-    memset(q,0,MAX_SIZE);
-    strncpy(q,str1,k-1);
-    strcat(q,str3);
-    strcat(q,p+strlen(str2));
-    return q;
+    q = (char*) malloc( sizeof(char) * MAX_SIZE );
+    memset(q, 0, MAX_SIZE );
+    strncpy(q, str1, k-1 );
+    strcat(q, str3 );
+    strcat(q, p + strlen(str2) );
+
+    memset(str1, 0, MAX_SIZE);
+    strcpy(str1, q);
+    free(q);
+
+    return str1;
 }
 
 
@@ -346,74 +439,80 @@ char *replace_path(char *rpath,int year,int day,int hour,int minute,char *type)
         return NULL;
     }
 
-    char *p;
+
+    char *rpathTemp = (char *)malloc( MAX_SIZE );
+    if( rpathTemp == NULL )
+    {
+        #ifdef DEBUG
+        printf("Fun(replace_path): malloc rpathTemp error.\n");
+        #endif
+        return NULL;
+    }
+    memset( rpathTemp, 0, MAX_SIZE );
+    strcpy( rpathTemp, rpath );
+
+    char * temp;
+    temp = (char*) malloc( MAX_SIZE );
+    if( temp == NULL )
+    {
+        #ifdef DEBUG
+        printf("Fun(replace_path): malloc temp error.\n");
+        #endif
+        return NULL;
+    }
+
+
     //replace year
-    char *yy1;
-    p=strstr(rpath,YYYY);
-    if(p!=NULL)
+    char *p;
+    p = strstr( rpathTemp, YYYY );
+    if( p != NULL )
     {
-        char *y;
-        y=(char*)malloc(sizeof(char)*MAX_SIZE);
-        memset(y,0,MAX_SIZE);
-        sprintf(y,"/%04d/",year);
-        yy1=replace(rpath,YYYY,y);
-        free(y);
+        memset( temp, 0, MAX_SIZE );
+        sprintf( temp, "/%04d/", year );
+        replace( rpathTemp, YYYY, temp );
     }
+
     //replace day
-    char *dd1;
-    p=strstr(rpath,DDD);
-    if(p!=NULL)
+    p = strstr( rpathTemp, DDD );
+    if( p != NULL )
     {
-        char *d;
-        d=(char*)malloc(sizeof(char)*MAX_SIZE);
-        memset(d,0,MAX_SIZE);
-        sprintf(d,"/%03d/",day);
-        dd1=replace(yy1,DDD,d);
-        free(d);
+        memset( temp, 0, MAX_SIZE );
+        sprintf( temp, "/%03d/", day );
+        replace( rpathTemp, DDD, temp );
     }
-    char *ff1,*hh1,*mm1;
-    p=strstr(rpath,YYF);
-    if(p!=NULL)
+
+    p = strstr( rpath, YYF );
+    if( p != NULL )
     {
-        char *f;
-        f=(char*)malloc(sizeof(char)*MAX_SIZE);
-        memset(f,0,MAX_SIZE);
-        sprintf(f,"/%02d%c/",year%100,type[0]+32);
-        ff1=replace(dd1,YYF,f);
-        free(f);
-        return ff1;
+        memset( temp, 0, MAX_SIZE );
+        sprintf( temp, "/%02d%c/", year%100, type[0]+32 );
+        replace( rpathTemp, YYF, temp );
+
+        free( temp );
+        return rpathTemp;
     }
     else
     {
-        char *q;
-        q=strstr(rpath,HH);
-        if(q!=NULL)
+
+        p = strstr( rpathTemp, HH );
+        if( p != NULL )
         {
-            char *h;
-            h=(char*)malloc(sizeof(char)*MAX_SIZE);
-            memset(h,0,MAX_SIZE);
-            sprintf(h,"/%02d/",hour);
-            hh1=replace(dd1,HH,h);
-            free(h);
+            memset( temp, 0, MAX_SIZE );
+            sprintf( temp, "/%02d/", hour );
+            replace( rpathTemp, HH, temp );
 
-            char *s;
-            s=strstr(rpath,MM);
-            if(s!=NULL)
+            p = strstr( rpathTemp, MM );
+            if( p != NULL )
             {
-                char *m;
-                m=(char*)malloc(sizeof(char)*MAX_SIZE);
-                memset(m,0,MAX_SIZE);
-                sprintf(m,"/%02d/",minute);
-                mm1=replace(hh1,MM,m);
-                free(m);
-                return mm1;
+                memset( temp, 0, MAX_SIZE );
+                sprintf( temp, "/%02d/", minute );
+                replace( rpathTemp, MM, temp );
+                free(temp);
+                return rpathTemp;
             }
-            else
-                return hh1;
         }
-        else
-            return dd1;
-
+        free(temp);
+        return rpathTemp;
     }
 
 }
@@ -484,7 +583,7 @@ int transfer(int year,int month,int day)
         sum+=a[i];
     }
     sum+=day;
-    if(year%4==0&&year%100!=0&&month>2) sum++;
+    if((( year%400 == 0 ) ||( year%4 == 0 && year%100 != 0 )) && month>2) sum++;
     return sum;
 }
 
@@ -499,7 +598,8 @@ int transfer(int year,int month,int day)
 
 char Search_file(char *filename)
 {
-    int k=0;
+	 
+	int k=0;
     k=access(filename,0);
     if( k == 0)
         return DOWNLOAD_FILE_EXIST;

@@ -20,7 +20,7 @@
 #define   DAILY          "daily"
 #define   HOURLY         "hourly"
 #define   HIGHRATE       "highrate"
-#define   STATIONNAME     "ssss"
+#define   STATIONNAME     "SSSS"
 #define   YYYY           "/yyyy/"
 #define   DDD            "/ddd/"
 #define   HH             "/hh/"
@@ -53,17 +53,14 @@ typedef struct stationlist
 }StationNode, *StationList;
 
 
-/*
-  struct of the download information
-  序号，数据源，时间类型，文件类型，站点列表文件，
-  下载服务器，数据中心文件格式，分析中心存放根目录
-*/
+
 typedef  struct DNode
 {
     char *filename;      //download file name;
     char *remotePath;    //file address in remote ftp server
     char *localPath;     //where file needed to place
-    char (*station)[5]; //the name of a string array storing the staion names.
+    //char (*station)[5]; //the name of a string array storing the staion names.
+    StationNode * stationList;
     char *state ;        //every char corresponds to one station in the next member variable char *stations
     int   taskNum;       //task number.
     FtpServer *server;
@@ -71,11 +68,7 @@ typedef  struct DNode
     struct DNode *next;
 } DownloadNode, *DownloadList;
 
-/*
-  struct of the download information
-  序号，数据源，时间类型，文件类型，站点列表文件，
-  下载服务器，数据中心文件格式，分析中心存放根目录
-*/
+
 typedef struct downInfo
 {
     int  id;
@@ -90,8 +83,8 @@ typedef struct downInfo
 } DownInfo;
 
 
-
-
+void freeDownloadNode(DownloadNode *p);
+void toCapital(char *src, char *des);
 //creat download list
 void get_currentime(MYtime *mt);
 char *replace(char *str1,char *str2,char *str3);
@@ -103,6 +96,7 @@ void creat_list(int year,int day,int hour,int minute,DownInfo *DI);
 void add_Info(DownloadNode *s,DownInfo *p,int year,int day,int hour,int minute);
 void time_module_control();
 char Search_file(char *filename);
+void addNode(DownloadNode *s);
 
 //read the request file
 int readDownloadInfo(char * downloadInfoFile, DownInfo * downInfoList);
@@ -111,5 +105,4 @@ void  delDownInfo(DownInfo * downInfoList,DownInfo * down);
 DownInfo * addDownInfo(DownInfo * downInfoList,DownInfo * down);
 DownInfo * initDownInfolist();
 void displayDW(DownInfo * head);
-
 #endif

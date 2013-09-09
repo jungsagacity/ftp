@@ -1,0 +1,1075 @@
+2013-8-18 10:25:6	Fun(connectFtpServer): Successfully connect to server:210.72.144.2,port:21
+2013-8-18 10:25:6	220 Welcome to nothwest FTP service
+2013-8-18 10:25:6	331 Please specify the password.
+2013-8-18 10:25:6	230 Login successful.
+2013-8-18 10:25:6	Fun(ftp_login): Password correct!
+2013-8-18 10:25:6	Fun(connectFtpServer): socket_control = 3
+2013-8-18 10:25:7	227 Entering Passive Mode (210,72,144,2,223,79).
+2013-8-18 10:25:7	Fun(get_port): 227 Entering Passive Mode (210,72,144,2,223,79).
+.2013-8-18 10:25:7	Fun(xconnect): Successfully connect to server:210.72.144.2,port:57167
+2013-8-18 10:25:7	200 Switching to Binary mode.
+2013-8-18 10:25:7	150 Opening BINARY mode data connection for data/iGMAS/2013/230/highrate/10/00/GUA1230k00.13R.Z (7186 bytes).
+2013-8-18 10:25:7	data/iGMAS/2013/230/highrate/10/00/GUA1230k00.13R.Z	 download successfully.
+
+2013-8-18 10:25:7	Fun(connectFtpServer): Successfully connect to server:210.72.144.2,port:21
+2013-8-18 10:25:7	220 Welcome to nothwest FTP service
+2013-8-18 10:25:8	331 Please specify the password.
+2013-8-18 10:25:8	230 Login successful.
+2013-8-18 10:25:8	Fun(ftp_login): Password correct!
+2013-8-18 10:25:8	Fun(connectFtpServer): socket_control = 3
+2013-8-18 10:25:8	227 Entering Passive Mode (210,72,144,2,209,36).
+2013-8-18 10:25:8	Fun(get_port): 227 Entering Passive Mode (210,72,144,2,209,36).
+.2013-8-18 10:25:8	Fun(xconnect): Successfully connect to server:210.72.144.2,port:53540
+2013-8-18 10:25:8	200 Switching to Binary mode.
+2013-8-18 10:25:8	550 Failed to open file.
+2013-8-18 10:25:9	data/iGMAS/2013/230/highrate/10/00/KUN1230k00.13R.Z does not exsit.
+2013-8-18 10:25:9	Fun(connectFtpServer): Successfully connect to server:210.72.144.2,port:21
+2013-8-18 10:25:9	220 Welcome to nothwest FTP service
+2013-8-18 10:25:9	331 Please specify the password.
+2013-8-18 10:25:9	230 Login successful.
+2013-8-18 10:25:9	Fun(ftp_login): Password correct!
+2013-8-18 10:25:9	Fun(connectFtpServer): socket_control = 3
+2013-8-18 10:25:9	227 Entering Passive Mode (210,72,144,2,161,223).
+2013-8-18 10:25:9	Fun(get_port): 227 Entering Passive Mode (210,72,144,2,161,223).
+.2013-8-18 10:25:10	Fun(xconnect): Successfully connect to server:210.72.144.2,port:41439
+2013-8-18 10:25:10	200 Switching to Binary mode.
+2013-8-18 10:25:10	150 Opening BINARY mode data connection for data/iGMAS/2013/230/highrate/10/00/WHU2230k00.13R.Z (3071 bytes).
+2013-8-18 10:25:10	data/iGMAS/2013/230/highrate/10/00/WHU2230k00.13R.Z	 download successfully.
+
+2013-8-18 10:25:11	Fun(connectFtpServer): Successfully connect to server:210.72.144.2,port:21
+2013-8-18 10:25:11	220 Welcome to nothwest FTP service
+2013-8-18 10:25:12	331 Please specify the password.
+2013-8-18 10:25:13	230 Login successful.
+2013-8-18 10:25:13	Fun(ftp_login): Password correct!
+2013-8-18 10:25:13	Fun(connectFtpServer): socket_control = 3
+2013-8-18 10:25:13	227 Entering Passive Mode (210,72,144,2,156,99).
+2013-8-18 10:25:13	Fun(get_port): 227 Entering Passive Mode (210,72,144,2,156,99).
+.2013-8-18 10:25:13	Fun(xconnect): Successfully connect to server:210.72.144.2,port:40035
+2013-8-18 10:25:13	200 Switching to Binary mode.
+2013-8-18 10:25:13	150 Opening BINARY mode data connection for data/iGMAS/2013/230/highrate/10/00/BJF2230k00.13R.Z (293 bytes).
+2013-8-18 10:25:13	data/iGMAS/2013/230/highrate/10/00/BJF2230k00.13R.Z	 download successfully.
+
+2013-8-18 10:25:14	Fun(connectFtpServer): Successfully connect to server:210.72.144.2,port:21
+2013-8-18 10:25:14	220 Welcome to nothwest FTP service
+2013-8-18 10:25:14	331 Please specify the password.
+2013-8-18 10:25:14	230 Login successful.
+2013-8-18 10:25:14	Fun(ftp_login): Password correct!
+2013-8-18 10:25:14	Fun(connectFtpServer): socket_control = 3
+2013-8-18 10:25:14	227 Entering Passive Mode (210,72,144,2,211,223).
+2013-8-18 10:25:15	Fun(get_port): 227 Entering Passive Mode (210,72,144,2,211,223).
+.2013-8-18 10:25:15	Fun(xconnect): Successfully connect to server:210.72.144.2,port:54239
+2013-8-18 10:25:15	200 Switching to Binary mode.
+2013-8-18 10:25:15	150 Opening BINARY mode data connection for data/iGMAS/2013/230/highrate/10/00/GUA1230k00.13D.Z (451461 bytes).
+2013-8-18 10:25:17	data/iGMAS/2013/230/highrate/10/00/GUA1230k00.13D.Z	 download successfully.
+
+2013-8-18 10:25:17	Fun(connectFtpServer): Successfully connect to server:210.72.144.2,port:21
+2013-8-18 10:25:17	220 Welcome to nothwest FTP service
+2013-8-18 10:25:17	331 Please specify the password.
+2013-8-18 10:25:17	230 Login successful.
+2013-8-18 10:25:17	Fun(ftp_login): Password correct!
+2013-8-18 10:25:17	Fun(connectFtpServer): socket_control = 3
+2013-8-18 10:25:17	227 Entering Passive Mode (210,72,144,2,207,172).
+2013-8-18 10:25:18	Fun(get_port): 227 Entering Passive Mode (210,72,144,2,207,172).
+.2013-8-18 10:25:18	Fun(xconnect): Successfully connect to server:210.72.144.2,port:53164
+2013-8-18 10:25:18	200 Switching to Binary mode.
+2013-8-18 10:25:18	550 Failed to open file.
+2013-8-18 10:25:18	data/iGMAS/2013/230/highrate/10/00/KUN1230k00.13D.Z does not exsit.
+2013-8-18 10:25:18	Fun(connectFtpServer): Successfully connect to server:210.72.144.2,port:21
+2013-8-18 10:25:19	220 Welcome to nothwest FTP service
+2013-8-18 10:25:20	331 Please specify the password.
+2013-8-18 10:25:20	230 Login successful.
+2013-8-18 10:25:20	Fun(ftp_login): Password correct!
+2013-8-18 10:25:20	Fun(connectFtpServer): socket_control = 3
+2013-8-18 10:25:21	227 Entering Passive Mode (210,72,144,2,207,139).
+2013-8-18 10:25:21	Fun(get_port): 227 Entering Passive Mode (210,72,144,2,207,139).
+.2013-8-18 10:25:21	Fun(xconnect): Successfully connect to server:210.72.144.2,port:53131
+2013-8-18 10:25:21	200 Switching to Binary mode.
+2013-8-18 10:25:21	150 Opening BINARY mode data connection for data/iGMAS/2013/230/highrate/10/00/WHU2230k00.13D.Z (274503 bytes).
+2013-8-18 10:25:22	data/iGMAS/2013/230/highrate/10/00/WHU2230k00.13D.Z	 download successfully.
+
+2013-8-18 10:25:22	Fun(connectFtpServer): Successfully connect to server:210.72.144.2,port:21
+2013-8-18 10:25:23	220 Welcome to nothwest FTP service
+2013-8-18 10:25:23	331 Please specify the password.
+2013-8-18 10:25:23	230 Login successful.
+2013-8-18 10:25:23	Fun(ftp_login): Password correct!
+2013-8-18 10:25:23	Fun(connectFtpServer): socket_control = 3
+2013-8-18 10:25:23	227 Entering Passive Mode (210,72,144,2,56,224).
+2013-8-18 10:25:24	Fun(get_port): 227 Entering Passive Mode (210,72,144,2,56,224).
+.2013-8-18 10:25:24	Fun(xconnect): Successfully connect to server:210.72.144.2,port:14560
+2013-8-18 10:25:24	200 Switching to Binary mode.
+2013-8-18 10:25:24	150 Opening BINARY mode data connection for data/iGMAS/2013/230/highrate/10/00/BJF2230k00.13D.Z (634 bytes).
+2013-8-18 10:25:24	data/iGMAS/2013/230/highrate/10/00/BJF2230k00.13D.Z	 download successfully.
+
+2013-8-18 10:25:24	Fun(connectFtpServer): Successfully connect to server:210.72.144.2,port:21
+2013-8-18 10:25:24	220 Welcome to nothwest FTP service
+2013-8-18 10:25:25	331 Please specify the password.
+2013-8-18 10:25:25	230 Login successful.
+2013-8-18 10:25:25	Fun(ftp_login): Password correct!
+2013-8-18 10:25:25	Fun(connectFtpServer): socket_control = 3
+2013-8-18 10:25:25	227 Entering Passive Mode (210,72,144,2,71,187).
+2013-8-18 10:25:25	Fun(get_port): 227 Entering Passive Mode (210,72,144,2,71,187).
+.2013-8-18 10:25:25	Fun(xconnect): Successfully connect to server:210.72.144.2,port:18363
+2013-8-18 10:25:25	200 Switching to Binary mode.
+2013-8-18 10:25:26	150 Opening BINARY mode data connection for data/iGMAS/2013/230/highrate/10/00/GUA1230k00.13R.Z (7186 bytes).
+226 Transfer complete.
+2013-8-18 10:25:26	data/iGMAS/2013/230/highrate/10/00/GUA1230k00.13R.Z	 download successfully.
+
+2013-8-18 10:25:26	Fun(connectFtpServer): Successfully connect to server:210.72.144.2,port:21
+2013-8-18 10:25:26	220 Welcome to nothwest FTP service
+2013-8-18 10:25:26	331 Please specify the password.
+2013-8-18 10:25:27	230 Login successful.
+2013-8-18 10:25:27	Fun(ftp_login): Password correct!
+2013-8-18 10:25:27	Fun(connectFtpServer): socket_control = 3
+2013-8-18 10:25:27	227 Entering Passive Mode (210,72,144,2,45,66).
+2013-8-18 10:25:27	Fun(get_port): 227 Entering Passive Mode (210,72,144,2,45,66).
+.2013-8-18 10:25:27	Fun(xconnect): Successfully connect to server:210.72.144.2,port:11586
+2013-8-18 10:25:27	200 Switching to Binary mode.
+2013-8-18 10:25:27	550 Failed to open file.
+2013-8-18 10:25:27	data/iGMAS/2013/230/highrate/10/00/KUN1230k00.13R.Z does not exsit.
+2013-8-18 10:25:28	Fun(connectFtpServer): Successfully connect to server:210.72.144.2,port:21
+2013-8-18 10:25:28	220 Welcome to nothwest FTP service
+2013-8-18 10:25:28	331 Please specify the password.
+2013-8-18 10:25:28	230 Login successful.
+2013-8-18 10:25:28	Fun(ftp_login): Password correct!
+2013-8-18 10:25:28	Fun(connectFtpServer): socket_control = 3
+2013-8-18 10:25:28	227 Entering Passive Mode (210,72,144,2,188,85).
+2013-8-18 10:25:28	Fun(get_port): 227 Entering Passive Mode (210,72,144,2,188,85).
+.2013-8-18 10:25:28	Fun(xconnect): Successfully connect to server:210.72.144.2,port:48213
+2013-8-18 10:25:29	200 Switching to Binary mode.
+2013-8-18 10:25:29	150 Opening BINARY mode data connection for data/iGMAS/2013/230/highrate/10/00/WHU2230k00.13R.Z (3071 bytes).
+226 Transfer complete.
+2013-8-18 10:25:29	data/iGMAS/2013/230/highrate/10/00/WHU2230k00.13R.Z	 download successfully.
+
+2013-8-18 10:25:29	Fun(connectFtpServer): Successfully connect to server:210.72.144.2,port:21
+2013-8-18 10:25:29	220 Welcome to nothwest FTP service
+2013-8-18 10:25:29	331 Please specify the password.
+2013-8-18 10:25:30	230 Login successful.
+2013-8-18 10:25:30	Fun(ftp_login): Password correct!
+2013-8-18 10:25:30	Fun(connectFtpServer): socket_control = 3
+2013-8-18 10:25:30	227 Entering Passive Mode (210,72,144,2,134,45).
+2013-8-18 10:25:30	Fun(get_port): 227 Entering Passive Mode (210,72,144,2,134,45).
+.2013-8-18 10:25:30	Fun(xconnect): Successfully connect to server:210.72.144.2,port:34349
+2013-8-18 10:25:30	200 Switching to Binary mode.
+2013-8-18 10:25:30	150 Opening BINARY mode data connection for data/iGMAS/2013/230/highrate/10/00/BJF2230k00.13R.Z (293 bytes).
+2013-8-18 10:25:30	data/iGMAS/2013/230/highrate/10/00/BJF2230k00.13R.Z	 download successfully.
+
+2013-8-18 10:25:31	Fun(connectFtpServer): Successfully connect to server:210.72.144.2,port:21
+2013-8-18 10:25:31	220 Welcome to nothwest FTP service
+2013-8-18 10:25:31	331 Please specify the password.
+2013-8-18 10:25:31	230 Login successful.
+2013-8-18 10:25:31	Fun(ftp_login): Password correct!
+2013-8-18 10:25:31	Fun(connectFtpServer): socket_control = 3
+2013-8-18 10:25:31	227 Entering Passive Mode (210,72,144,2,131,7).
+2013-8-18 10:25:31	Fun(get_port): 227 Entering Passive Mode (210,72,144,2,131,7).
+.2013-8-18 10:25:32	Fun(xconnect): Successfully connect to server:210.72.144.2,port:33543
+2013-8-18 10:25:32	200 Switching to Binary mode.
+2013-8-18 10:25:32	150 Opening BINARY mode data connection for data/iGMAS/2013/230/highrate/10/00/GUA1230k00.13D.Z (451461 bytes).
+2013-8-18 10:25:33	data/iGMAS/2013/230/highrate/10/00/GUA1230k00.13D.Z	 download successfully.
+
+2013-8-18 10:25:34	Fun(connectFtpServer): Successfully connect to server:210.72.144.2,port:21
+2013-8-18 10:25:35	220 Welcome to nothwest FTP service
+2013-8-18 10:25:35	331 Please specify the password.
+2013-8-18 10:25:35	230 Login successful.
+2013-8-18 10:25:35	Fun(ftp_login): Password correct!
+2013-8-18 10:25:35	Fun(connectFtpServer): socket_control = 3
+2013-8-18 10:25:35	227 Entering Passive Mode (210,72,144,2,127,32).
+2013-8-18 10:25:35	Fun(get_port): 227 Entering Passive Mode (210,72,144,2,127,32).
+.2013-8-18 10:25:35	Fun(xconnect): Successfully connect to server:210.72.144.2,port:32544
+2013-8-18 10:25:35	200 Switching to Binary mode.
+2013-8-18 10:25:35	550 Failed to open file.
+2013-8-18 10:25:35	data/iGMAS/2013/230/highrate/10/00/KUN1230k00.13D.Z does not exsit.
+2013-8-18 10:25:36	Fun(connectFtpServer): Successfully connect to server:210.72.144.2,port:21
+2013-8-18 10:25:36	220 Welcome to nothwest FTP service
+2013-8-18 10:25:37	331 Please specify the password.
+2013-8-18 10:25:38	230 Login successful.
+2013-8-18 10:25:38	Fun(ftp_login): Password correct!
+2013-8-18 10:25:38	Fun(connectFtpServer): socket_control = 3
+2013-8-18 10:25:38	227 Entering Passive Mode (210,72,144,2,213,4).
+2013-8-18 10:25:38	Fun(get_port): 227 Entering Passive Mode (210,72,144,2,213,4).
+.2013-8-18 10:25:38	Fun(xconnect): Successfully connect to server:210.72.144.2,port:54532
+2013-8-18 10:25:38	200 Switching to Binary mode.
+2013-8-18 10:25:38	150 Opening BINARY mode data connection for data/iGMAS/2013/230/highrate/10/00/WHU2230k00.13D.Z (274503 bytes).
+2013-8-18 10:25:39	data/iGMAS/2013/230/highrate/10/00/WHU2230k00.13D.Z	 download successfully.
+
+2013-8-18 10:25:40	Fun(connectFtpServer): Successfully connect to server:210.72.144.2,port:21
+2013-8-18 10:25:40	220 Welcome to nothwest FTP service
+2013-8-18 10:25:40	331 Please specify the password.
+2013-8-18 10:25:40	230 Login successful.
+2013-8-18 10:25:40	Fun(ftp_login): Password correct!
+2013-8-18 10:25:40	Fun(connectFtpServer): socket_control = 3
+2013-8-18 10:25:40	227 Entering Passive Mode (210,72,144,2,220,51).
+2013-8-18 10:25:40	Fun(get_port): 227 Entering Passive Mode (210,72,144,2,220,51).
+.2013-8-18 10:25:41	Fun(xconnect): Successfully connect to server:210.72.144.2,port:56371
+2013-8-18 10:25:41	200 Switching to Binary mode.
+2013-8-18 10:25:41	150 Opening BINARY mode data connection for data/iGMAS/2013/230/highrate/10/00/BJF2230k00.13D.Z (634 bytes).
+2013-8-18 10:25:42	data/iGMAS/2013/230/highrate/10/00/BJF2230k00.13D.Z	 download successfully.
+
+2013-8-18 11:10:6	Fun(connectFtpServer): Successfully connect to server:210.72.144.2,port:21
+2013-8-18 11:10:6	220 Welcome to nothwest FTP service
+2013-8-18 11:10:6	331 Please specify the password.
+2013-8-18 11:10:6	230 Login successful.
+2013-8-18 11:10:6	Fun(ftp_login): Password correct!
+2013-8-18 11:10:6	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:10:6	227 Entering Passive Mode (210,72,144,2,39,133).
+2013-8-18 11:10:6	Fun(get_port): 227 Entering Passive Mode (210,72,144,2,39,133).
+.2013-8-18 11:10:6	Fun(xconnect): Successfully connect to server:210.72.144.2,port:10117
+2013-8-18 11:10:7	200 Switching to Binary mode.
+2013-8-18 11:10:7	150 Opening BINARY mode data connection for data/iGMAS/2013/230/hourly/10/GUA1230k.13R.Z (7186 bytes).
+2013-8-18 11:10:7	data/iGMAS/2013/230/hourly/10/GUA1230k.13R.Z	 download successfully.
+
+2013-8-18 11:10:7	Fun(connectFtpServer): Successfully connect to server:210.72.144.2,port:21
+2013-8-18 11:10:7	220 Welcome to nothwest FTP service
+2013-8-18 11:10:7	331 Please specify the password.
+2013-8-18 11:10:8	230 Login successful.
+2013-8-18 11:10:8	Fun(ftp_login): Password correct!
+2013-8-18 11:10:9	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:10:9	227 Entering Passive Mode (210,72,144,2,242,60).
+2013-8-18 11:10:9	Fun(get_port): 227 Entering Passive Mode (210,72,144,2,242,60).
+.2013-8-18 11:10:9	Fun(xconnect): Successfully connect to server:210.72.144.2,port:62012
+2013-8-18 11:10:9	200 Switching to Binary mode.
+2013-8-18 11:10:9	550 Failed to open file.
+2013-8-18 11:10:9	data/iGMAS/2013/230/hourly/10/KUN1230k.13R.Z does not exsit.
+2013-8-18 11:10:10	Fun(connectFtpServer): Successfully connect to server:210.72.144.2,port:21
+2013-8-18 11:10:10	220 Welcome to nothwest FTP service
+2013-8-18 11:10:10	331 Please specify the password.
+2013-8-18 11:10:10	230 Login successful.
+2013-8-18 11:10:10	Fun(ftp_login): Password correct!
+2013-8-18 11:10:10	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:10:10	227 Entering Passive Mode (210,72,144,2,236,26).
+2013-8-18 11:10:10	Fun(get_port): 227 Entering Passive Mode (210,72,144,2,236,26).
+.2013-8-18 11:10:10	Fun(xconnect): Successfully connect to server:210.72.144.2,port:60442
+2013-8-18 11:10:11	200 Switching to Binary mode.
+2013-8-18 11:10:11	150 Opening BINARY mode data connection for data/iGMAS/2013/230/hourly/10/WHU2230k.13R.Z (3071 bytes).
+2013-8-18 11:10:11	data/iGMAS/2013/230/hourly/10/WHU2230k.13R.Z	 download successfully.
+
+2013-8-18 11:10:11	Fun(connectFtpServer): Successfully connect to server:210.72.144.2,port:21
+2013-8-18 11:10:11	220 Welcome to nothwest FTP service
+2013-8-18 11:10:11	331 Please specify the password.
+2013-8-18 11:10:11	230 Login successful.
+2013-8-18 11:10:11	Fun(ftp_login): Password correct!
+2013-8-18 11:10:12	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:10:12	227 Entering Passive Mode (210,72,144,2,138,226).
+2013-8-18 11:10:12	Fun(get_port): 227 Entering Passive Mode (210,72,144,2,138,226).
+.2013-8-18 11:10:12	Fun(xconnect): Successfully connect to server:210.72.144.2,port:35554
+2013-8-18 11:10:12	200 Switching to Binary mode.
+2013-8-18 11:10:12	150 Opening BINARY mode data connection for data/iGMAS/2013/230/hourly/10/BJF2230k.13R.Z (293 bytes).
+2013-8-18 11:10:12	data/iGMAS/2013/230/hourly/10/BJF2230k.13R.Z	 download successfully.
+
+2013-8-18 11:10:12	Fun(connectFtpServer): Successfully connect to server:210.72.144.2,port:21
+2013-8-18 11:10:13	220 Welcome to nothwest FTP service
+2013-8-18 11:10:13	331 Please specify the password.
+2013-8-18 11:10:13	230 Login successful.
+2013-8-18 11:10:13	Fun(ftp_login): Password correct!
+2013-8-18 11:10:13	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:10:13	227 Entering Passive Mode (210,72,144,2,79,110).
+2013-8-18 11:10:13	Fun(get_port): 227 Entering Passive Mode (210,72,144,2,79,110).
+.2013-8-18 11:10:13	Fun(xconnect): Successfully connect to server:210.72.144.2,port:20334
+2013-8-18 11:10:13	200 Switching to Binary mode.
+2013-8-18 11:10:13	150 Opening BINARY mode data connection for data/iGMAS/2013/230/highrate/10/45/GUA1230k45.13R.Z (3316 bytes).
+2013-8-18 11:10:14	data/iGMAS/2013/230/highrate/10/45/GUA1230k45.13R.Z	 download successfully.
+
+2013-8-18 11:10:14	Fun(connectFtpServer): Successfully connect to server:210.72.144.2,port:21
+2013-8-18 11:10:14	220 Welcome to nothwest FTP service
+2013-8-18 11:10:14	331 Please specify the password.
+2013-8-18 11:10:14	230 Login successful.
+2013-8-18 11:10:14	Fun(ftp_login): Password correct!
+2013-8-18 11:10:14	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:10:15	227 Entering Passive Mode (210,72,144,2,77,112).
+2013-8-18 11:10:15	Fun(get_port): 227 Entering Passive Mode (210,72,144,2,77,112).
+.2013-8-18 11:10:15	Fun(xconnect): Successfully connect to server:210.72.144.2,port:19824
+2013-8-18 11:10:16	200 Switching to Binary mode.
+2013-8-18 11:10:16	550 Failed to open file.
+2013-8-18 11:10:16	data/iGMAS/2013/230/highrate/10/45/KUN1230k45.13R.Z does not exsit.
+2013-8-18 11:10:16	Fun(connectFtpServer): Successfully connect to server:210.72.144.2,port:21
+2013-8-18 11:10:17	220 Welcome to nothwest FTP service
+2013-8-18 11:10:17	331 Please specify the password.
+2013-8-18 11:10:17	230 Login successful.
+2013-8-18 11:10:17	Fun(ftp_login): Password correct!
+2013-8-18 11:10:17	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:10:17	227 Entering Passive Mode (210,72,144,2,200,58).
+2013-8-18 11:10:17	Fun(get_port): 227 Entering Passive Mode (210,72,144,2,200,58).
+.2013-8-18 11:10:17	Fun(xconnect): Successfully connect to server:210.72.144.2,port:51258
+2013-8-18 11:10:17	200 Switching to Binary mode.
+2013-8-18 11:10:17	150 Opening BINARY mode data connection for data/iGMAS/2013/230/highrate/10/45/WHU2230k45.13R.Z (2873 bytes).
+2013-8-18 11:10:18	data/iGMAS/2013/230/highrate/10/45/WHU2230k45.13R.Z	 download successfully.
+
+2013-8-18 11:10:18	Fun(connectFtpServer): Successfully connect to server:210.72.144.2,port:21
+2013-8-18 11:10:18	220 Welcome to nothwest FTP service
+2013-8-18 11:10:18	331 Please specify the password.
+2013-8-18 11:10:18	230 Login successful.
+2013-8-18 11:10:18	Fun(ftp_login): Password correct!
+2013-8-18 11:10:18	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:10:18	227 Entering Passive Mode (210,72,144,2,132,131).
+2013-8-18 11:10:18	Fun(get_port): 227 Entering Passive Mode (210,72,144,2,132,131).
+.2013-8-18 11:10:19	Fun(xconnect): Successfully connect to server:210.72.144.2,port:33923
+2013-8-18 11:10:19	200 Switching to Binary mode.
+2013-8-18 11:10:19	150 Opening BINARY mode data connection for data/iGMAS/2013/230/highrate/10/45/BJF2230k45.13R.Z (296 bytes).
+2013-8-18 11:10:19	data/iGMAS/2013/230/highrate/10/45/BJF2230k45.13R.Z	 download successfully.
+
+2013-8-18 11:10:20	Fun(connectFtpServer): Successfully connect to server:128.183.20.84,port:21
+2013-8-18 11:10:20	220-**********************************************************************
+220-                 Welcome to the CDDIS Anonymous FTP Archive
+220-
+220-
+220-This U.S. Government resource is for authorized use only.
+220-
+220-If not authorized to access this resource, disconnect now.
+220-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+220-
+220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+2013-8-18 11:10:20	331 Please specify the password.
+2013-8-18 11:10:21	230 Login successful.
+2013-8-18 11:10:21	Fun(ftp_login): Password correct!
+2013-8-18 11:10:21	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:10:22	227 Entering Passive Mode (128,183,20,84,104,70).
+2013-8-18 11:10:22	Fun(get_port): 227 Entering Passive Mode (128,183,20,84,104,70).
+.2013-8-18 11:10:22	Fun(xconnect): Successfully connect to server:128.183.20.84,port:26694
+2013-8-18 11:10:23	200 Switching to Binary mode.
+2013-8-18 11:10:24	150 Opening BINARY mode data connection for gps/data/campaign/mgex/hourly/rinex3/2013/230/10/areg230k.13d.Z (54594 bytes).
+2013-8-18 11:10:31	gps/data/campaign/mgex/hourly/rinex3/2013/230/10/areg230k.13d.Z	 download successfully.
+
+2013-8-18 11:10:32	Fun(connectFtpServer): Successfully connect to server:128.183.20.84,port:21
+2013-8-18 11:10:32	220-**********************************************************************
+220-                 Welcome to the CDDIS Anonymous FTP Archive
+220-
+220-
+220-This U.S. Government resource is for authorized use only.
+220-
+220-If not authorized to access this resource, disconnect now.
+220-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+220-
+220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+2013-8-18 11:10:33	331 Please specify the password.
+2013-8-18 11:10:34	230 Login successful.
+2013-8-18 11:10:34	Fun(ftp_login): Password correct!
+2013-8-18 11:10:34	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:10:34	227 Entering Passive Mode (128,183,20,84,174,54).
+2013-8-18 11:10:34	Fun(get_port): 227 Entering Passive Mode (128,183,20,84,174,54).
+.2013-8-18 11:10:35	Fun(xconnect): Successfully connect to server:128.183.20.84,port:44598
+2013-8-18 11:10:35	200 Switching to Binary mode.
+2013-8-18 11:10:35	150 Opening BINARY mode data connection for gps/data/campaign/mgex/hourly/rinex3/2013/230/10/brst230k.13d.Z (58029 bytes).
+2013-8-18 11:10:39	gps/data/campaign/mgex/hourly/rinex3/2013/230/10/brst230k.13d.Z	 download successfully.
+
+2013-8-18 11:10:39	Fun(connectFtpServer): Successfully connect to server:128.183.20.84,port:21
+2013-8-18 11:10:42	220-**********************************************************************
+220-                 Welcome to the CDDIS Anonymous FTP Archive
+220-
+220-
+220-This U.S. Government resource is for authorized use only.
+220-
+220-If not authorized to access this resource, disconnect now.
+220-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+220-
+220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+2013-8-18 11:10:42	331 Please specify the password.
+2013-8-18 11:10:43	230 Login successful.
+2013-8-18 11:10:43	Fun(ftp_login): Password correct!
+2013-8-18 11:10:43	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:10:43	227 Entering Passive Mode (128,183,20,84,19,223).
+2013-8-18 11:10:43	Fun(get_port): 227 Entering Passive Mode (128,183,20,84,19,223).
+.2013-8-18 11:10:44	Fun(xconnect): Successfully connect to server:128.183.20.84,port:5087
+2013-8-18 11:10:44	200 Switching to Binary mode.
+2013-8-18 11:10:44	150 Opening BINARY mode data connection for gps/data/campaign/mgex/hourly/rinex3/2013/230/10/brux230k.13d.Z (44823 bytes).
+2013-8-18 11:10:51	gps/data/campaign/mgex/hourly/rinex3/2013/230/10/brux230k.13d.Z	 download successfully.
+
+2013-8-18 11:10:52	Fun(connectFtpServer): Successfully connect to server:128.183.20.84,port:21
+2013-8-18 11:10:52	220-**********************************************************************
+220-                 Welcome to the CDDIS Anonymous FTP Archive
+220-
+220-
+220-This U.S. Government resource is for authorized use only.
+220-
+220-If not authorized to access this resource, disconnect now.
+220-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+220-
+2013-8-18 11:10:55	220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+331 Please specify the password.
+2013-8-18 11:10:55	Fun(ftp_login): other error.
+2013-8-18 11:10:55	Fun(connectFtpServer): user or password error.
+
+2013-8-18 11:10:56	Fun(connectFtpServer): Successfully connect to server:128.183.20.84,port:21
+2013-8-18 11:10:57	220-**********************************************************************
+220-                 Welcome to the CDDIS Anonymous FTP Archive
+220-
+220-
+220-This U.S. Government resource is for authorized use only.
+220-
+220-If not authorized to access this resource, disconnect now.
+220-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+220-
+220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+2013-8-18 11:10:57	331 Please specify the password.
+2013-8-18 11:10:58	230 Login successful.
+2013-8-18 11:10:58	Fun(ftp_login): Password correct!
+2013-8-18 11:10:58	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:10:58	227 Entering Passive Mode (128,183,20,84,206,191).
+2013-8-18 11:10:58	Fun(get_port): 227 Entering Passive Mode (128,183,20,84,206,191).
+.2013-8-18 11:10:59	Fun(xconnect): Successfully connect to server:128.183.20.84,port:52927
+2013-8-18 11:11:0	200 Switching to Binary mode.
+2013-8-18 11:11:1	550 Failed to open file.
+2013-8-18 11:11:1	gps/data/campaign/mgex/hourly/rinex3/2013/230/10/cut0230k.13d.Z does not exsit.
+2013-8-18 11:11:1	Fun(connectFtpServer): Successfully connect to server:128.183.20.84,port:21
+2013-8-18 11:11:4	220-**********************************************************************
+220-                 Welcome to the CDDIS Anonymous FTP Archive
+220-
+220-
+220-This U.S. Government resource is for authorized use only.
+220-
+220-If not authorized to access this resource, disconnect now.
+220-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+220-
+220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+2013-8-18 11:11:5	331 Please specify the password.
+2013-8-18 11:11:5	230 Login successful.
+2013-8-18 11:11:5	Fun(ftp_login): Password correct!
+2013-8-18 11:11:5	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:11:5	227 Entering Passive Mode (128,183,20,84,150,193).
+2013-8-18 11:11:5	Fun(get_port): 227 Entering Passive Mode (128,183,20,84,150,193).
+.2013-8-18 11:11:6	Fun(xconnect): Successfully connect to server:128.183.20.84,port:38593
+2013-8-18 11:11:7	200 Switching to Binary mode.
+2013-8-18 11:11:7	150 Opening BINARY mode data connection for gps/data/campaign/mgex/hourly/rinex3/2013/230/10/dlf1230k.13d.Z (167967 bytes).
+2013-8-18 11:11:32	gps/data/campaign/mgex/hourly/rinex3/2013/230/10/dlf1230k.13d.Z	 download successfully.
+
+2013-8-18 11:11:33	Fun(connectFtpServer): Successfully connect to server:128.183.20.84,port:21
+2013-8-18 11:11:33	220-**********************************************************************
+220-                 Welcome to the CDDIS Anonymous FTP Archive
+220-
+220-
+220-This U.S. Government resource is for authorized use only.
+220-
+220-If not authorized to access this resource, disconnect now.
+220-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+220-
+220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+2013-8-18 11:11:33	331 Please specify the password.
+2013-8-18 11:11:34	230 Login successful.
+2013-8-18 11:11:34	Fun(ftp_login): Password correct!
+2013-8-18 11:11:34	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:11:34	227 Entering Passive Mode (128,183,20,84,40,147).
+2013-8-18 11:11:34	Fun(get_port): 227 Entering Passive Mode (128,183,20,84,40,147).
+.2013-8-18 11:11:37	Fun(xconnect): Successfully connect to server:128.183.20.84,port:10387
+2013-8-18 11:11:39	200 Switching to Binary mode.
+2013-8-18 11:11:39	150 Opening BINARY mode data connection for gps/data/campaign/mgex/hourly/rinex3/2013/230/10/gmsd230k.13d.Z (75503 bytes).
+2013-8-18 11:11:50	gps/data/campaign/mgex/hourly/rinex3/2013/230/10/gmsd230k.13d.Z	 download successfully.
+
+2013-8-18 11:11:51	Fun(connectFtpServer): Successfully connect to server:128.183.20.84,port:21
+2013-8-18 11:11:51	220-**********************************************************************
+220-                 Welcome to the CDDIS Anonymous FTP Archive
+220-
+220-
+220-This U.S. Government resource is for authorized use only.
+220-
+220-If not authorized to access this resource, disconnect now.
+220-Unauthorized use of, or access to this resource may subject you to
+2013-8-18 11:11:53	220-disciplinary action or criminal prosecution.
+2013-8-18 11:11:53	Fun(ftp_login): other error.
+2013-8-18 11:11:53	Fun(connectFtpServer): user or password error.
+
+2013-8-18 11:11:54	Fun(connectFtpServer): Successfully connect to server:128.183.20.84,port:21
+2013-8-18 11:11:54	220-**********************************************************************
+220-                 Welcome to the CDDIS Anonymous FTP Archive
+220-
+220-
+220-This U.S. Government resource is for authorized use only.
+220-
+220-If not authorized to access this resource, disconnect now.
+220-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+220-
+220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+2013-8-18 11:11:56	331 Please specify the password.
+2013-8-18 11:11:56	230 Login successful.
+2013-8-18 11:11:56	Fun(ftp_login): Password correct!
+2013-8-18 11:11:56	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:11:57	227 Entering Passive Mode (128,183,20,84,254,101).
+2013-8-18 11:11:57	Fun(get_port): 227 Entering Passive Mode (128,183,20,84,254,101).
+.2013-8-18 11:11:57	Fun(xconnect): Successfully connect to server:128.183.20.84,port:65125
+2013-8-18 11:11:57	200 Switching to Binary mode.
+2013-8-18 11:11:58	550 Failed to open file.
+2013-8-18 11:11:58	gps/data/campaign/mgex/hourly/rinex3/2013/230/10/grac230k.13d.Z does not exsit.
+2013-8-18 11:11:59	Fun(connectFtpServer): Successfully connect to server:128.183.20.84,port:21
+2013-8-18 11:10:6	Fun(connectFtpServer): Successfully connect to server:210.72.144.2,port:21
+2013-8-18 11:10:6	220 Welcome to nothwest FTP service
+2013-8-18 11:10:6	331 Please specify the password.
+2013-8-18 11:10:6	230 Login successful.
+2013-8-18 11:10:6	Fun(ftp_login): Password correct!
+2013-8-18 11:10:6	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:10:6	227 Entering Passive Mode (210,72,144,2,44,94).
+2013-8-18 11:10:6	Fun(get_port): 227 Entering Passive Mode (210,72,144,2,44,94).
+.2013-8-18 11:10:7	Fun(xconnect): Successfully connect to server:210.72.144.2,port:11358
+2013-8-18 11:10:7	200 Switching to Binary mode.
+2013-8-18 11:10:7	550 Failed to open file.
+2013-8-18 11:10:7	data/iGMAS/2013/230/hourly/10/KUN1230k.13R.Z does not exsit.
+2013-8-18 11:10:7	Fun(connectFtpServer): Successfully connect to server:210.72.144.2,port:21
+2013-8-18 11:10:7	220 Welcome to nothwest FTP service
+2013-8-18 11:10:7	331 Please specify the password.
+2013-8-18 11:10:8	230 Login successful.
+2013-8-18 11:10:8	Fun(ftp_login): Password correct!
+2013-8-18 11:10:8	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:10:8	227 Entering Passive Mode (210,72,144,2,22,206).
+2013-8-18 11:10:8	Fun(get_port): 227 Entering Passive Mode (210,72,144,2,22,206).
+.2013-8-18 11:10:8	Fun(xconnect): Successfully connect to server:210.72.144.2,port:5838
+2013-8-18 11:10:8	200 Switching to Binary mode.
+2013-8-18 11:10:8	550 Failed to open file.
+2013-8-18 11:10:8	data/iGMAS/2013/230/highrate/10/45/KUN1230k45.13R.Z does not exsit.
+2013-8-18 11:10:9	Fun(connectFtpServer): Successfully connect to server:128.183.20.84,port:21
+2013-8-18 11:10:9	220-**********************************************************************
+220-                 Welcome to the CDDIS Anonymous FTP Archive
+220-
+220-
+220-This U.S. Government resource is for authorized use only.
+220-
+220-If not authorized to access this resource, disconnect now.
+220-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+220-
+220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+2013-8-18 11:10:10	331 Please specify the password.
+2013-8-18 11:10:10	230 Login successful.
+2013-8-18 11:10:10	Fun(ftp_login): Password correct!
+2013-8-18 11:10:10	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:10:11	227 Entering Passive Mode (128,183,20,84,193,77).
+2013-8-18 11:10:12	Fun(get_port): 227 Entering Passive Mode (128,183,20,84,193,77).
+.2013-8-18 11:10:12	Fun(xconnect): Successfully connect to server:128.183.20.84,port:49485
+2013-8-18 11:10:13	200 Switching to Binary mode.
+2013-8-18 11:10:13	550 Failed to open file.
+2013-8-18 11:10:13	gps/data/campaign/mgex/hourly/rinex3/2013/230/10/cut0230k.13d.Z does not exsit.
+2013-8-18 11:10:14	Fun(connectFtpServer): Successfully connect to server:128.183.20.84,port:21
+2013-8-18 11:10:17	220-**********************************************************************
+220-                 Welcome to the CDDIS Anonymous FTP Archive
+220-
+220-
+220-This U.S. Government resource is for authorized use only.
+220-
+220-If not authorized to access this resource, disconnect now.
+220-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+220-
+220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+2013-8-18 11:10:17	331 Please specify the password.
+2013-8-18 11:10:18	230 Login successful.
+2013-8-18 11:10:18	Fun(ftp_login): Password correct!
+2013-8-18 11:10:18	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:10:18	227 Entering Passive Mode (128,183,20,84,198,144).
+2013-8-18 11:10:18	Fun(get_port): 227 Entering Passive Mode (128,183,20,84,198,144).
+.2013-8-18 11:10:19	Fun(xconnect): Successfully connect to server:128.183.20.84,port:50832
+2013-8-18 11:10:19	200 Switching to Binary mode.
+2013-8-18 11:10:19	550 Failed to open file.
+2013-8-18 11:10:20	gps/data/campaign/mgex/hourly/rinex3/2013/230/10/grac230k.13d.Z does not exsit.
+2013-8-18 11:10:20	Fun(connectFtpServer): Successfully connect to server:128.183.20.84,port:21
+2013-8-18 11:10:21	220-**********************************************************************
+220-                 Welcome to the CDDIS Anonymous FTP Archive
+220-
+220-
+220-This U.S. Government resource is for authorized use only.
+220-
+220-If not authorized to access this resource, disconnect now.
+220-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+220-
+220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+2013-8-18 11:10:22	331 Please specify the password.
+2013-8-18 11:10:22	230 Login successful.
+2013-8-18 11:10:22	Fun(ftp_login): Password correct!
+2013-8-18 11:10:22	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:10:23	227 Entering Passive Mode (128,183,20,84,196,129).
+2013-8-18 11:10:23	Fun(get_port): 227 Entering Passive Mode (128,183,20,84,196,129).
+.2013-8-18 11:10:23	Fun(xconnect): Successfully connect to server:128.183.20.84,port:50305
+2013-8-18 11:10:25	200 Switching to Binary mode.
+2013-8-18 11:10:25	150 Opening BINARY mode data connection for gps/data/campaign/mgex/hourly/rinex3/2013/230/10/jfng230k.13d.Z (76345 bytes).
+2013-8-18 11:10:39	gps/data/campaign/mgex/hourly/rinex3/2013/230/10/jfng230k.13d.Z	 download successfully.
+
+2013-8-18 11:10:40	Fun(connectFtpServer): Successfully connect to server:128.183.20.84,port:21
+2013-8-18 11:10:44	220-**********************************************************************
+220-                 Welcome to the CDDIS Anonymous FTP Archive
+220-
+220-
+220-This U.S. Government resource is for authorized use only.
+220-
+220-If not authorized to access this resource, disconnect now.
+220-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+220-
+220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+2013-8-18 11:10:47	331 Please specify the password.
+2013-8-18 11:10:48	230 Login successful.
+2013-8-18 11:10:48	Fun(ftp_login): Password correct!
+2013-8-18 11:10:48	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:10:48	227 Entering Passive Mode (128,183,20,84,238,91).
+2013-8-18 11:10:48	Fun(get_port): 227 Entering Passive Mode (128,183,20,84,238,91).
+.2013-8-18 11:10:49	Fun(xconnect): Successfully connect to server:128.183.20.84,port:61019
+2013-8-18 11:10:49	200 Switching to Binary mode.
+2013-8-18 11:10:49	150 Opening BINARY mode data connection for gps/data/campaign/mgex/hourly/rinex3/2013/230/10/kir8230k.13d.Z (70439 bytes).
+2013-8-18 11:11:0	gps/data/campaign/mgex/hourly/rinex3/2013/230/10/kir8230k.13d.Z	 download successfully.
+
+2013-8-18 11:11:0	Fun(connectFtpServer): Successfully connect to server:128.183.20.84,port:21
+2013-8-18 11:11:1	220-**********************************************************************
+220-                 Welcome to the CDDIS Anonymous FTP Archive
+220-
+220-
+220-This U.S. Government resource is for authorized use only.
+220-
+220-If not authorized to access this resource, disconnect now.
+220-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+220-
+220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+2013-8-18 11:11:2	331 Please specify the password.
+2013-8-18 11:11:3	230 Login successful.
+2013-8-18 11:11:3	Fun(ftp_login): Password correct!
+2013-8-18 11:11:3	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:11:3	227 Entering Passive Mode (128,183,20,84,226,247).
+2013-8-18 11:11:3	Fun(get_port): 227 Entering Passive Mode (128,183,20,84,226,247).
+.2013-8-18 11:11:3	Fun(xconnect): Successfully connect to server:128.183.20.84,port:58103
+2013-8-18 11:11:4	200 Switching to Binary mode.
+2013-8-18 11:11:4	550 Failed to open file.
+2013-8-18 11:11:4	gps/data/campaign/mgex/hourly/rinex3/2013/230/10/kzn2230k.13d.Z does not exsit.
+2013-8-18 11:11:5	Fun(connectFtpServer): Successfully connect to server:128.183.20.84,port:21
+2013-8-18 11:11:5	220-**********************************************************************
+220-                 Welcome to the CDDIS Anonymous FTP Archive
+220-
+220-
+220-This U.S. Government resource is for authorized use only.
+220-
+220-If not authorized to access this resource, disconnect now.
+220-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+220-
+220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+2013-8-18 11:11:6	331 Please specify the password.
+2013-8-18 11:11:6	230 Login successful.
+2013-8-18 11:11:6	Fun(ftp_login): Password correct!
+2013-8-18 11:11:6	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:11:7	227 Entering Passive Mode (128,183,20,84,148,118).
+2013-8-18 11:11:7	Fun(get_port): 227 Entering Passive Mode (128,183,20,84,148,118).
+.2013-8-18 11:11:8	Fun(xconnect): Successfully connect to server:128.183.20.84,port:38006
+2013-8-18 11:11:8	200 Switching to Binary mode.
+2013-8-18 11:11:8	150 Opening BINARY mode data connection for gps/data/campaign/mgex/hourly/rinex3/2013/230/10/mar7230k.13d.Z (61841 bytes).
+2013-8-18 11:11:22	gps/data/campaign/mgex/hourly/rinex3/2013/230/10/mar7230k.13d.Z	 download successfully.
+
+2013-8-18 11:11:23	Fun(connectFtpServer): Successfully connect to server:128.183.20.84,port:21
+2013-8-18 11:11:23	220-**********************************************************************
+220-                 Welcome to the CDDIS Anonymous FTP Archive
+220-
+220-
+220-This U.S. Government resource is for authorized use only.
+220-
+220-If not authorized to access this resource, disconnect now.
+220-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+220-
+220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+2013-8-18 11:11:24	331 Please specify the password.
+2013-8-18 11:11:25	230 Login successful.
+2013-8-18 11:11:25	Fun(ftp_login): Password correct!
+2013-8-18 11:11:25	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:11:26	227 Entering Passive Mode (128,183,20,84,254,35).
+2013-8-18 11:11:26	Fun(get_port): 227 Entering Passive Mode (128,183,20,84,254,35).
+.2013-8-18 11:11:26	Fun(xconnect): Successfully connect to server:128.183.20.84,port:65059
+2013-8-18 11:11:27	200 Switching to Binary mode.
+2013-8-18 11:11:27	150 Opening BINARY mode data connection for gps/data/campaign/mgex/hourly/rinex3/2013/230/10/ons1230k.13d.Z (57523 bytes).
+2013-8-18 11:11:44	gps/data/campaign/mgex/hourly/rinex3/2013/230/10/ons1230k.13d.Z	 download successfully.
+
+2013-8-18 11:11:45	Fun(connectFtpServer): Successfully connect to server:128.183.20.84,port:21
+2013-8-18 11:11:46	220-**********************************************************************
+220-                 Welcome to the CDDIS Anonymous FTP Archive
+220-
+220-
+220-This U.S. Government resource is for authorized use only.
+220-
+220-If not authorized to access this resource, disconnect now.
+220-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+220-
+220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+2013-8-18 11:11:46	331 Please specify the password.
+2013-8-18 11:11:46	230 Login successful.
+2013-8-18 11:11:46	Fun(ftp_login): Password correct!
+2013-8-18 11:11:46	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:11:47	227 Entering Passive Mode (128,183,20,84,178,132).
+2013-8-18 11:11:47	Fun(get_port): 227 Entering Passive Mode (128,183,20,84,178,132).
+.2013-8-18 11:11:47	Fun(xconnect): Successfully connect to server:128.183.20.84,port:45700
+2013-8-18 11:11:48	200 Switching to Binary mode.
+2013-8-18 11:11:48	150 Opening BINARY mode data connection for gps/data/campaign/mgex/hourly/rinex3/2013/230/10/reun230k.13d.Z (60415 bytes).
+2013-8-18 11:11:54	gps/data/campaign/mgex/hourly/rinex3/2013/230/10/reun230k.13d.Z	 download successfully.
+
+2013-8-18 11:11:55	Fun(connectFtpServer): Successfully connect to server:128.183.20.84,port:21
+2013-8-18 11:11:56	220-**********************************************************************
+220-                 Welcome to the CDDIS Anonymous FTP Archive
+220-
+220-
+220-This U.S. Government resource is for authorized use only.
+220-
+220-If not authorized to access this resource, disconnect now.
+220-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+220-
+220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+2013-8-18 11:11:56	331 Please specify the password.
+2013-8-18 11:11:59	230 Login successful.
+2013-8-18 11:11:59	Fun(ftp_login): Password correct!
+2013-8-18 11:11:59	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:12:3	227 Entering Passive Mode (128,183,20,84,121,219).
+2013-8-18 11:12:3	Fun(get_port): 227 Entering Passive Mode (128,183,20,84,121,219).
+.2013-8-18 11:12:4	Fun(xconnect): Successfully connect to server:128.183.20.84,port:31195
+2013-8-18 11:12:4	200 Switching to Binary mode.
+2013-8-18 11:12:5	550 Failed to open file.
+2013-8-18 11:12:5	gps/data/campaign/mgex/hourly/rinex3/2013/230/10/sin1230k.13d.Z does not exsit.
+2013-8-18 11:12:6	Fun(connectFtpServer): Successfully connect to server:128.183.20.84,port:21
+2013-8-18 11:12:6	220-**********************************************************************
+220-                 Welcome to the CDDIS Anonymous FTP Archive
+220-
+220-
+220-This U.S. Government resource is for authorized use only.
+220-
+220-If not authorized to access this resource, disconnect now.
+220-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+220-
+220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+2013-8-18 11:12:7	331 Please specify the password.
+2013-8-18 11:12:7	230 Login successful.
+2013-8-18 11:12:7	Fun(ftp_login): Password correct!
+2013-8-18 11:12:7	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:12:7	227 Entering Passive Mode (128,183,20,84,193,205).
+2013-8-18 11:12:7	Fun(get_port): 227 Entering Passive Mode (128,183,20,84,193,205).
+.2013-8-18 11:12:8	Fun(xconnect): Successfully connect to server:128.183.20.84,port:49613
+2013-8-18 11:12:8	200 Switching to Binary mode.
+2013-8-18 11:12:8	150 Opening BINARY mode data connection for gps/data/campaign/mgex/hourly/rinex3/2013/230/10/unb3230k.13d.Z (59877 bytes).
+2013-8-18 11:12:14	gps/data/campaign/mgex/hourly/rinex3/2013/230/10/unb3230k.13d.Z	 download successfully.
+
+2013-8-18 11:12:15	Fun(connectFtpServer): Successfully connect to server:128.183.20.84,port:21
+2013-8-18 11:12:15	220-**********************************************************************
+220-                 Welcome to the CDDIS Anonymous FTP Archive
+220-
+220-
+220-This U.S. Government resource is for authorized use only.
+220-
+220-If not authorized to access this resource, disconnect now.
+220-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+220-
+220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+2013-8-18 11:12:16	331 Please specify the password.
+2013-8-18 11:12:16	230 Login successful.
+2013-8-18 11:12:16	Fun(ftp_login): Password correct!
+2013-8-18 11:12:16	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:12:17	227 Entering Passive Mode (128,183,20,84,169,191).
+2013-8-18 11:12:17	Fun(get_port): 227 Entering Passive Mode (128,183,20,84,169,191).
+.2013-8-18 11:12:17	Fun(xconnect): Successfully connect to server:128.183.20.84,port:43455
+2013-8-18 11:12:17	200 Switching to Binary mode.
+2013-8-18 11:12:18	550 Failed to open file.
+2013-8-18 11:12:18	gps/data/campaign/mgex/hourly/rinex3/2013/230/10/unbs230k.13d.Z does not exsit.
+2013-8-18 11:12:18	Fun(connectFtpServer): Successfully connect to server:128.183.20.84,port:21
+2013-8-18 11:12:19	220-**********************************************************************
+220-                 Welcome to the CDDIS Anonymous FTP Archive
+220-
+220-
+220-This U.S. Government resource is for authorized use only.
+220-
+220-If not authorized to access this resource, disconnect now.
+220-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+220-
+220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+2013-8-18 11:12:19	331 Please specify the password.
+2013-8-18 11:12:21	230 Login successful.
+2013-8-18 11:12:21	Fun(ftp_login): Password correct!
+2013-8-18 11:12:21	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:12:22	227 Entering Passive Mode (128,183,20,84,197,205).
+2013-8-18 11:12:22	Fun(get_port): 227 Entering Passive Mode (128,183,20,84,197,205).
+.2013-8-18 11:12:23	Fun(xconnect): Successfully connect to server:128.183.20.84,port:50637
+2013-8-18 11:12:25	200 Switching to Binary mode.
+2013-8-18 11:12:26	550 Failed to open file.
+2013-8-18 11:12:26	gps/data/campaign/mgex/hourly/rinex3/2013/230/10/unx3230k.13d.Z does not exsit.
+2013-8-18 11:12:27	Fun(connectFtpServer): Successfully connect to server:128.183.20.84,port:21
+2013-8-18 11:12:27	220-**********************************************************************
+220-                 Welcome to the CDDIS Anonymous FTP Archive
+220-
+220-
+220-This U.S. Government resource is for authorized use only.
+220-
+220-If not authorized to access this resource, disconnect now.
+220-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+220-
+220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+2013-8-18 11:12:27	331 Please specify the password.
+2013-8-18 11:12:29	230 Login successful.
+2013-8-18 11:12:29	Fun(ftp_login): Password correct!
+2013-8-18 11:12:29	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:12:29	227 Entering Passive Mode (128,183,20,84,48,150).
+2013-8-18 11:12:29	Fun(get_port): 227 Entering Passive Mode (128,183,20,84,48,150).
+.2013-8-18 11:12:30	Fun(xconnect): Successfully connect to server:128.183.20.84,port:12438
+2013-8-18 11:12:30	200 Switching to Binary mode.
+2013-8-18 11:12:33	150 Opening BINARY mode data connection for gps/data/campaign/mgex/hourly/rinex3/2013/230/10/wtzz230k.13d.Z (70847 bytes).
+2013-8-18 11:12:42	gps/data/campaign/mgex/hourly/rinex3/2013/230/10/wtzz230k.13d.Z	 download successfully.
+
+2013-8-18 11:12:43	Fun(connectFtpServer): Successfully connect to server:128.183.20.84,port:21
+2013-8-18 11:12:43	220-**********************************************************************
+220-                 Welcome to the CDDIS Anonymous FTP Archive
+220-
+220-
+220-This U.S. Government resource is for authorized use only.
+220-
+220-If not authorized to access this resource, disconnect now.
+220-Unauthorized use of, or access to this resource may subject you to
+220-disciplinary action or criminal prosecution.
+220-
+220-By accessing and using this resource, you are consenting to
+220-monitoring, keystroke recording or auditing.
+220-
+220-Please consult the /pub/00readme file for a list of the main
+220-directories and their contents.
+220-
+220-Contact Carey Noll (Carey.Noll@nasa.gov) for further information.
+220-**********************************************************************
+220 
+2013-8-18 11:12:44	331 Please specify the password.
+2013-8-18 11:12:44	230 Login successful.
+2013-8-18 11:12:44	Fun(ftp_login): Password correct!
+2013-8-18 11:12:44	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:12:45	227 Entering Passive Mode (128,183,20,84,104,52).
+2013-8-18 11:12:45	Fun(get_port): 227 Entering Passive Mode (128,183,20,84,104,52).
+.2013-8-18 11:12:45	Fun(xconnect): Successfully connect to server:128.183.20.84,port:26676
+2013-8-18 11:12:47	200 Switching to Binary mode.
+2013-8-18 11:12:47	550 Failed to open file.
+2013-8-18 11:12:48	gps/data/campaign/mgex/hourly/rinex3/2013/230/10/zim3230k.13d.Z does not exsit.
+2013-8-18 11:12:48	Fun(connectFtpServer): Successfully connect to server:210.72.144.2,port:21
+2013-8-18 11:12:48	220 Welcome to nothwest FTP service
+2013-8-18 11:12:48	331 Please specify the password.
+2013-8-18 11:12:48	230 Login successful.
+2013-8-18 11:12:48	Fun(ftp_login): Password correct!
+2013-8-18 11:12:48	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:12:48	227 Entering Passive Mode (210,72,144,2,229,131).
+2013-8-18 11:12:48	Fun(get_port): 227 Entering Passive Mode (210,72,144,2,229,131).
+.2013-8-18 11:12:49	Fun(xconnect): Successfully connect to server:210.72.144.2,port:58755
+2013-8-18 11:12:49	200 Switching to Binary mode.
+2013-8-18 11:12:49	150 Opening BINARY mode data connection for data/iGMAS/2013/230/hourly/10/GUA1230k.13D.Z (84177 bytes).
+2013-8-18 11:12:49	data/iGMAS/2013/230/hourly/10/GUA1230k.13D.Z	 download successfully.
+
+2013-8-18 11:12:49	Fun(connectFtpServer): Successfully connect to server:210.72.144.2,port:21
+2013-8-18 11:12:49	220 Welcome to nothwest FTP service
+2013-8-18 11:12:50	331 Please specify the password.
+2013-8-18 11:12:50	230 Login successful.
+2013-8-18 11:12:50	Fun(ftp_login): Password correct!
+2013-8-18 11:12:50	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:12:50	227 Entering Passive Mode (210,72,144,2,62,85).
+2013-8-18 11:12:50	Fun(get_port): 227 Entering Passive Mode (210,72,144,2,62,85).
+.2013-8-18 11:12:50	Fun(xconnect): Successfully connect to server:210.72.144.2,port:15957
+2013-8-18 11:12:50	200 Switching to Binary mode.
+2013-8-18 11:12:51	550 Failed to open file.
+2013-8-18 11:12:51	data/iGMAS/2013/230/hourly/10/KUN1230k.13D.Z does not exsit.
+2013-8-18 11:12:51	Fun(connectFtpServer): Successfully connect to server:210.72.144.2,port:21
+2013-8-18 11:12:51	220 Welcome to nothwest FTP service
+2013-8-18 11:12:52	331 Please specify the password.
+2013-8-18 11:12:52	230 Login successful.
+2013-8-18 11:12:52	Fun(ftp_login): Password correct!
+2013-8-18 11:12:52	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:12:52	227 Entering Passive Mode (210,72,144,2,158,92).
+2013-8-18 11:12:52	Fun(get_port): 227 Entering Passive Mode (210,72,144,2,158,92).
+.2013-8-18 11:12:52	Fun(xconnect): Successfully connect to server:210.72.144.2,port:40540
+2013-8-18 11:12:52	200 Switching to Binary mode.
+2013-8-18 11:12:53	150 Opening BINARY mode data connection for data/iGMAS/2013/230/hourly/10/WHU2230k.13D.Z (45167 bytes).
+226 Transfer complete.
+2013-8-18 11:12:53	data/iGMAS/2013/230/hourly/10/WHU2230k.13D.Z	 download successfully.
+
+2013-8-18 11:12:53	Fun(connectFtpServer): Successfully connect to server:210.72.144.2,port:21
+2013-8-18 11:12:53	220 Welcome to nothwest FTP service
+2013-8-18 11:12:53	331 Please specify the password.
+2013-8-18 11:12:53	230 Login successful.
+2013-8-18 11:12:53	Fun(ftp_login): Password correct!
+2013-8-18 11:12:53	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:12:54	227 Entering Passive Mode (210,72,144,2,154,206).
+2013-8-18 11:12:54	Fun(get_port): 227 Entering Passive Mode (210,72,144,2,154,206).
+.2013-8-18 11:12:54	Fun(xconnect): Successfully connect to server:210.72.144.2,port:39630
+2013-8-18 11:12:54	200 Switching to Binary mode.
+2013-8-18 11:12:54	150 Opening BINARY mode data connection for data/iGMAS/2013/230/hourly/10/BJF2230k.13D.Z (631 bytes).
+2013-8-18 11:12:54	data/iGMAS/2013/230/hourly/10/BJF2230k.13D.Z	 download successfully.
+
+2013-8-18 11:12:54	Fun(connectFtpServer): Successfully connect to server:210.72.144.2,port:21
+2013-8-18 11:12:54	220 Welcome to nothwest FTP service
+2013-8-18 11:12:55	331 Please specify the password.
+2013-8-18 11:12:55	230 Login successful.
+2013-8-18 11:12:55	Fun(ftp_login): Password correct!
+2013-8-18 11:12:55	Fun(connectFtpServer): socket_control = 3
+2013-8-18 11:12:55	227 Entering Passive Mode (210,72,144,2,25,162).
+2013-8-18 11:12:55	Fun(get_port): 227 Entering Passive Mode (210,72,144,2,25,162).
+.2013-8-18 11:12:55	Fun(xconnect): Successfully connect to server:210.72.144.2,port:6562
+2013-8-18 11:12:55	200 Switching to Binary mode.
+2013-8-18 11:12:56	150 Opening BINARY mode data connection for data/iGMAS/2013/230/highrate/10/45/GUA1230k45.13D.Z (475643 bytes).

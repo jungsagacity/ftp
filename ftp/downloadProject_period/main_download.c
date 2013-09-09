@@ -6,6 +6,7 @@
 #include <sys/time.h>
 #include <pthread.h>
 #include <stdarg.h>
+#include <errno.h>
 
 #include "ftp.h"
 #include "download.h"
@@ -52,6 +53,7 @@ int month_1[12]={31,28,31,30,31,30,31,31,30,31,30,31};
 int month_2[12]={31,29,31,30,31,30,31,31,30,31,30,31};
 
 
+
 int IsLeapYear(int year)
 {
 	if ((year%400==0) ||(year%4==0&& year%100!=0))
@@ -73,18 +75,35 @@ void daycount(int year,int month,int day)
     tmp_time.day = day;
     tmp_time.hour = 0;
     tmp_time.second = 0;
-    while(tmp_time.hour<=23)
-    {
-        tmp_time.minute = 0;
+    while(tmp_time.hour<=24)
+    {		
+		if( tmp_time.hour == 0 )		
+			tmp_time.minute = 11;		
+		else 
+			tmp_time.minute = 0;	
+
         while(tmp_time.minute<60)
         {
             display(tmp_time);
+						
+			/*if(	tmp_time.year == endtime.year && tmp_time.month == endtime.month && tmp_time.day == endtime.day 
+				&& tmp_time.hour == 00 && tmp_time.minute >=11 )
+			{
+				break;
+			}*/
+			if( tmp_time.hour == 24 )
+			{
+				if ( tmp_time.minute > 11 )
+				break;
+ 			}
+
             time_module_control(tmp_time);
             tmp_time.minute++;
         }
         tmp_time.hour++;
     }
 }
+
 
 void yearcount_1(int year) //一整年
 {
@@ -360,27 +379,22 @@ int writeLog(char *format,...)
 
     int day = st->tm_mday ;
     int month = st->tm_mon + 1;
-    int year = st->tm_year + 1990;
+    int year = st->tm_year + 1900;
 
     char logFile[100] ;
     memset(logFile, 0, 100);
 
-    int id = giLogLines/1000;
+    int id = giLogLines++/2000;
     sprintf(logFile, "log/%04d%02d%02d_%03d.log", year, month, day, id );
 
-    printf("logFile: %s\n",logFile);
     dirIsExist("log/");
-    FILE *dwLogFp;
-    if( (dwLogFp=fopen( logFile ,"at") ) == NULL )
+    FILE *dwLogFp = fopen( logFile ,"a+");
+    if( dwLogFp == NULL )
     {
-        dwLogFp = fopen( logFile ,"wt");
-        if( dwLogFp == NULL )
-        {
-            #ifdef DEBUG
-            printf("Fun(writeLog):create file %s error.\n ",logFile);
-            #endif
-            return -1;
-        }
+        #ifdef DEBUG
+        printf("Fun(writeLog):create file %s error code %s.\n ",logFile, strerror(errno));
+        #endif
+        return -1;
     }
 
     va_list arg_ptr;
@@ -389,7 +403,9 @@ int writeLog(char *format,...)
     va_end(arg_ptr);
 
     fclose(dwLogFp);
-    giLogLines++;
+    delay();
+
+
 }
 
 /**************************************************************************************************
@@ -487,14 +503,14 @@ int singleDownload(DownloadNode *dwNode, int nodeid)
             int i = 0;
             for( i = 0;i < 4; i++ )
             {
-                if( dwNode->station == NULL )
+                if( dwNode->stationList->station == NULL )
                 {
                     #ifdef DEBUG
                     printf("Fun(singleDownload): dwNode->station is NULL.\n");
                     #endif
                     return -1;
                 }
-                if((dwNode->station)[nodeid] == NULL )
+                if((dwNode->stationList->station)[nodeid] == NULL )
                 {
                     #ifdef DEBUG
                     printf("Fun(singleDownload): (dwNode->station)[%d] is NULL.\n",nodeid);
@@ -502,7 +518,7 @@ int singleDownload(DownloadNode *dwNode, int nodeid)
                     return -1;
                 }
 
-                if( strlen( (dwNode->station)[nodeid] ) < 4 )
+                if( strlen( (dwNode->stationList->station)[nodeid] ) < 4 )
                 {
                     #ifdef DEBUG
                     printf("Fun(singleDownload): (dwNode->station)[%d] error.\n",nodeid);
@@ -510,7 +526,7 @@ int singleDownload(DownloadNode *dwNode, int nodeid)
                     return -1;
                 }
 
-                realFilename[i] = (dwNode->station)[nodeid][i];//replace ssss
+                realFilename[i] = (dwNode->stationList->station)[nodeid][i];//replace ssss
 
             }
             if( strcmp("210.72.144.2", ftpServerIP ) == 0)
@@ -537,8 +553,14 @@ int singleDownload(DownloadNode *dwNode, int nodeid)
     }
     else
     {
-        memset(tempFilename, 0, 100);
-        sprintf(tempFilename, "%s%s",realFilename, tempDownloadFileSuffix);
+		        
+		memset(tempFilename, 0, 100);
+        //toCapital(realFilename, tempFilename);
+		strcpy(tempFilename, realFilename);
+        //sprintf(tempFilename, "%s%s",realFilename, tempDownloadFileSuffix);
+        strcat(tempFilename, tempDownloadFileSuffix);
+
+		
     }
 
     if( (dwNode->localPath) == NULL)
@@ -556,7 +578,8 @@ int singleDownload(DownloadNode *dwNode, int nodeid)
         memset(localDir, 0, 1000);
         strcpy(localDir, dwNode->localPath);
 
-        memset(capitalFileName, 0, 100);
+		/*        
+		memset(capitalFileName, 0, 100);
         strcpy(capitalFileName, realFilename);
 
         int ci = 0;
@@ -570,6 +593,10 @@ int singleDownload(DownloadNode *dwNode, int nodeid)
 
         memset(localFullPath, 0, 1000);
         sprintf(localFullPath, "%s%s",dwNode->localPath, capitalFileName);
+		*/
+		memset(localFullPath, 0, 1000);		
+		sprintf(localFullPath, "%s%s",dwNode->localPath, realFilename);
+		
     }
 
     if( dwNode->remotePath == NULL )
@@ -618,7 +645,7 @@ int singleDownload(DownloadNode *dwNode, int nodeid)
                 timer =time(NULL);
                 memset(startTime, 0, 100);
                 strftime( startTime, sizeof(startTime), "%Y-%m-%d %T",localtime(&timer) );
-                writeLog("%s\t%s\t%s/%s\t%s\n",startTime, "DOWNLOAD_CONNNET_FAILED", ftpServerIP,remoteFullPath, " ");
+                writeLog("%s\t%s\t%s/%s\t%s\n\n",startTime, "DOWNLOAD_CONNNET_FAILED", ftpServerIP,remoteFullPath, " ");
                 printf("Connect %s error.\n\n", ftpServerIP);
                 return -1;
             }
@@ -638,11 +665,13 @@ int singleDownload(DownloadNode *dwNode, int nodeid)
                 #ifdef DEBUG
                 printf("Fun(singleDownload): dirIsExist is excuted error.\n\n");
                 #endif
+                close(sockfd);
                 return -1;
             }
 
             #ifdef DEBUG
             printf("download... : %s\n",remoteFullPath);
+            printf("storing... : %s\n",tempLocalFullPath);
             #endif
             int ftperror = ftp_get(remoteFullPath, tempLocalFullPath, sockfd) ;
 
@@ -654,6 +683,7 @@ int singleDownload(DownloadNode *dwNode, int nodeid)
                     #ifdef DEBUG
                     printf("Fun(singleDownload): localRename is excuted error.\n\n");
                     #endif
+                    close(sockfd);
                     return -1;
                 }
             }
@@ -668,11 +698,6 @@ int singleDownload(DownloadNode *dwNode, int nodeid)
             {
                 case DOWNLOAD_CONNNET_FAILED:
                 {
-                    //download mutex
-                    //pthread_mutex_lock(&downloadMutex);//lock
-                    //dwNode->state[nodeid] = DOWNLOAD_FAILED;
-                    //pthread_mutex_unlock(&downloadMutex);//unlock
-
                     #ifdef DEBUG
                     printf("connect error.:%s\n\n",remoteFullPath);
                     #endif
@@ -686,12 +711,8 @@ int singleDownload(DownloadNode *dwNode, int nodeid)
                 case DOWNLOAD_CONNECT_SOCKET_ERROR:
                 case DOWNLOAD_PORT_MODE_ERROR:
                 case DOWNLOAD_REMOTE_FILE_NOEXIST:
+                case -1:
                 {
-                    //download mutex
-                    //pthread_mutex_lock(&downloadMutex);//lock
-                    //dwNode->state[nodeid] = DOWNLOAD_FAILED;
-                    //pthread_mutex_unlock(&downloadMutex);//unlock
-
                     #ifdef DEBUG
                     printf("download failed:%s\n\n",remoteFullPath);
                     #endif
@@ -700,11 +721,6 @@ int singleDownload(DownloadNode *dwNode, int nodeid)
                 }
                 case FTP_DOWNLOAD_SUCCESS:
                 {
-                    //download semphore
-                    //pthread_mutex_lock(&downloadMutex);//lock
-                    //dwNode->state[nodeid] = DOWNLOAD_SUCCESS;
-                    //pthread_mutex_unlock(&downloadMutex);//unlock
-
                     #ifdef DEBUG
                     printf("download success:%s\n\n",remoteFullPath);
                     #endif
@@ -731,7 +747,7 @@ int singleDownload(DownloadNode *dwNode, int nodeid)
 *
 *    history    :   {2013.7.25 wujun} frist create;
 **************************************************************************************************/
-void download()
+void download1()
 {
     int 	i = 0;
 	int     taskNum;
@@ -765,7 +781,7 @@ void download()
                 stationNum = strlen(p->state);
 
                 for( i = 0; i < stationNum; i++)
-                {printf("stationNum = %d,\t i = %d\n", stationNum,i);
+                {
                     //if file does not exist, then start up download process.
                     if((p->state)[i] == DOWNLOAD_FILE_NONEXIST)
                     {
@@ -805,6 +821,123 @@ void download()
         delay();
     }
 }
+
+
+
+void download(char *fileList)
+{
+    if(fileList == NULL)
+    {
+        printf("file list is NULL.\n");
+        return;
+    }
+
+    FILE * fl;
+    fl = fopen(fileList, "r");
+
+    if(fl == NULL)
+    {
+        printf("open fileList error.\n");
+        return;
+    }
+
+    char buff[5000];
+    memset(buff, 0, 5000);
+    while( fgets(buff, 5000, fl) != NULL)
+    {
+        char delims[] = "\t";
+        char *result = NULL;
+
+        DownloadNode * p;
+        p = (DownloadNode *)malloc( sizeof(DownloadNode) );
+
+        result = strtok( buff, delims );
+        int len = strlen(result) + 1;
+        p->filename = (char *)malloc( len );
+        memset( p->filename, 0, len );
+        strcpy(p->filename, result);
+
+        result = strtok( NULL, delims );
+        len = strlen(result) + 1;
+        p->localPath = (char *)malloc( len );
+        memset( p->localPath, 0, len );
+        strcpy(p->localPath, result);
+
+        result = strtok( NULL, delims );
+        len = strlen(result) + 1;
+        p->remotePath = (char *)malloc( len );
+        memset( p->remotePath, 0, len );
+        strcpy(p->remotePath, result);
+
+        result = strtok( NULL, delims );
+        len = strlen(result) + 1;
+
+        char *ip = (char *)malloc( len );
+        memset( ip, 0, len );
+        strcpy(ip, result);
+        FtpServer * ftpTemp = fs->next;
+        while( ftpTemp != NULL )
+        {
+            if( strcmp(ftpTemp->ip, ip) == 0)
+            {
+                p->server = ftpTemp;
+                break;
+            }
+
+            ftpTemp = ftpTemp->next;
+        }
+        free(ip);
+
+        result = strtok( NULL, delims );
+        len = strlen(result) + 1;
+        char *stationList = malloc( len );
+        memset( stationList, 0, len );
+        strcpy(stationList, result);
+
+        StationNode * w = sl->next;
+        while( w != NULL)
+        {
+            if(strcmp( stationList, w->name ) == 0)
+            {
+                break;
+            }
+            w = w->next;
+        }
+        p->stationList = w;
+        free(stationList);
+
+
+        result = strtok( NULL, delims );
+        len = strlen(result) + 1;
+        p->state = malloc( len );
+        memset( p->state, 0, len );
+        strcpy(p->state, result);
+
+        result = strtok( NULL, delims );
+        p->taskNum = atoi(result);
+
+
+        int stationNum = strlen(p->state);
+        int i = 0;
+        for( i = 0; i < stationNum; i++)
+        {
+            //if file does not exist, then start up download process.
+            if((p->state)[i] == DOWNLOAD_FILE_NONEXIST)
+            {
+               singleDownload(p, i);
+            }
+        }
+
+        freeDownloadNode(p);
+
+        memset(buff, 0, 5000);
+
+    }
+
+
+
+}
+
 
 /**************************************************************************************************
 *    function   :   load system.ini file
@@ -1636,36 +1769,13 @@ void tranverseFtpServerList()
     }
 }
 
+
+
 /**************************************************************************************************
 *                                       main                                                      *
 **************************************************************************************************/
 
-/*
-int main()
-{
 
-	// start up download function,transfer data from  analysis center to products&service center
-    pthread_t downloadTread;
-	// the most important thread, the other is actived by it,expect analysisCenterMonitorTread.
-	pthread_t timingTaskTread;
-
-    initList();
-    loadSystem("conf/system.ini");
-
-    readDownloadInfo(downloadInfoFile, downInfoList);
-    stationListReload();
-    tranverseStationList();
-    tranverseFtpServerList();
-
-    //create the thread upload
-    pthread_create(&downloadTread,NULL,download,(void *)NULL);
-
-    //create the thread timing task
-    pthread_create(&timingTaskTread,NULL,timingTask,(void *)NULL);
-
-    while(1);
-}
-*/
 int main()
 {
 
@@ -1702,9 +1812,10 @@ int main()
             yearcount_2(endtime);
         }
 
-        download();
+
+        download("fileList.log");
     }
     else
-        printf("wrong input!!!!!!!\n");
+        printf("wrong input!\n");
 
 }

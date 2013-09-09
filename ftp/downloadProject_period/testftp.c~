@@ -1,0 +1,13 @@
+
+#include <stdio.h>
+#include "ftp.h"
+
+int main()
+{
+	int sockfd = connectFtpServer("cddis.gsfc.nasa.gov", 21, "anonymous", "");
+	if( sockfd > FTP_CONNECT_FAILED_FLAG )
+	{
+		int ftperror = ftp_get("pub/gps/data/hourly/2013/132/15/zim2132p.13n.Z", "/home/jung/ZIM2132P.13N.Z", sockfd) ;
+	}
+
+}

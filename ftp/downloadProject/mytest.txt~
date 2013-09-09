@@ -1,0 +1,12 @@
+before add the node
+after  add the node
+i=1
+q->filename=SSSS213k00.13r.Z
+q->remotePath=data/iGMAS/2013/213/highrate/10/00/
+q->localPath=../data/BD/2013/213/highrate/10/00/
+
+i=2
+q->filename=SSSS213k00.13d.Z
+q->remotePath=data/iGMAS/2013/213/highrate/10/00/
+q->localPath=../data/BD/2013/213/highrate/10/00/
+
